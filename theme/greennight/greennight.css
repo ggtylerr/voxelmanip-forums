@@ -1,0 +1,24 @@
+/* META
+Green Night
+*/
+body {
+	background: black url('greennightbg.png');
+	color: #efe;
+	font-family: verdana, sans-serif;
+}
+
+table.c1,td.b { border: 1px solid #208000; }
+
+.h { background: #041000 url('gradient.png') repeat-x; }
+.c { background: #0c3000; }
+
+.n1, .n3 { background: #082000; }
+.n2 { background: #041000; }
+
+textarea, input, select, button {
+	border: 1px solid #208000;
+	background-color: black;
+	color: #efe;
+	font-family: arial, sans-serif;
+	font-size: 1em;
+}
