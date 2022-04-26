@@ -41,7 +41,7 @@ $i = 1;
 foreach ($rankset_data[$rankset_names[$getrankset]] as $rank) {
 	$neededposts = $rank['p'];
 	if (isset($rankset_data[$rankset_names[$getrankset]][$i]['p']))
-		$nextneededposts = $rankset_data['Mario'][$i]['p'];
+		$nextneededposts = $rankset_data[$rankset_names[$getrankset]][$i]['p'];
 	else
 		$nextneededposts = 2147483647;
 	$usercount = 0;

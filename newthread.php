@@ -80,8 +80,7 @@ if (isset($err)) {
 	<?php
 } elseif ($act == 'Preview') {
 	$post['date'] = time();
-	$post['ip'] = $userip;
-	$post['num'] = $loguser['posts']++;
+	$loguser['posts']++;
 	$post['text'] = $_POST['message'];
 	foreach ($loguser as $field => $val)
 		$post['u' . $field] = $val;

@@ -10,30 +10,30 @@ $pid = (isset($_GET['id']) ? $_GET['id'] : null);
 
 if (!$pid) noticemsg("Error", "Private message does not exist.", true);
 
-$pmsgs = $sql->fetch("SELECT $fieldlist p.* FROM pmsgs p LEFT JOIN users u ON u.id = p.userfrom WHERE p.id = ?", [$pid]);
-if ($pmsgs == null) noticemsg("Error", "Private message does not exist.", true);
-$tologuser = ($pmsgs['userto'] == $loguser['id']);
+$pmsg = $sql->fetch("SELECT $fieldlist p.* FROM pmsgs p LEFT JOIN users u ON u.id = p.userfrom WHERE p.id = ?", [$pid]);
+if ($pmsg == null) noticemsg("Error", "Private message does not exist.", true);
+$tologuser = ($pmsg['userto'] == $loguser['id']);
 
-if ((!$tologuser && $pmsgs['userfrom'] != $loguser['id']) && !has_perm('view-user-pms'))
+if ((!$tologuser && $pmsg['userfrom'] != $loguser['id']) && !has_perm('view-user-pms'))
 	noticemsg("Error", "Private message does not exist.", true);
-elseif ($tologuser && $pmsgs['unread'])
+elseif ($tologuser && $pmsg['unread'])
 	$sql->query("UPDATE pmsgs SET unread = 0 WHERE id = ?", [$pid]);
 
-pageheader($pmsgs['title']);
+pageheader($pmsg['title']);
 
 $pagebar = [
 	'breadcrumb' => [
 		['href' => './', 'title' => 'Main'],
-		['href' => "private.php".(!$tologuser ? '?id='.$pmsgs['userto'] : ''), 'title' => 'Private messages']
+		['href' => "private.php".(!$tologuser ? '?id='.$pmsg['userto'] : ''), 'title' => 'Private messages']
 	],
-	'title' => esc($pmsgs['title']),
+	'title' => esc($pmsg['title']),
 	'actions' => [['href' => "sendprivate.php?pid=$pid", 'title' => 'Reply']]
 ];
 
-$pmsgs['id'] = $pmsgs['num'] = 0;
+$pmsg['id'] = 0;
 
 RenderPageBar($pagebar);
-echo '<br>' . threadpost($pmsgs) . '<br>';
+echo '<br>' . threadpost($pmsg) . '<br>';
 RenderPageBar($pagebar);
 
 pagefooter();

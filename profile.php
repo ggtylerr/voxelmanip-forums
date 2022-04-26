@@ -58,11 +58,9 @@ if ($user['birth'] != -1) {
 	$birthday = $age = '';
 }
 
-$email = ($user['email'] && $user['showemail'] ? str_replace(".", "<b> (dot) </b>", str_replace("@", "<b> (at) </b>", $user['email'])) : '');
+$email = ($user['email'] && $user['showemail'] ? str_replace(".", "<b> (dot) </b>", str_replace("@", "<b> (at) </b>", esc($user['email']))) : '');
 
 $post['date'] = time();
-$post['ip'] = $user['ip'];
-$post['num'] = $post['id'] = $post['thread'] = 0;
 
 $post['text'] = <<<HTML
 [b]This[/b] is a [i]sample message.[/i] It shows how [u]your posts[/u] will look on the board.
@@ -85,22 +83,19 @@ $links = [];
 $links[] = ['url' => "forum.php?user=$uid", 'title' => 'View threads'];
 $links[] = ['url' => "thread.php?user=$uid", 'title' => 'Show posts'];
 
-$rblock = $sql->query("SELECT * FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
-$isblocked = $rblock;
+$isblocked = $sql->result("SELECT COUNT(*) FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
 if ($log) {
-	if (isset($_GET['block'])) {
-		$block = (int)$_GET['block'];
-
-		if ($block && !$isblocked) {
-			$rblock = $sql->query("INSERT INTO blockedlayouts (user, blockee) values (?,?)", [$uid, $loguser['id']]);
+	if (isset($_GET['toggleblock'])) {
+		if (!$isblocked) {
+			$sql->query("INSERT INTO blockedlayouts (user, blockee) VALUES (?,?)", [$uid, $loguser['id']]);
 			$isblocked = true;
-		} elseif (!$block && $isblocked) {
-			$rblock = $sql->query("DELETE FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
+		} else {
+			$sql->query("DELETE FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
 			$isblocked = false;
 		}
 	}
 
-	$links[] = ['url' => "profile.php?id=$uid&block=".($isblocked ? 0 : 1), 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
+	$links[] = ['url' => "profile.php?id=$uid&toggleblock", 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
 
 	if (has_perm('create-pms'))
 		$links[] = ['url' => "sendprivate.php?uid=$uid", 'title' => 'Send private message'];
@@ -181,13 +176,13 @@ foreach ($profilefields as $k => $v) {
 <?=threadpost($post)?>
 <br>
 <table class="c1">
-	<tr class="h"><td class="b n3">
+	<tr class="h"><td class="b n3"><ul class="menulisting">
 		<?php
 		foreach ($links as $link) {
-			printf(' | <a href="%s">%s</a>', $link['url'], $link['title']);
+			printf('<li><a href="%s">%s</a></li>', $link['url'], $link['title']);
 		}
 		?>
-	</td></tr>
+	</ul></td></tr>
 </table><br>
 <?php
 RenderPageBar($topbot);

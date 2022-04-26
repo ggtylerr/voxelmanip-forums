@@ -22,7 +22,7 @@ if ($act == 'Register') {
 		$err = 'Your password must be at least 4 characters long.';
 	elseif ($_POST['pass'] != $_POST['pass2'])
 		$err = "The two passwords you entered don't match.";
-	elseif ($puzzle && $_POST['puzzle'] != $puzzleAnswer)
+	elseif ($puzzle && strtolower($_POST['puzzle']) != strtolower($puzzleAnswer))
 		$err = "Wrong security question.";
 
 	if (empty($err)) {
@@ -69,7 +69,7 @@ if (!empty($err)) noticemsg("Error", $err);
 		<tr class="h">
 			<td class="b h" colspan="2">Register</td>
 		</tr><tr>
-			<td class="b n1 center" width=150>Username:</td>
+			<td class="b n1 center" width="180">Username:</td>
 			<td class="b n2"><input type="text" name="name" size="25" maxlength="25"></td>
 		</tr><tr>
 			<td class="b n1 center">Password:</td>

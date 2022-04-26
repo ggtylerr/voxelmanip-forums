@@ -59,8 +59,6 @@ if (!isset($_POST['action'])) {
 	<?php
 } elseif ($_POST['action'] == 'Preview') {
 	$post['date'] = time();
-	$post['ip'] = $userip;
-	$post['num'] = 0;
 	$post['text'] = $_POST['message'];
 	foreach ($loguser as $field => $val)
 		$post['u' . $field] = $val;

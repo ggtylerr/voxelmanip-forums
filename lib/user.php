@@ -71,18 +71,12 @@ function getrank($set, $posts) {
 
 	if ($set == 0) return '';
 
-	$i = 1;
-	foreach ($rankset_data[$rankset_names[$set]] as $ranksetname => $rankset) {
-		$neededposts = $rankset['p'];
-		if (isset($rankset_data[$ranksetname][$i]['p']))
-			$nextneededposts = $rankset_data[$ranksetname][$i]['p'];
-		else
-			$nextneededposts = 2147483647;
-
-		if (($posts >= $neededposts) && ($posts < $nextneededposts)) {
-			return $rankset['str'];
+	$rankset = &$rankset_data[$rankset_names[$set]];
+	for (end($rankset); key($rankset) !== null; prev($rankset)) {
+		$currentRank = current($rankset);
+		if ($posts >= $currentRank['p']) {
+			return $currentRank['str'];
 		}
-		$i++;
 	}
 	return '';
 }

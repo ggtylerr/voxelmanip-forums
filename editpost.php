@@ -85,8 +85,6 @@ if (isset($err)) {
 } else if ($act == 'Preview') {
 	$euser = $sql->fetch("SELECT * FROM users WHERE id = ?", [$post['id']]);
 	$post['date'] = time();
-	$post['ip'] = $userip;
-	$post['num'] = $euser['posts']++;
 	$post['text'] = $_POST['message'];
 	foreach ($euser as $field => $val)
 		$post['u'.$field] = $val;

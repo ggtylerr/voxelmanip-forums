@@ -62,8 +62,8 @@ while ($group = $activegroups->fetch()) {
 		<td class="b h" width="32">#</td>
 		<td class="b h" width="62">Picture</td>
 		<td class="b h">Name</td>
-		<td class="b h" width="130">Registered on</td>
-		<td class="b h" width="50">Posts</td>
+		<td class="b h" width="145">Registered on</td>
+		<td class="b h" width="75">Posts</td>
 	</tr>
 <?php
 

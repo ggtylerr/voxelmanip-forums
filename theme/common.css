@@ -8,7 +8,7 @@
 .spoiler2:hover {
 	opacity: 1;
 }
-
+/* Table styling used throughout. */
 table.c1 {
 	border-spacing: 0px;
 	border-collapse: collapse;
@@ -23,14 +23,14 @@ td.nb {
 .sfont {
 	font-size: 0.9em;
 }
-
 a:link, a:visited	{ color: #FFC040 }
 a:active, a:hover	{ color: #FFFFFF }
+/* Default link styling */
 a {
 	text-decoration: none;
 	font-weight: bold;
 }
-
+/* Specific elements for page formatting */
 .left	{ text-align: left; }
 .center	{ text-align: center; }
 .right	{ text-align: right; }
@@ -48,4 +48,38 @@ a {
 	font-family: Monaco, Consolas, monospace;
 	padding: 5px;
 	white-space: pre;
+}
+
+ul.menulisting {
+	display: inline;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.menulisting li {
+	display: inline-block;
+	border-left: 1px solid white;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+ul.menulisting li:first-child {
+	border-left-width: 0;
+}
+
+.topbar_1 {
+	border-bottom: 0 !important;
+	min-width: 180px;
+	text-align: center;
+	height: 24px;
+}
+
+.topbar_2 {
+	width: 100%;
+	border-left: 0 !important;
+}
+
+.sidebar {
+	border-top: 0 !important;
+	text-align: center;
 }

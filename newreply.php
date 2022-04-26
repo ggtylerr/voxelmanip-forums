@@ -73,8 +73,7 @@ if ($err) {
 	noticemsg("Error", $err."<br><a href=\"thread.php?id=$tid\">Back to thread</a>");
 } elseif ($act == 'Preview' || !$act) {
 	$post['date'] = time();
-	$post['ip'] = $userip;
-	$post['num'] = $loguser['posts']++;
+	$loguser['posts']++;
 	$post['text'] = ($act == 'Preview' ? $_POST['message'] : $quotetext);
 	foreach ($loguser as $field => $val)
 		$post['u' . $field] = $val;
@@ -117,7 +116,7 @@ if ($err) {
 	$sql->query("UPDATE threads SET replies = replies + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
 		[time(), $loguser['id'], $pid, $tid]);
 	$sql->query("UPDATE forums SET posts = posts + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
-		[[time(), $loguser['id'], $pid, $thread['forum']]]);
+		[time(), $loguser['id'], $pid, $thread['forum']]);
 
 	// nuke entries of this thread in the "threadsread" table
 	$sql->query("DELETE FROM threadsread WHERE tid = ? AND NOT (uid = ?)", [$thread['id'], $loguser['id']]);

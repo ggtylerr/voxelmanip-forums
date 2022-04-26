@@ -182,7 +182,7 @@ if ($viewmode == "thread") {
 } else
 	pageheader();
 
-if ($thread['replies'] <= $ppp) {
+if ($thread['replies'] < $ppp) {
 	$pagelist = '';
 } else {
 	if ($viewmode == "thread")
@@ -193,7 +193,7 @@ if ($thread['replies'] <= $ppp) {
 		$furl = "thread.php?time=$time";
 	elseif ($viewmode == "announce")
 		$furl = "thread.php?announce=1";
-	$pagelist = '<br>'.pagelist($thread['replies'], $ppp, $furl, $page, true);
+	$pagelist = '<br>'.pagelist($thread['replies']+1, $ppp, $furl, $page, true);
 }
 
 if ($viewmode == "thread") {
@@ -247,29 +247,11 @@ if (isset($tid) && (can_edit_forum_threads($thread['forum']) || ($loguser['id'] 
 
 		$edit = '| <a href="javascript:showrbox()">Rename</a> | <a href="javascript:showmove()">Move</a>';
 
-		$r = $sql->query("SELECT c.title ctitle,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
-		$fmovelinks = '<select id="forumselect">';
-		$c = -1;
-		while ($d = $r->fetch()) {
-			if (!can_view_forum($d))
-				continue;
-
-			if ($d['cat'] != $c) {
-				if ($c != -1)
-					$fmovelinks .= '</optgroup>';
-				$c = $d['cat'];
-				$fmovelinks .= '<optgroup label="' . $d['ctitle'] . '">';
-			}
-			$fmovelinks .= sprintf(
-				'<option value="%s"%s>%s</option>',
-			$d['id'], ($d['id'] == $thread['forum'] ? ' selected="selected"' : ''), $d['title']);
-		}
-		$fmovelinks.="</optgroup></select>";
-		$fmovelinks = addslashes($fmovelinks);
-		$fmovelinks.='<input type="submit" id="move" value="Submit" name="movethread" onclick="submitmove(movetid())">';
-		$fmovelinks.='<input type="button" value="Cancel" onclick="hidethreadedit(); return false;">';
+		$fmovelinks = addslashes(forumlist($thread['forum']))
+		.	'<input type="submit" id="move" value="Submit" name="movethread" onclick="submitmove(movetid())">'
+		.	'<input type="button" value="Cancel" onclick="hidethreadedit(); return false;">';
 	} else {
-		$fmovelinks = $close = $stick = $trash = '';
+		$fmovelinks = $stick = $stick2 = $close = $close2 = $trash = $trash2 = '';
 		$edit = '<a href=javascript:showrbox()>Rename</a>';
 	}
 
@@ -284,22 +266,10 @@ if (isset($tid) && (can_edit_forum_threads($thread['forum']) || ($loguser['id'] 
 <form action="thread.php" method="post" name="mod" id="mod">
 <table class="c1"><tr class="n2">
 	<td class="b n2">
-		<span id="moptions">Thread options: $stick $close $trash $edit </span>
+		<span id="moptions">Thread options: $stick $close $trash $edit</span>
 		<span id="mappend"></span>
 		<span id="canceledit"></span>
 		<script>
-function submitmod(act){
-	document.getElementById('action').value=act;
-	document.getElementById('mod').submit();
-}
-function submitrename(name){
-	document.mod.arg.value=name;
-	submitmod('rename')
-}
-function submitmove(fid){
-	document.mod.arg.value=fid;
-	submitmod('move')
-}
 function showrbox(){
 	document.getElementById('moptions').innerHTML='Rename thread:';
 	document.getElementById('mappend').innerHTML='$renamefield';
@@ -310,32 +280,10 @@ function showmove(){
 	document.getElementById('mappend').innerHTML='$fmovelinks';
 	document.getElementById('mappend').style.display = '';
 }
-function submit_on_return(event,act){
-	a=event.keyCode?event.keyCode:event.which?event.which:event.charCode;
-	document.mod.action.value=act;
-	document.mod.arg.value=document.mod.tmp.value;
-	if (a==13) document.mod.submit();
-}
 function hidethreadedit() {
 	document.getElementById('moptions').innerHTML = 'Thread options: $stick2 $close2 $trash2 $edit';
 	document.getElementById('mappend').innerHTML = '<input type=hidden name=tmp style="width:80%!important;border-width:0px!important;padding:0px!important" onkeypress="submit_on_return(event,\'rename\')" value="$threadtitle" maxlength="100">';
 	document.getElementById('canceledit').style.display = 'none';
-}
-function movetid() {
-	var x = document.getElementById('forumselect').selectedIndex;
-	document.getElementById('move').innerHTML = document.getElementsByTagName('option')[x].value;
-	return document.getElementsByTagName('option')[x].value;
-}
-function renametitle() {
-	var x = document.getElementById('title').value;
-	document.getElementById('rename').innerHTML = document.getElementsByTagName('input')[x].value;
-	return document.getElementsByTagName('input')[x].value;
-}
-function trashConfirm(e) {
-	if (confirm('Are you sure you want to trash this thread?'));
-	else {
-		e.preventDefault();
-	}
 }
 		</script>
 		<input type=hidden id="arg" name="arg" value="">
@@ -361,13 +309,14 @@ if (isset($time)) {
 
 echo "$modlinks $pagelist";
 
-if ($posts) echo '<br>';
+//if ($posts) echo '<br>';
 
 for ($i = 1; $post = $posts->fetch(); $i++) {
 	if (isset($post['fid'])) {
 		if (!can_view_forum(['id' => $post['fid'], 'private' => $post['fprivate']]))
 			continue;
 	}
+	$pthread = [];
 	if (isset($uid) || isset($time)) {
 		$pthread['id'] = $post['tid'];
 		$pthread['title'] = $post['ttitle'];
@@ -380,7 +329,7 @@ for ($i = 1; $post = $posts->fetch(); $i++) {
 	if (isset($thread['forum']) && can_edit_forum_posts($thread['forum']) && isset($_GET['pin']) && $post['id'] == $_GET['pin'])
 		$post['deleted'] = false;
 
-	echo "<br>".threadpost($post);
+	echo "<br>".threadpost($post, $pthread);
 }
 
 if_empty_query($i, "No posts were found.", 0, true);

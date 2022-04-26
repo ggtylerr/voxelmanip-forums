@@ -155,13 +155,13 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 	if (!$thread['title'])
 		$thread['title'] = '';
 
-	if ($thread['sticky'])
+	if ($thread['sticky'] && !$showforum)
 		$tr = 'n1';
 	else
 		$tr = ($i % 2 ? 'n2' : 'n3');
 
-	if (!$thread['sticky'] && $lsticky)
-		echo '<tr class="c"><td class="b" colspan="'.($showforum ? 8 : 7).'" style="font-size:1px">&nbsp;</td>';
+	if (!$thread['sticky'] && $lsticky && !$showforum)
+		echo '<tr class="c"><td class="b" colspan="7" style="font-size:1px">&nbsp;</td>';
 	$lsticky = $thread['sticky'];
 
 	?><tr class="<?=$tr ?> center">

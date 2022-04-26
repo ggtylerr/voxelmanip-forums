@@ -19,7 +19,7 @@ function get_username_link($matches) {
 }
 
 function securityfilter($msg) {
-	$tags = 'script|iframe|embed|object|textarea|noscript|meta|xmp|plaintext|base';
+	$tags = ':applet|b(?:ase|gsound)|embed|frame(?:set)?|i(?:frame|layer)|layer|meta|noscript|object|plaintext|script|title|textarea|xml|xmp';
 	$msg = preg_replace("'<(/?)({$tags})'si", "&lt;$1$2", $msg);
 
 	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
@@ -29,6 +29,8 @@ function securityfilter($msg) {
 	$msg = preg_replace("'filter:'si", 'filter&#58;>', $msg);
 	$msg = preg_replace("'javascript:'si", 'javascript&#58;>', $msg);
 	$msg = preg_replace("'transform:'si", 'transform&#58;>', $msg);
+
+	$msg = str_replace("<!--", "&lt;!--", $msg);
 
 	return $msg;
 }
@@ -143,31 +145,16 @@ function LoadBlocklayouts() {
 }
 
 function threadpost($post, $pthread = '') {
-	global $dateformat, $loguser;
-
-	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
-
-	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
-	$post['utitle'] = $post['ranktext']
-			. ((strlen($post['ranktext']) >= 1) ? '<br>' : '')
-			. $post['utitle']
-			. ((strlen($post['utitle']) >= 1) ? '<br>' : '');
-
-	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
-	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = (isset($loguser['blocklayouts']) ? $loguser['blocklayouts'] : '');
-	if ($isBlocked)
-		$post['usign'] = $post['uhead'] = '';
+	global $dateformat, $loguser, $blocklayouts;
 
 	if (isset($post['deleted']) && $post['deleted']) {
-		$postlinks = '';
 		if (can_edit_forum_posts(getforumbythread($post['thread']))) {
-			$postlinks .= "<a href=\"thread.php?pid=$post[id]&pin=$post[id]&rev=$post[revision]#$post[id]\">Peek</a> | ";
-			$postlinks .= "<a href=\"editpost.php?pid=".urlencode($post['id'])."&act=undelete\">Undelete</a>";
+			$postlinks = sprintf(
+				'<a href="thread.php?pid=%s&pin=%s&rev=%s#%s">Peek</a> | <a href="editpost.php?pid=%s&act=undelete">Undelete</a> | ID: %s',
+			$post['id'], $post['id'], $post['revision'], $post['id'], $post['id'], $post['id']);
+		} else {
+			$postlinks = 'ID: '.$post['id'];
 		}
-
-		if ($post['id'])
-			$postlinks .= ($postlinks ? ' | ' : '') . "ID: $post[id]";
 
 		$ulink = userlink($post, 'u');
 		$text = <<<HTML
@@ -184,9 +171,30 @@ HTML;
 		return $text;
 	}
 
+	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
+
+	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
+	$post['utitle'] = $post['ranktext']
+			. ((strlen($post['ranktext']) >= 1) ? '<br>' : '')
+			. $post['utitle']
+			. ((strlen($post['utitle']) >= 1) ? '<br>' : '');
+
+	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
+	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
+	if ($loguser['blocklayouts'])
+		$isBlocked = true;
+	else
+		if (isset($blocklayouts[$post['uid']]))
+			$isBlocked = true;
+		else
+			$isBlocked = false;
+
+	if ($isBlocked)
+		$post['usign'] = $post['uhead'] = '';
+
 	$postheaderrow = $threadlink = $postlinks = $revisionstr = '';
 
-	$post['id'] = (isset($post['id']) ? $post['id'] : 0);
+	$post['id'] = (isset($post['id']) ? $post['id'] : null);
 
 	if ($pthread)
 		$threadlink = ", in <a href=\"thread.php?id=$pthread[id]\">" . esc($pthread['title']) . "</a>";
@@ -204,23 +212,24 @@ HTML;
 		$postlinks .= ($postlinks ? ' | ' : '') . "<a href=\"newreply.php?id=$post[thread]&pid=$post[id]\">Reply</a>";
 	}
 
-	// "Edit" link for admins or post owners, but not banned users
-	if (isset($post['thread']) && can_edit_post($post) && $post['id'])
-		$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
+	if (isset($post['thread'])) {
+		// "Edit" link for admins or post owners, but not banned users
+		if (can_edit_post($post))
+			$postlinks .= " | <a href=\"editpost.php?pid=$post[id]\">Edit</a>";
 
-	if (isset($post['thread']) && isset($post['id']) && can_delete_forum_posts(getforumbythread($post['thread'])))
-		$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid=" . urlencode($post['id']) . "&act=delete\">Delete</a>";
+		if (can_delete_forum_posts(getforumbythread($post['thread'])))
+			$postlinks .= " | <a href=\"editpost.php?pid=" . urlencode($post['id']) . "&act=delete\">Delete</a>";
 
-	if (isset($post['thread']) && $post['id'])
-		$postlinks.=" | ID: $post[id]";
+		$postlinks .= " | ID: $post[id]";
 
-	if (isset($post['thread']) && has_perm('view-post-ips'))
-		$postlinks.=($postlinks ? ' | ' : '') . "IP: $post[ip]";
+		if (has_perm('view-post-ips'))
+			$postlinks .= " | IP: $post[ip]";
 
-	if (isset($post['maxrevision']) && isset($post['thread']) && has_perm('view-post-history') && $post['maxrevision'] > 1) {
-		$revisionstr.=" | Revision ";
-		for ($i = 1; $i <= $post['maxrevision']; $i++)
-			$revisionstr .= "<a href=\"thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]\">$i</a> ";
+		if (isset($post['maxrevision']) && has_perm('view-post-history') && $post['maxrevision'] > 1) {
+			$revisionstr.=" | Revision ";
+			for ($i = 1; $i <= $post['maxrevision']; $i++)
+				$revisionstr .= "<a href=\"thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]\">$i</a> ";
+		}
 	}
 
 	$tbar1 = (!$isBlocked) ? "topbar" . $post['uid'] . "_1" : '';
@@ -229,21 +238,11 @@ HTML;
 	$mbar = (!$isBlocked) ? "mainbar" . $post['uid'] : '';
 	$ulink = userlink($post, 'u');
 	$pdate = date($dateformat, $post['date']);
-	$text = <<<HTML
-<table class="c1" id="{$post['id']}">
-	$postheaderrow
-	<tr>
-		<td class="b n1 $tbar1" style="border-bottom:0;border-right:0;min-width:180px;text-align:center" height="17">$ulink</td>
-		<td class="b n1 $tbar2" style="border-left:0;width:100%">
-			<table style="width:100%">
-				<tr><td class="nb sfont">Posted on $pdate$threadlink $revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
-			</table>
-		</td>
-	</tr><tr valign="top">
-		<td class="b n1 sfont $sbar" style="border-top:0;text-align:center">
-HTML;
 
+	$regdate = date('Y-m-d', $post['uregdate']);
 	$lastpost = ($post['ulastpost'] ? timeunits(time() - $post['ulastpost']) : 'none');
+	$lastview = timeunits(time() - $post['ulastview']);
+
 	$picture = ($post['uusepic'] ? "<img src=\"userpic/{$post['uid']}\">" : '');
 
 	if ($post['usign']) {
@@ -255,17 +254,32 @@ HTML;
 			$post['usign'] = '<br><br>' . $signsep . $post['usign'];
 	}
 
-	$text .= postfilter($post['utitle'])
-		."$picture
-		<br>Posts: $post[uposts]
-		<br>
-		<br>Since: ".date('Y-m-d', $post['uregdate'])."
-		<br>
-		<br>Last post: $lastpost
-		<br>Last view: ".timeunits(time() - $post['ulastview'])."
-	</td>
-	<td class=\"b n2 $mbar\" id=\"post_".$post['id'].'">'.postfilter($post['uhead'].$post['text'].$post['usign'])."</td>
-</table>";
+	$usertitle = postfilter($post['utitle']);
+	$posttext = postfilter($post['uhead'].$post['text'].$post['usign']);
 
-	return $text;
+	return <<<HTML
+<table class="c1" id="{$post['id']}">
+	$postheaderrow
+	<tr>
+		<td class="b n1 topbar_1 $tbar1 forceBlockOnMobile" height="17">$ulink</td>
+		<td class="b n1 topbar_2 $tbar2 forceBlockOnMobile">
+			<table style="width:100%">
+				<tr><td class="nb sfont forceBlockOnMobile">Posted on $pdate$threadlink $revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
+			</table>
+		</td>
+	</tr><tr valign="top">
+		<td class="b n1 sfont sidebar $sbar forceBlockOnMobile">
+			$usertitle
+			$picture
+			<br>Posts: {$post['uposts']}
+			<br>
+			<br>Since: $regdate
+			<br>
+			<br>Last post: $lastpost
+			<br>Last view: $lastview
+		</td>
+		<td class="b n2 mainbar $mbar forceBlockOnMobile" id="post_{$post['id']}">$posttext</td>
+	</tr>
+</table>
+HTML;
 }

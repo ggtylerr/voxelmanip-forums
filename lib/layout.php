@@ -170,7 +170,7 @@ function bantimeselect($name) {
 
 function pagelist($total, $limit, $url, $sel = 0, $showall = false, $tree = false) {
 	$pagelist = '';
-	$pages = ceil($total / $limit);
+	$pages = ceil(($total+1) / $limit);
 	if ($pages < 2) return '';
 	for ($i = 1; $i <= $pages; $i++) {
 		if (	$showall	// If we don't show all the pages, show:
@@ -236,6 +236,31 @@ function announcement_row($tblspan) {
 			<?=(has_perm('create-forum-announcements') ? '<span class="right" style="float:right"><a href=newthread.php?announce=1>New Announcement</a></span>' : '') ?>
 		</td></tr><?php
 	}
+}
+
+function forumlist($currentforum = -1) {
+	global $sql;
+
+	$r = $sql->query("SELECT c.title ctitle,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+	$out = '<select id="forumselect">';
+	$c = -1;
+	while ($d = $r->fetch()) {
+		if (!can_view_forum($d))
+			continue;
+
+		if ($d['cat'] != $c) {
+			if ($c != -1)
+				$out .= '</optgroup>';
+			$c = $d['cat'];
+			$out .= '<optgroup label="'.$d['ctitle'].'">';
+		}
+		$out .= sprintf(
+			'<option value="%s"%s>%s</option>',
+		$d['id'], ($d['id'] == $currentforum ? ' selected="selected"' : ''), $d['title']);
+	}
+	$out .= "</optgroup></select>";
+
+	return $out;
 }
 
 /**
