@@ -66,9 +66,9 @@ if ($act == 'Edit profile') {
 			}
 		}
 
-		if ($ava_out != "OK!") {
+		if ($ava_out != "OK!")
 			$error .= $ava_out;
-		} else
+		else
 			$usepic = 1;
 	}
 	if (isset($_POST['picturedel']))
@@ -209,7 +209,7 @@ foreach (timezone_identifiers_list() as $tz) {
 }
 
 $birthM = $birthD = $birthY = '';
-if ($user['birth']) {
+if ($user['birth'] && $user['birth'] != -1) {
 	$birthday = explode('-', $user['birth']);
 	$birthM = $birthday[0]; $birthD = $birthday[1]; $birthY = $birthday[2];
 }
