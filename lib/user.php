@@ -115,7 +115,7 @@ function randnickcolor() {
 }
 
 function userfields($tbl = '', $pf = '') {
-	$fields = ['id', 'name', 'displayname', 'group_id', 'nick_color', 'enablecolor'];
+	$fields = ['id', 'name', 'displayname', 'group_id', 'nick_color'];
 
 	$ret = '';
 	foreach ($fields as $f) {
@@ -154,7 +154,7 @@ function userlink($user, $u = '') {
 function userdisp($user, $u = '') {
 	global $usergroups, $userbirthdays;
 
-	if ($user[$u.'nick_color'] && $user[$u.'enablecolor']) { //Over-ride for custom colours
+	if ($user[$u.'nick_color'] != '000000') { //Over-ride for custom colours
 		$nc = $user[$u.'nick_color'];
 	} else {
 		$group = $usergroups[$user[$u.'group_id']];

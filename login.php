@@ -1,11 +1,11 @@
 <?php
 require('lib/common.php');
 
-$act = (isset($_POST['action']) ? $_POST['action'] : 'needle');
+$act = $_POST['action'] ?? null;
 if ($act == 'Login') {
 	$logindata = $sql->fetch("SELECT id,pass,token FROM users WHERE name = ?", [$_POST['name']]);
 
-	if (password_verify($_POST['pass'], $logindata['pass'])) {
+	if ($logindata && password_verify($_POST['pass'], $logindata['pass'])) {
 		setcookie('token', $logindata['token'], 2147483647);
 		redirect('./');
 	} else {

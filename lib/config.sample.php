@@ -12,9 +12,11 @@ $trashid = 2; // Designates the id for your trash forum.
 $boardtitle = "Insert title here"; // This is what will be displayed at the top of your browser window.
 $defaultlogo = "theme/abII.png"; // Replace with the logo of your choice.
 $favicon = "theme/fav.png"; // Replace with your favicon of choice
-$defaulttheme = "0"; // Select the default theme to be used.
 $boardlogo = "<a href='./'><img src='$defaultlogo'></a>"; // This defines the logo.
 $meta = '<meta name="description" content="Stuff goes here!">'; // This is used for search engine keywords.
+
+$defaulttheme = "0"; // Select the default theme to be used.
+$defaulttimezone = "Europe/Stockholm"; // Default timezone if people do not select their own.
 
 // Registration Bot Protection
 $puzzle = true;

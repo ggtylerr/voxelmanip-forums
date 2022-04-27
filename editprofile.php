@@ -35,6 +35,8 @@ $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$targetuserid]);
 
 if (!$user) noticemsg("Error", "This user doesn't exist!", true);
 
+$user['timezone'] = $user['timezone'] ?: $defaulttimezone;
+
 if ($act == 'Edit profile') {
 	$error = '';
 
@@ -134,26 +136,59 @@ if ($act == 'Edit profile') {
 	}
 
 	if (!$error) {
-		$showemail = ($_POST['showemail'] ? 1 : 0);
-		$enablecolor = ($_POST['enablecolor'] ? 1 : 0);
+		// Temp variables for dynamic query construction.
+		$fieldquery = '';
+		$placeholders = [];
 
-		$sql->query("UPDATE users SET gender = ?, ppp = ?, tpp = ?, signsep = ?, rankset = ?, location = ?, email = ?, head = ?, sign = ?, bio = ?,
-			theme = ?, blocklayouts = ?, showemail = ?, timezone = ?, birth = ?, usepic = ?, dateformat = ?, timeformat = ? WHERE id = ?",
-			[$_POST['gender'], $_POST['ppp'], $_POST['tpp'], $_POST['signsep'], $_POST['rankset'], $_POST['location'], $_POST['email'], $_POST['head'], $_POST['sign'],
-			$_POST['bio'], $_POST['theme'], $_POST['blocklayouts'], $showemail, $_POST['timezone'], $birthday, $usepic, $dateformat, $timeformat, $user['id']]
-		);
+		$fields = [
+			'gender' => $_POST['gender'],
+			'ppp' => $_POST['ppp'],
+			'tpp' => $_POST['tpp'],
+			'signsep' => $_POST['signsep'],
+			'rankset' => $_POST['rankset'],
+			'location' => $_POST['location'] ?: null,
+			'email' => $_POST['email'] ?: null,
+			'head' => $_POST['head'] ?: null,
+			'sign' => $_POST['sign'] ?: null,
+			'bio' => $_POST['bio'] ?: null,
+			'theme' => $_POST['theme'] ?: null,
+			'blocklayouts' => $_POST['blocklayouts'] ?: 0,
+			'showemail' => isset($_POST['showemail']) ? 1 : 0,
+			'timezone' => $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null,
+			'birth' => $birthday,
+			'usepic' => $usepic,
+			'dateformat' => $dateformat,
+			'timeformat' => $timeformat
+		];
 
-		if ($pass)
-			$sql->query("UPDATE users SET pass = ?, token = ? WHERE id = ?", [password_hash($pass, PASSWORD_DEFAULT), $newtoken, $user['id']]);
+		if ($pass) {
+			$fields['pass'] = password_hash($pass, PASSWORD_DEFAULT);
+			$fields['token'] = $newtoken;
+		}
+
 		if (checkcdisplayname($targetuserid))
-			$sql->query("UPDATE users SET displayname = ? WHERE id = ?", [$_POST['displayname'], $user['id']]);
+			$fields['displayname'] = $_POST['displayname'];
+
 		if (checkcusercolor($targetuserid))
-			$sql->query("UPDATE users SET nick_color = ?, enablecolor = ? WHERE id = ?", [$_POST['nick_color'], $enablecolor, $user['id']]);
+			$fields['nick_color'] = $_POST['nick_color'];
+
 		if (checkctitle($targetuserid))
-			$sql->query("UPDATE users SET title = ? WHERE id = ?", [$_POST['title'], $user['id']]);
+			$fields['title'] = $_POST['title'];
 
 		if (has_perm("edit-users") && $targetgroup != 0)
-			$sql->query("UPDATE users SET group_id = ? WHERE id = ?", [$targetgroup, $user['id']]);
+			$fields['group_id'] = $targetgroup;
+
+		// Construct a query containing all fields.
+		foreach ($fields as $fieldk => $fieldv) {
+			if ($fieldquery) $fieldquery .= ',';
+			$fieldquery .= $fieldk.'=?';
+			$placeholders[] = $fieldv;
+		}
+
+		// 100% safe from SQL injection because no arbitrary user input is ever put directly
+		// into the query, rather it is passed as a prepared statement placeholder.
+		$placeholders[] = $user['id'];
+		$sql->query("UPDATE users SET $fieldquery WHERE id = ?", $placeholders);
 
 		redirect("profile.php?id=$user[id]");
 	} else {
@@ -174,7 +209,7 @@ foreach (timezone_identifiers_list() as $tz) {
 }
 
 $birthM = $birthD = $birthY = '';
-if ($user['birth'] != -1) {
+if ($user['birth']) {
 	$birthday = explode('-', $user['birth']);
 	$birthM = $birthday[0]; $birthD = $birthday[1]; $birthY = $birthday[2];
 }
@@ -187,9 +222,8 @@ $birthinput = sprintf(
 $birthD, $birthM, $birthY);
 
 $colorinput = sprintf(
-	'<input type="color" name="nick_color" value="#%s">
-	<input type="checkbox" name="enablecolor" value="1" id="enablecolor" %s><label for="enablecolor">Enable Color</label>',
-$user['nick_color'], ($user['enablecolor'] ? 'checked' : ''));
+	'<input type="color" name="nick_color" value="#%s">',
+$user['nick_color']);
 
 echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype="multipart/form-data"><table class="c1">' .
 	catheader('Login information')

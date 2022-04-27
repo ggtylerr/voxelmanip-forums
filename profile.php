@@ -120,7 +120,7 @@ if (has_perm('edit-permissions') && (has_perm('edit-own-permissions') || $loguse
 
 //timezone calculations
 $now = new DateTime("now");
-$usertz = new DateTimeZone($user['timezone']);
+$usertz = new DateTimeZone($user['timezone'] ?: $defaulttimezone);
 $userdate = new DateTime("now", $usertz);
 $userct = date_format($userdate, $dateformat);
 $logtz = new DateTimeZone($loguser['timezone']);

@@ -51,13 +51,15 @@ HTML;
 if (!$log) {
 	$loguser = [];
 	$loguser['id'] = 0;
-	$loguser['timezone'] = "UTC";
 	$loguser['dateformat'] = "Y-m-d";
 	$loguser['timeformat'] = "H:i";
 	$loguser['theme'] = $defaulttheme;
 	$loguser['ppp'] = 20;
 	$loguser['tpp'] = 20;
 }
+
+if (!$log || !$loguser['timezone'])
+	$loguser['timezone'] = $defaulttimezone; // I'm a self-centered egomaniac! Time itself centers around me!
 
 date_default_timezone_set($loguser['timezone']);
 dobirthdays(); //Called here to account for timezone bugs.
