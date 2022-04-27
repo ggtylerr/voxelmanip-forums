@@ -278,7 +278,7 @@ HTML;
 		$birthdays = [];
 		while ($user = $rbirthdays->fetch()) {
 			$b = explode('-', $user['birth']);
-			if ($b['2'] <= 0 && $b['2'] > -2) {
+			if ($b['0'] <= 0 && $b['0'] > -2) {
 				$y = '';
 			} else {
 				$y = "(" . (date("Y") - $b['2']) . ")";

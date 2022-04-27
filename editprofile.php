@@ -91,7 +91,7 @@ if ($act == 'Edit profile') {
 	if (!$_POST['birthY'] || !is_numeric($_POST['birthY']))
 		$year = -1;
 	if ($birthday != -1 && $_POST['birthM'] != '' && $_POST['birthD'] != '')
-		$birthday = str_pad($_POST['birthM'], 2, "0", STR_PAD_LEFT) . '-' . str_pad($_POST['birthD'], 2, "0", STR_PAD_LEFT) . '-' . $year;
+		$birthday = $year.'-'.str_pad($_POST['birthM'], 2, "0", STR_PAD_LEFT).'-'.str_pad($_POST['birthD'], 2, "0", STR_PAD_LEFT);
 	else
 		$birthday = -1;
 
@@ -211,7 +211,7 @@ foreach (timezone_identifiers_list() as $tz) {
 $birthM = $birthD = $birthY = '';
 if ($user['birth'] && $user['birth'] != -1) {
 	$birthday = explode('-', $user['birth']);
-	$birthM = $birthday[0]; $birthD = $birthday[1]; $birthY = $birthday[2];
+	$birthY = $birthday[0]; $birthM = $birthday[1]; $birthD = $birthday[2];
 }
 
 $passinput = '<input type="password" name="pass" size="13" maxlength="32"> Retype: <input type="password" name="pass2" size="13" maxlength="32">';

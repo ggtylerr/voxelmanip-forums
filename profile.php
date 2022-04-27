@@ -41,14 +41,13 @@ if ($user['birth'] != -1) {
 		'May', 'June', 'July', 'August',
 		'September', 'October', 'November', 'December'];
 	$bdec = explode("-", $user['birth']);
-	$bstr = $bdec[2] . "-" . $bdec[0] . "-" . $bdec[1];
 	$mn = intval($bdec[0]);
-	if ($bdec['2'] <= 0 && $bdec['2'] > -2)
+	if ($bdec['0'] <= 0 && $bdec['0'] > -2)
 		$birthday = $monthnames[$mn] . " " . $bdec[1];
 	else
-		$birthday = date("F j Y", strtotime($bstr));
+		$birthday = date("F j, Y", strtotime($user['birth']));
 
-	$bd1 = new DateTime($bstr);
+	$bd1 = new DateTime($user['birth']);
 	$bd2 = new DateTime(date("Y-m-d"));
 	if (($bd2 < $bd1 && !$bdec['2'] <= 0) || ($bdec['2'] <= 0 && $bdec['2'] > -2))
 		$age = '';
