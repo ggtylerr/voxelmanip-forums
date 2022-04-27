@@ -46,9 +46,7 @@ if ($act == 'Register') {
 
 			setcookie('token', $token, 2147483647);
 
-			echo 'If you aren\'t redirected, then please <a href="./">go here.</a>
-				<script>window.location = "./"</script>';
-			die();
+			redirect('./');
 		} else {
 			$err = "Registration failed: ";//.$sql->error()
 		}
