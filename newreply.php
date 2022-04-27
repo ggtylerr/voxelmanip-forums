@@ -108,8 +108,8 @@ if ($err) {
 	</table></form><?php
 } elseif ($act == 'Submit') {
 	$sql->query("UPDATE users SET posts = posts + 1, lastpost = ? WHERE id = ?", [time(), $loguser['id']]);
-	$sql->query("INSERT INTO posts (user,thread,date,ip,num) VALUES (?,?,?,?,?)",
-		[$loguser['id'],$tid,time(),$userip,$loguser['posts']++]);
+	$sql->query("INSERT INTO posts (user,thread,date,ip) VALUES (?,?,?,?)",
+		[$loguser['id'],$tid,time(),$userip]);
 	$pid = $sql->insertid();
 	$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
 		[$pid,$_POST['message']]);

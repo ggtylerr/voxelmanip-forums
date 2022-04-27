@@ -122,8 +122,8 @@ if (isset($err)) {
 	$sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,announce,closed) VALUES (?,?,?,?,?,?,?)",
 		[$_POST['title'],$fid,$loguser['id'],time(),$loguser['id'],$announce,$modclose]);
 	$tid = $sql->insertid();
-	$sql->query("INSERT INTO posts (user,thread,date,ip,num,announce) VALUES (?,?,?,?,?,?)",
-		[$loguser['id'],$tid,time(),$userip,$loguser['posts']++,$announce]);
+	$sql->query("INSERT INTO posts (user,thread,date,ip,announce) VALUES (?,?,?,?,?)",
+		[$loguser['id'],$tid,time(),$userip,$announce]);
 	$pid = $sql->insertid();
 	$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
 		[$pid,$_POST['message']]);
