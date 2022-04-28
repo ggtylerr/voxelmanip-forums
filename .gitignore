@@ -3,5 +3,5 @@
 Thumbs.db
 
 # Other stuff
-lib/config.php
+conf/config.php
 userpic/

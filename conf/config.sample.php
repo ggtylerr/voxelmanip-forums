@@ -12,7 +12,7 @@ $trashid = 2; // Designates the id for your trash forum.
 $boardtitle = "Insert title here"; // This is what will be displayed at the top of your browser window.
 $defaultlogo = "theme/abII.png"; // Replace with the logo of your choice.
 $favicon = "theme/fav.png"; // Replace with your favicon of choice
-$boardlogo = "<a href='./'><img src='$defaultlogo'></a>"; // This defines the logo.
+$boardlogo = '<img src="%s">'; // This defines the logo.
 $meta = '<meta name="description" content="Stuff goes here!">'; // This is used for search engine keywords.
 
 $defaulttheme = "0"; // Select the default theme to be used.
@@ -24,7 +24,7 @@ $puzzleQuestion = "What forum software does this board run?";
 $puzzleAnswer = "Acmlmboard";
 
 $override_theme = ''; // If you want to lock everyone to a specific theme.
-$lockdown = false; // Put board in lockdown mode.
+$lockdown = true; // Put board in lockdown mode.
 
 // List of bots (web crawlers)
 $botlist = ['ia_archiver','baidu','yahoo','bot','spider'];

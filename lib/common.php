@@ -1,5 +1,5 @@
 <?php
-if (!file_exists('lib/config.php')) {
+if (!file_exists('conf/config.php')) {
 	die('Please install Acmlmboard.');
 }
 
@@ -8,9 +8,9 @@ $start = microtime(true);
 $rankset_names = ['None'];
 $gender = ['Male', 'Female', 'N/A'];
 
+require('conf/config.php');
 foreach (glob("lib/*.php") as $filename)
-	if ($filename != 'lib/config.sample.php')
-		require_once($filename);
+	require_once($filename);
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -107,11 +107,8 @@ if ($override_theme) {
 	$theme = $loguser['theme'];
 }
 
-if (is_file("theme/$theme/$theme.css")) {
-	$themefile = "$theme.css";
-} else {
-	$theme = '0';
-	$themefile = "$theme.css";
+if (!is_file("theme/$theme/$theme.css")) {
+	$theme = $defaulttheme;
 }
 
 $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
@@ -142,7 +139,7 @@ if ($r) {
  */
 function pageheader($pagetitle = '', $fid = null) {
 	global $dateformat, $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
-	$theme, $themefile, $meta, $favicon, $count, $bot;
+	$theme, $meta, $favicon, $count, $bot, $defaultlogo;
 
 	if ($log) {
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -162,6 +159,8 @@ function pageheader($pagetitle = '', $fid = null) {
 </table>
 HTML;
 
+	$boardlogo = sprintf('<a href="./">'.$boardlogo.'</a>', $defaultlogo);
+
 	if (isset($extratitle)) {
 		$boardlogo = <<<HTML
 <table width="100%"><tr class="center">
@@ -178,7 +177,7 @@ HTML;
 		<?=$meta?>
 		<link rel="icon" type="image/png" href="<?=$favicon?>">
 		<link rel="stylesheet" href="theme/common.css">
-		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$themefile?>">
+		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
 		<script src="lib/js/microlight.js"></script>
 		<script src="lib/js/tools.js"></script>
 	</head>
