@@ -11,7 +11,7 @@ if ($act == 'Register') {
 	$gender = (int)$_POST['gender'];
 	if ($gender < 0 || $gender > 2) $gender = 1;
 
-	$timezone = $_POST['timezone'];
+	$timezone = $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null;
 
 	$err = '';
 	if ($dupe)
@@ -27,8 +27,8 @@ if ($act == 'Register') {
 
 	if (empty($err)) {
 		$token = bin2hex(random_bytes(32));
-		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,gender,timezone,theme) VALUES (?,?,?,?,?,?,?,?,?);",
-			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $gender, $timezone, $defaulttheme]);
+		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,gender,timezone) VALUES (?,?,?,?,?,?,?,?);",
+			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $gender, $timezone]);
 		if ($res) {
 			$id = $sql->insertid();
 
@@ -78,7 +78,7 @@ if (!empty($err)) noticemsg("Error", $err);
 		</tr>
 		<?php
 		echo fieldrow('Gender',fieldoption('gender',2,$gender));
-		echo fieldrow('Timezone',fieldselect('timezone','UTC',$timezones));
+		echo fieldrow('Timezone',fieldselect('timezone',$defaulttimezone,$timezones));
 		if ($puzzle) { ?>
 			<tr>
 				<td class="b n1 center" width="120"><?=$puzzleQuestion ?></td>
