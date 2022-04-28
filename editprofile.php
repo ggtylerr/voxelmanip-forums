@@ -151,7 +151,7 @@ if ($act == 'Edit profile') {
 			'head' => $_POST['head'] ?: null,
 			'sign' => $_POST['sign'] ?: null,
 			'bio' => $_POST['bio'] ?: null,
-			'theme' => $_POST['theme'] ?: null,
+			'theme' => $_POST['theme'] != $defaulttheme ? $_POST['theme'] : null,
 			'blocklayouts' => $_POST['blocklayouts'] ?: 0,
 			'showemail' => isset($_POST['showemail']) ? 1 : 0,
 			'timezone' => $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null,
