@@ -6,7 +6,6 @@ if (!file_exists('conf/config.php')) {
 $start = microtime(true);
 
 $rankset_names = ['None'];
-$gender = ['Male', 'Female', 'N/A'];
 
 require('conf/config.php');
 foreach (glob("lib/*.php") as $filename)

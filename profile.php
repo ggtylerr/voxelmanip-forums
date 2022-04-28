@@ -141,7 +141,6 @@ $profilefields = [
 			(has_perm("view-post-ips") ? '<br>from IP: '.$user['ip'] : ''))]
 	],
 	"User information" => [
-		['title' => 'Gender', 'value' => $gender[$user['gender']]],
 		['title' => 'Location', 'value' => ($user['location'] ? esc($user['location']) : '')],
 		['title' => 'Birthday', 'value' => "$birthday $age"],
 		['title' => 'Bio', 'value' => ($user['bio'] ? postfilter($user['bio']) : '')],

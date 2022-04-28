@@ -241,7 +241,6 @@ CREATE TABLE `users` (
   `url` varchar(255) NOT NULL DEFAULT '',
   `tempbanned` tinyint(1) NOT NULL DEFAULT 0,
   `group_id` tinyint(4) NOT NULL DEFAULT 1,
-  `gender` tinyint(1) NOT NULL DEFAULT 2,
   `dateformat` varchar(15) NOT NULL DEFAULT 'Y-m-d',
   `timeformat` varchar(15) NOT NULL DEFAULT 'H:i',
   `ppp` smallint(3) unsigned NOT NULL DEFAULT 20,

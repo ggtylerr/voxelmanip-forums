@@ -1,15 +1,12 @@
 <?php
 require('lib/common.php');
 
-$act = (isset($_POST['action']) ? $_POST['action'] : '');
+$act = $_POST['action']) ?? null;
 if ($act == 'Register') {
 	$name = trim($_POST['name']);
 
 	$cname = strtolower(str_replace([' ',"\xC2\xA0"],'',$name));
 	$dupe = $sql->result("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", [$cname,$cname]);
-
-	$gender = (int)$_POST['gender'];
-	if ($gender < 0 || $gender > 2) $gender = 1;
 
 	$timezone = $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null;
 
@@ -27,8 +24,8 @@ if ($act == 'Register') {
 
 	if (empty($err)) {
 		$token = bin2hex(random_bytes(32));
-		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,gender,timezone) VALUES (?,?,?,?,?,?,?,?);",
-			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $gender, $timezone]);
+		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,timezone) VALUES (?,?,?,?,?,?,?,?);",
+			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $timezone]);
 		if ($res) {
 			$id = $sql->insertid();
 
@@ -77,7 +74,6 @@ if (!empty($err)) noticemsg("Error", $err);
 			<td class="b n2"><input type="password" name="pass2" size="25" maxlength="32"></td>
 		</tr>
 		<?php
-		echo fieldrow('Gender',fieldoption('gender',2,$gender));
 		echo fieldrow('Timezone',fieldselect('timezone',$defaulttimezone,$timezones));
 		if ($puzzle) { ?>
 			<tr>

@@ -74,8 +74,6 @@ if ($act == 'Edit profile') {
 	if (isset($_POST['picturedel']))
 		$usepic = 0;
 
-	if ($_POST['gender'] < 0 || $_POST['gender'] > 2) $_POST['gender'] = 2;
-
 	$pass = (strlen($_POST['pass2']) ? $_POST['pass'] : '');
 
 	//Validate birthday values.
@@ -141,7 +139,6 @@ if ($act == 'Edit profile') {
 		$placeholders = [];
 
 		$fields = [
-			'gender' => $_POST['gender'],
 			'ppp' => $_POST['ppp'],
 			'tpp' => $_POST['tpp'],
 			'signsep' => $_POST['signsep'],
@@ -245,7 +242,6 @@ echo
 	<br><span class=sfont>Must be PNG, JPG or GIF, within 80KB, within 180x180.</span>')
 .(checkcusercolor($targetuserid) ? fieldrow('Custom username color', $colorinput) : '')
 .	catheader('User information')
-.fieldrow('Gender', fieldoption('gender', $user['gender'], ['Male', 'Female', 'N/A']))
 .fieldrow('Location', fieldinput(40, 60, 'location'))
 .fieldrow('Birthday', $birthinput)
 .fieldrow('Bio', fieldtext(5, 80, 'bio'))
