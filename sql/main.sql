@@ -26,18 +26,18 @@ INSERT INTO `categories` (`id`, `title`, `ord`) VALUES
 (2,	'Staff Forums',	0);
 
 CREATE TABLE `forums` (
-  `id` int(5) NOT NULL DEFAULT 0,
+  `id` int(5) unsigned NOT NULL DEFAULT 0,
   `cat` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `ord` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `title` varchar(255) NOT NULL,
   `descr` varchar(255) NOT NULL,
-  `threads` mediumint(8) NOT NULL DEFAULT 0,
-  `posts` mediumint(8) NOT NULL DEFAULT 0,
-  `lastdate` int(11) NOT NULL DEFAULT 0,
+  `threads` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `posts` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `lastdate` int(11) unsigned NOT NULL DEFAULT 0,
   `lastuser` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `lastid` int(11) NOT NULL,
-  `private` int(1) NOT NULL,
-  `readonly` int(1) NOT NULL DEFAULT 0,
+  `lastid` int(11) unsigned NOT NULL,
+  `private` int(1) unsigned NOT NULL,
+  `readonly` int(1) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -46,20 +46,20 @@ INSERT INTO `forums` (`id`, `cat`, `ord`, `title`, `descr`, `threads`, `posts`, 
 (2,	2,	1,	'General Staff Forum',	'Generic Staff Forum',	0,	0,	0,	0,	0,	1,	0);
 
 CREATE TABLE `forumsread` (
-  `uid` mediumint(9) NOT NULL,
-  `fid` int(5) NOT NULL,
-  `time` int(11) NOT NULL,
+  `uid` mediumint(9) unsigned NOT NULL,
+  `fid` int(5) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   UNIQUE KEY `uid` (`uid`,`fid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `nc` varchar(6) NOT NULL,
-  `inherit_group_id` int(11) NOT NULL,
-  `sortorder` int(11) NOT NULL DEFAULT 0,
-  `visible` int(1) NOT NULL DEFAULT 0,
+  `inherit_group_id` mediumint(8) unsigned NOT NULL,
+  `sortorder` mediumint(9) NOT NULL DEFAULT 0,
+  `visible` tinyint(3) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -73,10 +73,10 @@ INSERT INTO `groups` (`id`, `title`, `nc`, `inherit_group_id`, `sortorder`, `vis
 (7,	'Root Administrator',	'AA3C3C',	0,	800,	1);
 
 CREATE TABLE `guests` (
-  `date` int(11) NOT NULL DEFAULT 0,
+  `date` int(11) unsigned NOT NULL DEFAULT 0,
   `ip` varchar(15) NOT NULL,
-  `bot` tinyint(4) NOT NULL DEFAULT 0,
-  `lastforum` int(10) DEFAULT NULL,
+  `bot` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `lastforum` int(10) unsigned DEFAULT NULL,
   UNIQUE KEY `ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -166,11 +166,11 @@ CREATE TABLE `pmsgs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `text` text NOT NULL,
-  `date` int(11) NOT NULL DEFAULT 0,
+  `date` int(11) unsigned NOT NULL DEFAULT 0,
   `ip` char(15) NOT NULL,
   `userto` mediumint(9) unsigned NOT NULL,
   `userfrom` mediumint(9) unsigned NOT NULL,
-  `unread` tinyint(4) NOT NULL DEFAULT 1,
+  `unread` tinyint(1) NOT NULL DEFAULT 1,
   `del_from` tinyint(1) NOT NULL DEFAULT 0,
   `del_to` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
@@ -181,7 +181,8 @@ CREATE TABLE `posts` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user` mediumint(9) unsigned NOT NULL DEFAULT 0,
   `thread` mediumint(9) unsigned NOT NULL DEFAULT 0,
-  `date` int(11) NOT NULL DEFAULT 0,
+  `date` int(11) unsigned NOT NULL DEFAULT 0,
+  `revision` smallint(5) unsigned NOT NULL DEFAULT 1,
   `ip` char(15) NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0,
   `announce` tinyint(1) NOT NULL DEFAULT 0,
@@ -193,9 +194,9 @@ CREATE TABLE `posts` (
 CREATE TABLE `poststext` (
   `id` int(11) unsigned NOT NULL DEFAULT 0,
   `text` text NOT NULL,
-  `revision` int(5) NOT NULL DEFAULT 1,
-  `date` int(11) NOT NULL DEFAULT 0,
-  `user` mediumint(9) NOT NULL DEFAULT 0,
+  `revision` smallint(5) unsigned NOT NULL DEFAULT 1,
+  `date` int(11) unsigned NOT NULL DEFAULT 0,
+  `user` mediumint(9) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`revision`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -218,9 +219,9 @@ CREATE TABLE `threads` (
 
 
 CREATE TABLE `threadsread` (
-  `uid` mediumint(9) NOT NULL,
-  `tid` mediumint(9) NOT NULL,
-  `time` int(11) NOT NULL,
+  `uid` mediumint(9) unsigned NOT NULL,
+  `tid` mediumint(9) unsigned NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   UNIQUE KEY `uid` (`uid`,`tid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -333,4 +334,4 @@ INSERT INTO `x_perm` (`x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `
 (6,	'group',	'view-post-ips',	'',	0,	0),
 (7,	'group',	'no-restrictions',	'',	0,	0);
 
--- 2022-04-27 18:35:04
+-- 2022-05-03 11:00:46

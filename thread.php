@@ -116,13 +116,12 @@ if ($viewmode == "thread") {
 	}
 
 	//select top revision
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.forum tforum "
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.forum tforum "
 		. "FROM posts p "
 		. "LEFT JOIN threads t ON t.id = p.thread "
-		. "LEFT JOIN poststext pt ON p.id = pt.id "
-		. "LEFT JOIN poststext pt2 ON pt2.id = pt.id AND pt2.revision = (pt.revision + 1) $pinstr " //SQL barrel roll
+		. "LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user = u.id "
-		. "WHERE p.thread = ? AND ISNULL(pt2.id) "
+		. "WHERE p.thread = ? "
 		. "GROUP BY p.id ORDER BY p.id "
 		. "LIMIT ".(($page - 1) * $ppp).",$ppp",
 		[$tid]);
@@ -132,14 +131,13 @@ if ($viewmode == "thread") {
 	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
 
 	pageheader("Posts by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
 		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id "
-		. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
+		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "LEFT JOIN threads t ON p.thread=t.id "
 		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.user=$uid AND ISNULL(pt2.id) "
+		. "WHERE p.user=$uid "
 		. "ORDER BY p.id "
 		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
 
@@ -147,14 +145,13 @@ if ($viewmode == "thread") {
 } elseif ($viewmode == "announce") {
 	pageheader('Announcements');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
 		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id "
-		. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
+		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "LEFT JOIN threads t ON p.thread=t.id "
 		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
+		. "WHERE p.announce=1 AND t.announce=1 GROUP BY pt.id "
 		. "ORDER BY p.id DESC "
 		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
 
@@ -167,14 +164,13 @@ if ($viewmode == "thread") {
 
 	pageheader('Latest posts');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
 		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id "
-		. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
+		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "LEFT JOIN threads t ON p.thread=t.id "
 		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.date > ? AND ISNULL(pt2.id) "
+		. "WHERE p.date > ? "
 		. "ORDER BY p.date DESC "
 		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$mintime]);
 
@@ -322,9 +318,10 @@ for ($i = 1; $post = $posts->fetch(); $i++) {
 		$pthread['title'] = $post['ttitle'];
 	}
 	if (!isset($_GET['pin']) || $post['id'] != $_GET['pin']) {
-		$post['maxrevision'] = $post['revision']; // not pinned, hence the max. revision equals the revision we selected
+		//$post['maxrevision'] = $post['revision']; // not pinned, hence the max. revision equals the revision we selected
+		$post['maxrevision'] = 1;
 	} else {
-		$post['maxrevision'] = $sql->result("SELECT MAX(revision) FROM poststext WHERE id = ?", [$_GET['pin']]);
+		$post['maxrevision'] = $post['cur_revision'];
 	}
 	if (isset($thread['forum']) && can_edit_forum_posts($thread['forum']) && isset($_GET['pin']) && $post['id'] == $_GET['pin'])
 		$post['deleted'] = false;

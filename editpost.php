@@ -115,9 +115,12 @@ if (isset($err)) {
 	</table></form>
 	<?php
 } else if ($act == 'Submit') {
-	$rev = $sql->result("SELECT MAX(revision) FROM poststext WHERE id = ?", [$pid]) + 1;
+	$newrev = $sql->result("SELECT revision FROM posts WHERE id = ?", [$pid]) + 1;
 
-	$sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES (?,?,?,?,?)", [$pid,$_POST['message'],$rev,$loguser['id'],time()]);
+	$sql->query("UPDATE posts SET revision = ? WHERE id = ?", [$newrev, $pid]);
+
+	$sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES (?,?,?,?,?)",
+		[$pid, $_POST['message'], $newrev, $loguser['id'], time()]);
 
 	redirect("thread.php?pid=$pid#edit");
 } else if ($act == 'delete' || $act == 'undelete') {

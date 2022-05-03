@@ -80,14 +80,13 @@ if ($forum)
 
 if ($where == 1) {
 	$fieldlist = userfields_post();
-	$posts = $sql->query("SELECT ".userfields('u','u').", $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, t.title ttitle, t.forum tforum "
+	$posts = $sql->query("SELECT ".userfields('u','u').", $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum "
 		."FROM posts p "
-		."LEFT JOIN poststext pt ON p.id=pt.id "
-		."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
+		."LEFT JOIN poststext pt ON p.id = pt.id AND pt.revision = p.revision "
 		."LEFT JOIN users u ON p.user=u.id "
 		."LEFT JOIN threads t ON p.thread=t.id "
 		."LEFT JOIN forums f ON f.id=t.forum "
-		."WHERE $string AND ISNULL(pt2.id) "
+		."WHERE $string "
 		."AND f.id IN ".forums_with_view_perm()
 		."ORDER BY p.id");
 
