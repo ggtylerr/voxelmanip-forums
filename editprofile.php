@@ -244,7 +244,7 @@ echo
 .fieldrow('Signature', fieldtext(5, 80, 'sign'))
 .fieldrow('Signature line', fieldoption('signsep', $user['signsep'], ['Display', 'Hide']))
 .	catheader('Options')
-.fieldrow('Theme', fieldselect('theme', $user['theme'], themelist(), "themePreview(this.value)"))
+.fieldrow('Theme', fieldselect('theme', $user['theme'] ?: $defaulttheme, themelist(), "themePreview(this.value)"))
 .fieldrow('Timezone', fieldselect('timezone', $user['timezone'], $listtimezones))
 .fieldrow('Posts per page', fieldinput(3, 3, 'ppp'))
 .fieldrow('Threads per page', fieldinput(3, 3, 'tpp'))

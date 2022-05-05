@@ -26,12 +26,7 @@ if ($thread) {
 }
 
 $themes = themelist();
-foreach ($themes as $k => $v) {
-	if ((string)$k == $user['theme']) {
-		$themename = $v;
-		break;
-	}
-}
+$themename = $themes[(string)$user['theme'] ?: $defaulttheme];
 
 if ($user['birth'] != -1) {
 	//Crudely done code.
