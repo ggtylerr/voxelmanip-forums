@@ -218,12 +218,14 @@ function ranklist() {
 	return $rlist;
 }
 
-function announcement_row($tblspan) {
-	global $dateformat, $sql;
+function announcement_row() {
+	global $dateformat, $sql, $loguser;
 
 	$anc = $sql->fetch("SELECT t.title,t.user,t.lastdate date,".userfields('u')." FROM threads t JOIN users u ON t.user = u.id WHERE t.announce = 1 ORDER BY lastdate DESC LIMIT 1");
 
-	if (isset($anc['title']) || has_perm('create-forum-announcements')) {
+	$cancreate = $loguser['powerlevel'] > 2;
+
+	if (isset($anc['title']) || $cancreate) {
 		if (isset($anc['title'])) {
 			$anlink = sprintf(
 				'<a href="thread.php?announce=1">%s</a> - by %s on %s',
@@ -231,10 +233,12 @@ function announcement_row($tblspan) {
 		} else {
 			$anlink = 'No announcements';
 		}
-		?><tr class="h"><td class="b" colspan="<?=$tblspan ?>">Announcements</td></tr>
-		<tr class="n1 center"><td class="b left" colspan="<?=$tblspan ?>"><?=$anlink ?>
-			<?=(has_perm('create-forum-announcements') ? '<span class="right" style="float:right"><a href=newthread.php?announce=1>New Announcement</a></span>' : '') ?>
-		</td></tr><?php
+		?><table class="c1">
+			<tr class="h"><td class="b" colspan="2">Announcements</td></tr>
+			<tr class="n1 center"><td class="center b n1" width="32">&nbsp;</td>
+			<td class="b left"><?=$anlink ?>
+			<?=($cancreate ? '<span class="right" style="float:right"><a href=newthread.php?announce=1>New Announcement</a></span>' : '') ?>
+		</td></tr></table><?php
 	}
 }
 

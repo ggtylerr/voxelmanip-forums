@@ -40,23 +40,22 @@ $forums = $sql->query("SELECT f.*, ".($log ? "r.time rtime, " : '').userfields('
 		[$loguser['powerlevel']]);
 $cat = -1;
 
-?>
-<table class="c1">
-	<?=announcement_row(5) ?>
-	<tr class="h">
-		<td class="b h" width="17">&nbsp;</td>
-		<td class="b h">Forum</td>
-		<td class="b h" width="50">Threads</td>
-		<td class="b h" width="50">Posts</td>
-		<td class="b h" width="150">Last post</td>
-	</tr>
-<?php
+announcement_row();
+echo '<br>';
 
 while ($forum = $forums->fetch()) {
-
 	if ($forum['cat'] != $cat) {
+		if ($cat != -1) echo '</table><br>';
+
 		$cat = $forum['cat'];
-		?><tr class="c"><td class="b" colspan="5"><?=$categ[$cat]['title'] ?></td></tr><?php
+		?><table class="c1">
+		<tr class="h">
+			<td class="b h" width="32">&nbsp;</td>
+			<td class="b h"><?=$categ[$cat]['title'] ?></td>
+			<td class="b h" width="50">Threads</td>
+			<td class="b h" width="50">Posts</td>
+			<td class="b h" width="150">Last post</td>
+		</tr><?php
 	}
 
 	if ($forum['posts'] > 0 && $forum['lastdate'] > 0)
@@ -79,7 +78,5 @@ while ($forum = $forums->fetch()) {
 		<td class="b n2"><?=$lastpost ?></td>
 	</tr><?php
 }
-?></table><?php
+echo '</table>';
 pagefooter();
-
-\ No newline at end of file

@@ -127,7 +127,7 @@ if ($fid) announcement_row();
 ?><br>
 <table class="c1">
 	<tr class="h">
-		<td class="b h" width=17>&nbsp;</td>
+		<td class="b h" width=32>&nbsp;</td>
 		<?=($showforum ? '<td class="b h">Forum</td>' : '') ?>
 		<td class="b h">Title</td>
 		<td class="b h" width=130>Started by</td>
