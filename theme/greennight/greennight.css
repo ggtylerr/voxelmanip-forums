@@ -7,9 +7,12 @@ body {
 	font-family: verdana, sans-serif;
 }
 
-table.c1,td.b { border: 1px solid #208000; }
+table.c1,td.b {
+	border: 1px solid #208000;
+	padding: 5px;
+}
 
-.h { background: #041000 url('gradient.png') repeat-x; }
+.h { background: #041000 url('gradient.png') repeat-x; border: 0 !important }
 .c { background: #0c3000; }
 
 .n1, .n3 { background: #082000; }

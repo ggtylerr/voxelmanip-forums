@@ -59,9 +59,8 @@ ul.menulisting {
 
 ul.menulisting li {
 	display: inline-block;
-	border-left: 1px solid white;
-	padding-left: 4px;
-	padding-right: 4px;
+	border-left: 1.5px solid white;
+	padding: 0px 6px;
 }
 ul.menulisting li:first-child {
 	border-left-width: 0;
