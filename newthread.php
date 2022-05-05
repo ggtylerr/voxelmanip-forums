@@ -25,7 +25,7 @@ else if ($announce && $loguser['powerlevel'] < 3)
 	$err = "You have no permissions to create announcements!";
 else if ($forum['minthread'] > $loguser['powerlevel'])
 	$err = "You have no permissions to create threads in this forum!";
-else if ($loguser['lastpost'] > time() - 30 && $act == 'Submit') // && !hasPerm('ignore-thread-time-limit')
+else if ($loguser['lastpost'] > time() - 30 && $act == 'Submit' && $loguser['powerlevel'] < 4)
 	$err = "Don't post threads so fast, wait a little longer.";
 //else if ($loguser['lastpost'] > time() - 2 && $act == 'Submit' && has_perm('ignore-thread-time-limit'))
 //	$err = "You must wait 2 seconds before posting a thread.";
@@ -51,7 +51,7 @@ if (isset($err)) {
 	$topbot['title'] .= ' (Error)';
 	RenderPageBar($topbot);
 	echo '<br>';
-	noticemsg("Error", $err."<a href=\"forum.php?id=$fid\">Back to forum</a>");
+	noticemsg("Error", $err."<br><a href=\"forum.php?id=$fid\">Back to forum</a>");
 } elseif (!$act) {
 	pageheader("New $type", $forum['id']);
 	RenderPageBar($topbot);

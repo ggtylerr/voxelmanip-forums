@@ -164,6 +164,9 @@ if ($act == 'Edit profile') {
 		if (checkctitle($targetuserid))
 			$fields['title'] = $_POST['title'];
 
+		if (isset($targetname))
+			$fields['name'] = $targetname;
+
 		if ($targetgroup != 0)
 			$fields['powerlevel'] = $targetgroup;
 

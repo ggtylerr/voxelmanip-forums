@@ -80,6 +80,8 @@ if (isset($_GET['pin']) && isset($_GET['rev']) && is_numeric($_GET['pin']) && is
 } else
 	$pinstr = '';
 
+$offset = (($page - 1) * $ppp);
+
 if ($viewmode == "thread") {
 	if (!$tid) $tid = 0;
 
@@ -115,16 +117,16 @@ if ($viewmode == "thread") {
 			$sql->query("REPLACE INTO forumsread VALUES (?,?,?)", [$loguser['id'], $thread['fid'], time()]);
 	}
 
-	//select top revision
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.forum tforum "
-		. "FROM posts p "
-		. "LEFT JOIN threads t ON t.id = p.thread "
-		. "LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision "
-		. "LEFT JOIN users u ON p.user = u.id "
-		. "WHERE p.thread = ? "
-		. "GROUP BY p.id ORDER BY p.id "
-		. "LIMIT ".(($page - 1) * $ppp).",$ppp",
-		[$tid]);
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.forum tforum
+			FROM posts p
+			LEFT JOIN threads t ON t.id = p.thread
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			WHERE p.thread = ?
+			GROUP BY p.id ORDER BY p.id
+			LIMIT ?,?",
+		[$tid, $offset, $ppp]);
+
 } elseif ($viewmode == "user") {
 	$user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
 
@@ -132,29 +134,29 @@ if ($viewmode == "thread") {
 
 	pageheader("Posts by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
-		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
-		. "LEFT JOIN users u ON p.user=u.id "
-		. "LEFT JOIN threads t ON p.thread=t.id "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.user = ? AND ? >= f.minread "
-		. "ORDER BY p.id "
-		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$uid, $loguser['powerlevel']]);
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			LEFT JOIN threads t ON p.thread = t.id
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE p.user = ? AND ? >= f.minread
+			ORDER BY p.id LIMIT ?,?",
+		[$uid, $userdata['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]) - 1;
 } elseif ($viewmode == "announce") {
 	pageheader('Announcements');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
-		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
-		. "LEFT JOIN users u ON p.user=u.id "
-		. "LEFT JOIN threads t ON p.thread=t.id "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.announce=1 AND t.announce=1 GROUP BY pt.id "
-		. "ORDER BY p.id DESC "
-		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			LEFT JOIN threads t ON p.thread = t.id
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE p.announce = 1 AND t.announce = 1 GROUP BY pt.id
+			ORDER BY p.id LIMIT ?,?",
+		[$uid, $userdata['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE announce = 1") - 1;
 } elseif ($viewmode == "time") {
@@ -165,15 +167,16 @@ if ($viewmode == "thread") {
 
 	pageheader('Latest posts');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
-		. "FROM posts p "
-		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
-		. "LEFT JOIN users u ON p.user=u.id "
-		. "LEFT JOIN threads t ON p.thread=t.id "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.date > ? AND ? >= f.minread "
-		. "ORDER BY p.date DESC "
-		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$mintime, $loguser['powerlevel']]);
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user=u.id
+			LEFT JOIN threads t ON p.thread=t.id
+			LEFT JOIN forums f ON f.id=t.forum
+			WHERE p.date > ? AND ? >= f.minread
+			ORDER BY p.date DESC
+			LIMIT ?,?",
+		[$mintime, $userdata['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE date > ?", [$mintime]) - 1;
 } else

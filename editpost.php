@@ -18,7 +18,7 @@ if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
 needs_login();
 
 $thread = $sql->fetch("SELECT p.user puser, t.*, f.title ftitle FROM posts p LEFT JOIN threads t ON t.id = p.thread "
-	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND ? >= f.minread OR (t.forum IN (0, NULL) AND t.announce >= 1))", [$pid, $loguser['powerlevel']]);
+	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND (? >= f.minread OR (t.forum IN (0, NULL) AND t.announce >= 1))", [$pid, $loguser['powerlevel']]);
 
 if (!$thread) $pid = 0;
 
@@ -43,9 +43,10 @@ if ($thread['announce']) {
 		['href' => "thread.php?id={$thread['id']}", 'title' => esc($thread['title'])]);
 }
 
-$post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p LEFT JOIN poststext pt ON p.id=pt.id "
-		."JOIN (SELECT id,MAX(revision) toprev FROM poststext GROUP BY id) as pt2 ON pt2.id = pt.id AND pt2.toprev = pt.revision "
-		."LEFT JOIN users u ON p.user = u.id WHERE p.id = ?", [$pid]);
+$post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p
+		LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+		LEFT JOIN users u ON p.user = u.id WHERE p.id = ?",
+	[$pid]);
 
 if (!isset($post)) $err = "Post doesn't exist.";
 
