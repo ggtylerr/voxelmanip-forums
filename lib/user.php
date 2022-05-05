@@ -20,18 +20,13 @@ function checkuser($name, $pass) {
 }
 
 function checkctitle($uid) {
-	global $loguser, $defaultgroup;
+	global $loguser;
 
 	if (!$loguser['id']) return false;
-	if (has_perm_revoked('edit-own-title')) return false;
 
-	if ($uid == $loguser['id'] && has_perm('edit-own-title')) {
-		if ($loguser['group_id'] != $defaultgroup) return true;
+	// TODO: allow for users to set their own custom title
 
-		return false;
-	}
-
-	if (has_perm('edit-titles')) return true;
+	if ($loguser['powerlevel'] > 2) return true;
 
 	return false;
 }
@@ -40,28 +35,22 @@ function checkcusercolor($uid) {
 	global $loguser;
 
 	if (!$loguser['id']) return false;
-	if (has_perm_revoked('has-customusercolor')) return false;
 
-	if ($uid == $loguser['id'] && has_perm('has-customusercolor')) return true;
+	// TODO: allow for users to set their own custom colour
 
-	if (has_perm('edit-customusercolors')) return true;
+	if ($loguser['powerlevel'] > 2) return true;
 
 	return false;
 }
 
 function checkcdisplayname($uid) {
-	global $loguser, $defaultgroup;
+	global $loguser;
 
 	if (!$loguser['id']) return false;
-	if (has_perm_revoked('has-displayname')) return false;
 
-	if ($uid == $loguser['id'] && has_perm('has-displayname')) {
-		if ($loguser['group_id'] != $defaultgroup) return true;
+	// TODO: allow for users to set their own displayname
 
-		return false;
-	}
-
-	if (has_perm('edit-displaynames')) return true;
+	if ($loguser['powerlevel'] > 2) return true;
 
 	return false;
 }
@@ -115,7 +104,7 @@ function randnickcolor() {
 }
 
 function userfields($tbl = '', $pf = '') {
-	$fields = ['id', 'name', 'displayname', 'group_id', 'nick_color'];
+	$fields = ['id', 'name', 'displayname', 'powerlevel', 'nick_color'];
 
 	$ret = '';
 	foreach ($fields as $f) {
@@ -152,13 +141,12 @@ function userlink($user, $u = '') {
 }
 
 function userdisp($user, $u = '') {
-	global $usergroups, $userbirthdays;
+	global $userbirthdays;
 
 	if ($user[$u.'nick_color'] != '000000') { //Over-ride for custom colours
 		$nc = $user[$u.'nick_color'];
 	} else {
-		$group = $usergroups[$user[$u.'group_id']];
-		$nc = $group['nc'];
+		$nc = powIdToColour($user[$u.'powerlevel']);
 	}
 	//Random Nick Color on Birthday
 	if (isset($userbirthdays[$user[$u.'id']]))

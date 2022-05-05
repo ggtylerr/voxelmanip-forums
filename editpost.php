@@ -17,14 +17,14 @@ if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
 
 needs_login();
 
-$thread = $sql->fetch("SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly FROM posts p LEFT JOIN threads t ON t.id = p.thread "
-	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND (t.forum IN ".forums_with_view_perm()." OR (t.forum IN (0, NULL) AND t.announce >= 1))", [$pid]);
+$thread = $sql->fetch("SELECT p.user puser, t.*, f.title ftitle FROM posts p LEFT JOIN threads t ON t.id = p.thread "
+	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND ? >= f.minread OR (t.forum IN (0, NULL) AND t.announce >= 1))", [$pid, $loguser['powerlevel']]);
 
 if (!$thread) $pid = 0;
 
-if ($thread['closed'] && !can_edit_forum_posts($thread['forum'])) {
+if ($thread['closed'] && $loguser['powerlevel'] <= 1) {
 	$err = "You can't edit a post in closed threads!<br>$threadlink";
-} else if (!can_edit_post(['user' => $thread['puser'], 'tforum' => $thread['forum']])) {
+} else if ($loguser['powerlevel'] < 3 && $loguser['id'] != $thread['puser']) {
 	$err = "You do not have permission to edit this post.<br>$threadlink";
 } else if ($pid == -1) {
 	$err = "Invalid post ID.<br>$threadlink";
@@ -124,7 +124,7 @@ if (isset($err)) {
 
 	redirect("thread.php?pid=$pid#edit");
 } else if ($act == 'delete' || $act == 'undelete') {
-	if (!(can_delete_forum_posts($thread['forum']))) {
+	if ($loguser['powerlevel'] <= 1) {
 		pageheader('Edit post',$thread['forum']);
 		$topbot['title'] .= ' (Error)';
 		RenderPageBar($topbot);

@@ -1,14 +1,11 @@
 <?php
 require('lib/common.php');
 
-if (!has_perm('ban-users')) noticemsg("Error", "You have no permissions to do this!", true);
-
 $id = (int)$_GET['id'];
 
-$tuser = $sql->result("SELECT group_id FROM users WHERE id = ?",[$id]);
-if ((is_root_gid($tuser) || (!can_edit_user_assets($tuser) && $id != $loguser['id'])) && !has_perm('no-restrictions')) {
+$tuser = $sql->result("SELECT powerlevel FROM users WHERE id = ?",[$id]);
+if ($loguser['powerlevel'] < 2 || $loguser['powerlevel'] <= $tuser['powerlevel'])
 	noticemsg("Error", "You have no permissions to do this!", true);
-}
 
 if ($uid = $_GET['id']) {
 	$numid = $sql->fetch("SELECT id FROM users WHERE id = ?",[$uid]);
@@ -27,14 +24,14 @@ if (isset($_POST['banuser']) && $_POST['banuser'] == "Ban User") {
 		$banreason .= ': '.esc($_POST['title']);
 	}
 
-	$sql->query("UPDATE users SET group_id = ?, title = ?, tempbanned = ? WHERE id = ?",
-		[$bannedgroup, $banreason, ($_POST['tempbanned'] > 0 ? ($_POST['tempbanned'] + time()) : 0), $user['id']]);
+	$sql->query("UPDATE users SET powerlevel = -1, title = ?, tempbanned = ? WHERE id = ?",
+		[$banreason, ($_POST['tempbanned'] > 0 ? ($_POST['tempbanned'] + time()) : 0), $user['id']]);
 
 	redirect("profile.php?id=$user[id]");
 } elseif (isset($_POST['unbanuser']) && $_POST['unbanuser'] == "Unban User") {
-	if ($user['group_id'] != $bannedgroup) noticemsg("Error", "This user is not a banned user.", true);
+	if ($user['powerlevel'] != -1) noticemsg("Error", "This user is not a banned user.", true);
 
-	$sql->query("UPDATE users SET group_id = ?, title = '', tempbanned = 0 WHERE id = ?", [$defaultgroup,$user['id']]);
+	$sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE id = ?", [$user['id']]);
 
 	redirect("profile.php?id=$user[id]");
 }

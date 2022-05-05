@@ -17,15 +17,13 @@ if ($view == 'sent') {
 	$sent = false;
 }
 
-$id = (has_perm('view-user-pms') ? (isset($_GET['id']) ? $_GET['id'] : 0) : 0);
-
-if (!has_perm('view-own-pms') && $id == 0) noticemsg("Error", "You are not allowed to do this!", true);
+$id = ($loguser['powerlevel'] > 3 ? (isset($_GET['id']) ? $_GET['id'] : 0) : 0);
 
 $showdel = isset($_GET['showdel']);
 
 if (isset($_GET['action']) && $_GET['action'] == "del") {
 	$owner = $sql->result("SELECT user$fieldn2 FROM pmsgs WHERE id = ?", [$id]);
-	if (has_perm('delete-user-pms') || ($owner == $loguser['id'] && has_perm('delete-own-pms'))) {
+	if ($loguser['powerlevel'] > 3 || $owner == $loguser['id']) {
 		$sql->query("UPDATE pmsgs SET del_$fieldn2 = ? WHERE id = ?", [!$showdel, $id]);
 	} else {
 		noticemsg("Error", "You are not allowed to (un)delete that message.", true);
@@ -34,8 +32,8 @@ if (isset($_GET['action']) && $_GET['action'] == "del") {
 }
 
 $ptitle = 'Private messages' . ($sent ? ' (sent)' : '');
-if ($id && has_perm('view-user-pms')) {
-	$user = $sql->fetch("SELECT id,name,displayname,nick_color,group_id FROM users WHERE id = ?", [$id]);
+if ($id && $loguser['powerlevel'] > 3) {
+	$user = $sql->fetch("SELECT id,name,displayname,nick_color,powerlevel FROM users WHERE id = ?", [$id]);
 	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
 	pageheader($user['name']."'s ".strtolower($ptitle));
 	$title = userlink($user)."'s ".strtolower($ptitle);

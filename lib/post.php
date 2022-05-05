@@ -145,10 +145,10 @@ function LoadBlocklayouts() {
 }
 
 function threadpost($post, $pthread = '') {
-	global $dateformat, $loguser, $blocklayouts;
+	global $dateformat, $loguser, $blocklayouts, $log;
 
 	if (isset($post['deleted']) && $post['deleted']) {
-		if (can_edit_forum_posts(getforumbythread($post['thread']))) {
+		if ($loguser['powerlevel'] > 1) {
 			$postlinks = sprintf(
 				'<a href="thread.php?pid=%s&pin=%s&rev=%s#%s">Peek</a> | <a href="editpost.php?pid=%s&act=undelete">Undelete</a> | ID: %s',
 			$post['id'], $post['id'], $post['revision'], $post['id'], $post['id'], $post['id']);
@@ -212,25 +212,26 @@ HTML;
 		$postlinks .= ($postlinks ? ' | ' : '') . "<a href=\"newreply.php?id=$post[thread]&pid=$post[id]\">Reply</a>";
 	}
 
-	if (isset($post['thread'])) {
+	if (isset($post['thread']) && $log) {
 		// "Edit" link for admins or post owners, but not banned users
-		if (can_edit_post($post))
+		if ($loguser['powerlevel'] > 2 || $loguser['id'] == $post['uid'])
 			$postlinks .= " | <a href=\"editpost.php?pid=$post[id]\">Edit</a>";
 
-		if (can_delete_forum_posts(getforumbythread($post['thread'])))
+		if ($loguser['powerlevel'] > 1)
 			$postlinks .= " | <a href=\"editpost.php?pid=" . urlencode($post['id']) . "&act=delete\">Delete</a>";
 
-		$postlinks .= " | ID: $post[id]";
-
-		if (has_perm('view-post-ips'))
+		if ($loguser['powerlevel'] > 2)
 			$postlinks .= " | IP: $post[ip]";
 
-		if (isset($post['maxrevision']) && has_perm('view-post-history') && $post['maxrevision'] > 1) {
+		if (isset($post['maxrevision']) && $loguser['powerlevel'] > 1 && $post['maxrevision'] > 1) {
 			$revisionstr.=" | Revision ";
 			for ($i = 1; $i <= $post['maxrevision']; $i++)
 				$revisionstr .= "<a href=\"thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]\">$i</a> ";
 		}
 	}
+
+	if (isset($post['thread']))
+		$postlinks .= " | ID: $post[id]";
 
 	$tbar1 = (!$isBlocked) ? "topbar" . $post['uid'] . "_1" : '';
 	$tbar2 = (!$isBlocked) ? "topbar" . $post['uid'] . "_2" : '';
@@ -245,6 +246,7 @@ HTML;
 
 	$picture = ($post['uusepic'] ? "<img src=\"userpic/{$post['uid']}\">" : '');
 
+	// TODO: be able to restrict custom layouts
 	if ($post['usign']) {
 		$signsep = $post['usignsep'] ? '' : '____________________<br>';
 

@@ -10,17 +10,6 @@ if (isset($_GET['id'])) {
 	$targetuserid = $_GET['id'];
 }
 
-if (!can_edit_user($targetuserid)) noticemsg("Error", "You have no permissions to do this!", true);
-
-$blockroot = (!has_perm('no-restrictions') ? "AND id != $rootgroup" : '');
-
-$allgroups = $sql->query("SELECT * FROM groups WHERE visible = '1' $blockroot ORDER BY sortorder ASC");
-$listgroup = [];
-
-while ($group = $allgroups->fetch()) {
-	$listgroup[$group['id']] = $group['title'];
-}
-
 $token = $loguser['token'];
 if ($act == 'Edit profile') {
 	if ($_POST['token'] !== $token) die('No.');
@@ -33,9 +22,14 @@ if ($act == 'Edit profile') {
 
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$targetuserid]);
 
+if ($loguser['id'] != $targetuserid && ($loguser['powerlevel'] < 3 || $loguser['powerlevel'] <= $user['powerlevel']))
+	noticemsg("Error", "You have no permissions to do this!", true);
+
 if (!$user) noticemsg("Error", "This user doesn't exist!", true);
 
 $user['timezone'] = $user['timezone'] ?: $defaulttimezone;
+
+$canedituser = $loguser['powerlevel'] > 2 && ($loguser['powerlevel'] > $user['powerlevel'] || $targetuserid == $loguser['id']);
 
 if ($act == 'Edit profile') {
 	$error = '';
@@ -96,15 +90,13 @@ if ($act == 'Edit profile') {
 	$dateformat = $_POST['dateformat'];
 	$timeformat = $_POST['timeformat'];
 
-	if (has_perm("edit-users")) {
-		$targetgroup = $_POST['group_id'];
+	if ($canedituser) {
+		$targetgroup = $_POST['powerlevel'];
 
-		if (!isset($listgroup[$targetgroup]))
-			$targetgroup = 0;
-
-		if (!can_edit_group_assets($targetgroup) && $targetgroup != $loguser['group_id']) {
+		if ($targetgroup >= $loguser['powerlevel'] && $targetgroup != $user['powerlevel']) {
 			$error .= "- You do not have the permissions to assign this group.<br>";
 		}
+
 		$targetname = $_POST['name'];
 
 		if ($sql->result("SELECT COUNT(name) FROM users WHERE (name = ? OR displayname = ?) AND id != ?", [$targetname, $targetname, $user['id']])) {
@@ -172,8 +164,8 @@ if ($act == 'Edit profile') {
 		if (checkctitle($targetuserid))
 			$fields['title'] = $_POST['title'];
 
-		if (has_perm("edit-users") && $targetgroup != 0)
-			$fields['group_id'] = $targetgroup;
+		if ($targetgroup != 0)
+			$fields['powerlevel'] = $targetgroup;
 
 		// Construct a query containing all fields.
 		foreach ($fields as $fieldk => $fieldv) {
@@ -224,14 +216,14 @@ $user['nick_color']);
 
 echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype="multipart/form-data"><table class="c1">' .
 	catheader('Login information')
-.(has_perm("edit-users") ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name']))
+.($canedituser ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name']))
 .(checkcdisplayname($targetuserid) ? fieldrow('Display name', fieldinput(40, 255, 'displayname')) : '')
 .fieldrow('Password', $passinput);
 
-if (has_perm("edit-users"))
+if ($canedituser)
 	echo
 	catheader('Administrative bells and whistles')
-.fieldrow('Group', fieldselect('group_id', $user['group_id'], $listgroup))
+.fieldrow('Group', fieldselect('powerlevel', $user['powerlevel'], $powerlevels))
 .(($user['tempbanned'] > 0) ? fieldrow('Ban Information', '<input type=checkbox name=permaban value=1 id=permaban><label for=permaban>Make ban permanent</label>') : '');
 
 echo

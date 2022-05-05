@@ -17,11 +17,10 @@ $smilietext .= '</table>';
 
 pageheader("FAQ");
 
-$ncx = $sql->query("SELECT title, nc FROM groups WHERE nc != '' ORDER BY sortorder ASC");
 $nctable = '';
 
-while ($ncr = $ncx->fetch()) {
-	$nctable .= sprintf('<tr><td class="b n1"><b><span style="color:#%s">%s</span></b></td></tr>',$ncr['nc'],$ncr['title']);
+foreach ($powerlevels as $id => $title) {
+	$nctable .= sprintf('<tr><td class="b n1"><b><span style="color:#%s">%s</span></b></td></tr>', powIdToColour($id), $title);
 }
 
 $faq = [[

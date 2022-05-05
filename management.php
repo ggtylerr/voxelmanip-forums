@@ -3,14 +3,11 @@ require('lib/common.php');
 pageheader('Management');
 
 $mlinks = [];
-if (has_perm("edit-forums"))
+if ($loguser['powerlevel'] > 2) {
 	$mlinks[] = ['url' => "manageforums.php", 'title' => 'Manage forums'];
-if (has_perm("edit-ip-bans"))
 	$mlinks[] = ['url' => "ipbans.php", 'title' => 'Manage IP bans'];
-if (has_perm("edit-groups"))
-	$mlinks[] = ['url' => "editgroups.php", 'title' => 'Manage groups'];
-if (has_perm("edit-attentions-box"))
 	$mlinks[] = ['url' => "editattn.php", 'title' => 'Edit news box'];
+}
 
 if (!empty($mlinks)) {
 	$mlinkstext = '';

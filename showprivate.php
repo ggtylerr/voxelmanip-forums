@@ -2,8 +2,6 @@
 require('lib/common.php');
 needs_login();
 
-if (!has_perm('view-own-pms')) noticemsg("Error", "You have no permissions to do this!", true);
-
 $fieldlist = userfields('u', 'u').','.userfields_post();
 
 $pid = (isset($_GET['id']) ? $_GET['id'] : null);
@@ -14,7 +12,7 @@ $pmsg = $sql->fetch("SELECT $fieldlist p.* FROM pmsgs p LEFT JOIN users u ON u.i
 if ($pmsg == null) noticemsg("Error", "Private message does not exist.", true);
 $tologuser = ($pmsg['userto'] == $loguser['id']);
 
-if ((!$tologuser && $pmsg['userfrom'] != $loguser['id']) && !has_perm('view-user-pms'))
+if ((!$tologuser && $pmsg['userfrom'] != $loguser['id']) && !($loguser['powerlevel'] > 3))
 	noticemsg("Error", "Private message does not exist.", true);
 elseif ($tologuser && $pmsg['unread'])
 	$sql->query("UPDATE pmsgs SET unread = 0 WHERE id = ?", [$pid]);

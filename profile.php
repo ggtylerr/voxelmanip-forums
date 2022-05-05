@@ -7,15 +7,13 @@ if ($uid < 0) noticemsg("Error", "You must specify a user ID!", true);
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
 if (!$user) noticemsg("Error", "This user does not exist!", true);
 
-$group = $sql->fetch("SELECT * FROM groups WHERE id = ?", [$user['group_id']]);
-
 pageheader("Profile for ".($user['displayname'] ? $user['displayname'] : $user['name']));
 
 $days = (time() - $user['regdate']) / 86400;
 
-$thread = $sql->fetch("SELECT p.id, t.title ttitle, f.title ftitle, t.forum, f.private FROM forums f
+$thread = $sql->fetch("SELECT p.id, t.title ttitle, f.title ftitle, t.forum FROM forums f
 	LEFT JOIN threads t ON t.forum = f.id LEFT JOIN posts p ON p.thread = t.id
-	WHERE p.date = ? AND p.user = ? AND f.id IN " . forums_with_view_perm(), [$user['lastpost'], $uid]);
+	WHERE p.date = ? AND p.user = ? AND ? >= f.minread", [$user['lastpost'], $uid, $loguser['powerlevel']]);
 
 if ($thread) {
 	$lastpostlink = sprintf(
@@ -96,25 +94,20 @@ if ($log) {
 
 	$links[] = ['url' => "profile.php?id=$uid&toggleblock", 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
 
-	if (has_perm('create-pms'))
+	if ($loguser['powerlevel'] > 0)
 		$links[] = ['url' => "sendprivate.php?uid=$uid", 'title' => 'Send private message'];
 }
 
-if (has_perm('view-user-pms'))
+if ($loguser['powerlevel'] > 3)
 	$links[] = ['url' => "private.php?id=$uid", 'title' => 'View private messages'];
-if (has_perm('edit-users'))
+if ($loguser['powerlevel'] > 2 && $loguser['powerlevel'] > $user['powerlevel'])
 	$links[] = ['url' => "editprofile.php?id=$uid", 'title' => 'Edit user'];
 
-if (has_perm('edit-permissions') && has_perm('ban-users')) {
-	if ($user['group_id'] != $bannedgroup)
+if ($loguser['powerlevel'] > 1) {
+	if ($user['powerlevel'] != -1)
 		$links[] = ['url' => "banmanager.php?id=$uid", 'title' => 'Ban user'];
 	else
 		$links[] = ['url' => "banmanager.php?unban&id=$uid", 'title' => 'Unban user'];
-}
-
-//More indepth test to not show the link if you can't edit your own perms
-if (has_perm('edit-permissions') && (has_perm('edit-own-permissions') || $loguser['id'] != $uid)) {
-	$links[] = ['url' => "editperms.php?uid=$uid", 'title' => 'Edit user permissions'];
 }
 
 //timezone calculations
@@ -128,8 +121,8 @@ $logtzoff = $logtz->getOffset($now);
 
 $profilefields = [
 	"General information" => [
-		['title' => 'Real handle', 'value' => '<span style="color:#'.$group['nc'].';"><b>'.esc($user['name']).'</b></span>'],
-		['title' => 'Group', 'value' => $group['title']],
+		['title' => 'Real handle', 'value' => '<span style="color:#'.powIdToColour($user['powerlevel']).';"><b>'.esc($user['name']).'</b></span>'],
+		['title' => 'Group', 'value' => powIdToName($user['powerlevel'])],
 		['title' => 'Total posts', 'value' => sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days)],
 		['title' => 'Total threads', 'value' => $user['threads'].' ('.sprintf('%1.02f', $user['threads'] / $days).' per day)'],
 		['title' => 'Registered on', 'value' => date($dateformat, $user['regdate']).' ('.timeunits($days * 86400).' ago)'],
@@ -138,13 +131,13 @@ $profilefields = [
 				'%s (%s ago) %s %s',
 			date($dateformat, $user['lastview']), timeunits(time() - $user['lastview']),
 			($user['url'] ? sprintf('<br>at <a href="%s">%s</a>', esc($user['url']), esc($user['url'])) : ''),
-			(has_perm("view-post-ips") ? '<br>from IP: '.$user['ip'] : ''))]
+			($loguser['powerlevel'] > 2 ? '<br>from IP: '.$user['ip'] : ''))]
 	],
 	"User information" => [
-		['title' => 'Location', 'value' => ($user['location'] ? esc($user['location']) : '')],
-		['title' => 'Birthday', 'value' => "$birthday $age"],
 		['title' => 'Bio', 'value' => ($user['bio'] ? postfilter($user['bio']) : '')],
-		['title' => 'Email', 'value' => $email]
+		['title' => 'Location', 'value' => ($user['location'] ? esc($user['location']) : '')],
+		['title' => 'Email', 'value' => $email],
+		['title' => 'Birthday', 'value' => "$birthday $age"],
 	],
 	"User settings" => [
 		['title' => 'Theme', 'value' => esc($themename)],
@@ -174,7 +167,7 @@ foreach ($profilefields as $k => $v) {
 <?=threadpost($post)?>
 <br>
 <table class="c1">
-	<tr class="h"><td class="b n3"><ul class="menulisting">
+	<tr class="c"><td class="b n3"><ul class="menulisting">
 		<?php
 		foreach ($links as $link) {
 			printf('<li><a href="%s">%s</a></li>', $link['url'], $link['title']);

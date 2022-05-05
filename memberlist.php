@@ -16,7 +16,7 @@ $order = 'posts' . $sortby;
 if ($sort == 'name') $order = 'name' . $sortby;
 if ($sort == 'reg') $order = 'regdate' . $sortby;
 
-$where = (is_numeric($pow) ? "WHERE group_id = $pow" : '');
+$where = (is_numeric($pow) ? "WHERE powerlevel = $pow" : '');
 
 $users = $sql->query("SELECT * FROM users $where ORDER BY $order LIMIT " . ($page - 1) * $ppp . ",$ppp");
 $num = $sql->result("SELECT COUNT(*) FROM users $where");
@@ -28,13 +28,10 @@ if ($num >= $ppp) {
 		$pagelist .= ($p == $page ? " $p" : ' ' . mlink($p, $sort, $pow, $p, $orderby) . "</a>");
 }
 
-$activegroups = $sql->query("SELECT * FROM groups WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
-
 $groups = [];
-$gc = 0;
-while ($group = $activegroups->fetch()) {
-	$grouptitle = '<span style="color:#' . $group['nc'] . '">' . $group['title'] . '</span>';
-	$groups[$gc++] = mlink($grouptitle, $sort, $group['id'], $page, $orderby);
+foreach ($powerlevels as $id => $title) {
+	$grouptitle = '<span style="color:#'.powIdToColour($id).'">'.$title.'</span>';
+	$groups[] = mlink($grouptitle, $sort, $id, $page, $orderby);
 }
 
 ?>

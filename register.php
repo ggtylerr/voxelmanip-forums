@@ -1,7 +1,7 @@
 <?php
 require('lib/common.php');
 
-$act = $_POST['action']) ?? null;
+$act = $_POST['action'] ?? null;
 if ($act == 'Register') {
 	$name = trim($_POST['name']);
 
@@ -24,18 +24,12 @@ if ($act == 'Register') {
 
 	if (empty($err)) {
 		$token = bin2hex(random_bytes(32));
-		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,timezone) VALUES (?,?,?,?,?,?,?,?);",
+		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,timezone) VALUES (?,?,?,?,?,?,?);",
 			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $timezone]);
 		if ($res) {
 			$id = $sql->insertid();
 
-			$ugid = 0;
-			if ($id == 1) {
-				$ugid = $rootgroup;
-			} else {
-				$ugid = $defaultgroup;
-			}
-			$sql->query("UPDATE users SET group_id=? WHERE id=?",[$ugid,$id]);
+			$sql->query("UPDATE users SET powerlevel = ? WHERE id = ?",[($id == 1 ? 4 : 1),$id]);
 
 			// mark existing threads and forums as read
 			$sql->query("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", [$id, time()]);

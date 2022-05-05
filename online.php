@@ -7,6 +7,8 @@ $time = (isset($_GET['time']) ? $_GET['time'] : null);
 
 if (!$time || !is_numeric($time)) $time = 300;
 
+$showips = $loguser['powerlevel'] > 2;
+
 $users = $sql->query("SELECT * FROM users WHERE lastview > ?", [(time()-$time)]);
 ?>
 <table class="c1" style="width:auto">
@@ -19,7 +21,7 @@ $users = $sql->query("SELECT * FROM users WHERE lastview > ?", [(time()-$time)])
 		<td class="b h" width="230">Name</td>
 		<td class="b h" width="130">Last view</td>
 		<td class="b h">URL</td>
-		<?=(has_perm('view-post-ips') ? '<td class="b h" width="120">IP</td>' : '') ?>
+		<?=($showips ? '<td class="b h" width="120">IP</td>' : '') ?>
 	</tr>
 <?php
 
@@ -31,7 +33,7 @@ for ($i = 1; $user = $users->fetch(); $i++) {
 		<td class="b left"><?=userlink($user) ?></td>
 		<td class="b"><?=date($loguser['timeformat'], $user['lastview']) ?></td>
 		<td class="b left"><?=($user['url'] ? "<a href=$user[url]>" . str_replace(['%20','_'], ' ', $user['url']) . '</a>' : '-') ?></td>
-		<?=(has_perm("view-post-ips") ? '<td class="b">'.$user['ip'].'</td>':'') ?>
+		<?=($showips ? '<td class="b">'.$user['ip'].'</td>':'') ?>
 	</tr>
 <?php }
 if_empty_query($i, "There are no users online in the given timespan.", 5);

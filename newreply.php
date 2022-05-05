@@ -12,24 +12,24 @@ if ($act = $_POST['action']) {
 }
 $act = (isset($act) ? $act : null);
 
-$thread = $sql->fetch("SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly
+$thread = $sql->fetch("SELECT t.*, f.title ftitle, f.minreply fminreply
 	FROM threads t LEFT JOIN forums f ON f.id=t.forum
-	WHERE t.id = ? AND t.forum IN " . forums_with_view_perm(), [$tid]);
+	WHERE t.id = ? AND ? >= f.minread", [$tid, $loguser['powerlevel']]);
 
 $err = '';
 if (!$thread) {
 	noticemsg("Error", "Thread does not exist.", true);
-} else if (!can_create_forum_post(['id' => $thread['forum'], 'private' => $thread['fprivate'], 'readonly' => $thread['freadonly']])) {
+} else if ($thread['fminreply'] > $loguser['powerlevel']) {
 	$err = "You have no permissions to create posts in this forum!";
-} elseif ($thread['closed'] && !has_perm('override-closed')) {
+} elseif ($thread['closed'] && $loguser['powerlevel'] < 2) {
 	$err = "You can't post in closed threads!";
 }
 if ($act == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
-	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && !has_perm('consecutive-posts'))
+	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && $loguser['powerlevel'] < 4)
 		$err = "You can't double post until it's been at least one day!";
-	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && !has_perm('consecutive-posts'))
-		$err = "You must wait 2 seconds before posting consecutively.";
+	//if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && !has_perm('consecutive-posts'))
+	//	$err = "You must wait 2 seconds before posting consecutively.";
 	if (strlen(trim($_POST['message'])) == 0)
 		$err = "Your post is empty! Enter a message and try again.";
 	if ($loguser['regdate'] > (time() - 2))
@@ -47,7 +47,7 @@ $topbot = [
 $pid = isset($_GET['pid']) ? (int)$_GET['pid'] : 0;
 $quotetext = '';
 if ($pid) {
-	$post = $sql->fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, p.thread "
+	$post = $sql->fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, p.thread "
 			. "FROM posts p "
 			. "LEFT JOIN poststext pt ON p.id=pt.id "
 			. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
@@ -57,7 +57,7 @@ if ($pid) {
 			. "WHERE p.id = ? AND ISNULL(pt2.id)", [$pid]);
 
 	//does the user have reading access to the quoted post?
-	if (!can_view_forum(['id' => $post['fid'], 'private' => $post['fprivate']])) {
+	if ($loguser['powerlevel'] < $post['minread']) {
 		$post['name'] = 'your overlord';
 		$post['text'] = '';
 	}

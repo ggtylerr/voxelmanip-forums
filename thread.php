@@ -52,8 +52,8 @@ else
 $action = '';
 $act = isset($_POST['action']) ? $_POST['action'] : '';
 
-if (isset($tid) && $log && $act && (can_edit_forum_threads(getforumbythread($tid)) ||
-		($loguser['id'] == $threadcreator && $act == "rename" && has_perm('rename-own-thread')))) {
+if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 2 ||
+		($loguser['id'] == $threadcreator && $act == "rename" && $loguser['powerlevel'] > 0))) {
 
 	if ($act == 'stick') {
 		$action = ',sticky=1';
@@ -75,7 +75,7 @@ if (isset($tid) && $log && $act && (can_edit_forum_threads(getforumbythread($tid
 }
 
 //determine string for revision pinning
-if (isset($_GET['pin']) && isset($_GET['rev']) && is_numeric($_GET['pin']) && is_numeric($_GET['rev']) && has_perm('view-post-history')) {
+if (isset($_GET['pin']) && isset($_GET['rev']) && is_numeric($_GET['pin']) && is_numeric($_GET['rev']) && $loguser['powerlevel'] > 1) {
 	$pinstr = "AND (pt2.id<>$_GET[pin] OR pt2.revision<>($_GET[rev]+1)) ";
 } else
 	$pinstr = '';
@@ -92,8 +92,8 @@ if ($viewmode == "thread") {
 	$thread = $sql->fetch("SELECT t.*, f.title ftitle, t.forum fid".($log ? ', r.time frtime' : '').' '
 			. "FROM threads t LEFT JOIN forums f ON f.id=t.forum "
 			. ($log ? "LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) " : '')
-			. "WHERE t.id = ? AND t.forum IN ".forums_with_view_perm(),
-			[$tid]);
+			. "WHERE t.id = ? AND ? >= f.minread",
+			[$tid, $loguser['powerlevel']]);
 
 	if (!isset($thread['id'])) noticemsg("Error", "Thread does not exist.", true);
 
@@ -131,15 +131,16 @@ if ($viewmode == "thread") {
 	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
 
 	pageheader("Posts by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
 		. "FROM posts p "
 		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "LEFT JOIN threads t ON p.thread=t.id "
 		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.user=$uid "
+		. "WHERE p.user = ? AND ? >= f.minread "
 		. "ORDER BY p.id "
-		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
+		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$uid, $loguser['powerlevel']]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]) - 1;
 } elseif ($viewmode == "announce") {
@@ -164,15 +165,15 @@ if ($viewmode == "thread") {
 
 	pageheader('Latest posts');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
 		. "FROM posts p "
 		. "LEFT JOIN poststext pt ON p.id=pt.id AND p.revision = pt.revision "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "LEFT JOIN threads t ON p.thread=t.id "
 		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE p.date > ? "
+		. "WHERE p.date > ? AND ? >= f.minread "
 		. "ORDER BY p.date DESC "
-		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$mintime]);
+		. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp, [$mintime, $loguser['powerlevel']]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE date > ?", [$mintime]) - 1;
 } else
@@ -198,9 +199,9 @@ if ($viewmode == "thread") {
 		'title' => esc($thread['title'])
 	];
 
-	$faccess = $sql->fetch("SELECT id,private,readonly FROM forums WHERE id = ?",[$thread['forum']]);
-	if (can_create_forum_post($faccess)) {
-		if (has_perm('override-closed') && $thread['closed'])
+	$faccess = $sql->fetch("SELECT id,minreply FROM forums WHERE id = ?",[$thread['forum']]);
+	if ($faccess['minreply'] <= $loguser['powerlevel']) {
+		if ($loguser['powerlevel'] > 1 && $thread['closed'])
 			$topbot['actions'] = [['title' => 'Thread closed'],['href' => "newreply.php?id=$tid", 'title' => 'New reply']];
 		else if ($thread['closed'])
 			$topbot['actions'] = [['title' => 'Thread closed']];
@@ -217,7 +218,7 @@ if ($viewmode == "thread") {
 		'breadcrumb' => [['href' => './', 'title' => 'Main']],
 		'title' => "Announcements"
 	];
-	if (has_perm('create-forum-announcements'))
+	if ($loguser['powerlevel'] > 2)
 		$topbot['actions'] = [['href' => "newthread.php?announce=1", 'title' => 'New announcement']];
 } elseif ($viewmode == "time") {
 	$topbot = [];
@@ -229,9 +230,9 @@ if ($viewmode == "thread") {
 }
 
 $modlinks = '';
-if (isset($tid) && (can_edit_forum_threads($thread['forum']) || ($loguser['id'] == $thread['user'] && !$thread['closed'] && has_perm('rename-own-thread')))) {
+if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['user'] && !$thread['closed'] && $loguser['powerlevel'] > 0))) {
 	$link = "<a href=javascript:submitmod";
-	if (can_edit_forum_threads($thread['forum'])) {
+	if ($loguser['powerlevel'] > 2) {
 		$stick = ($thread['sticky'] ? "$link('unstick')>Unstick</a>" : "$link('stick')>Stick</a>");
 		$stick2 = addcslashes($stick, "'");
 
@@ -308,10 +309,6 @@ echo "$modlinks $pagelist";
 //if ($posts) echo '<br>';
 
 for ($i = 1; $post = $posts->fetch(); $i++) {
-	if (isset($post['fid'])) {
-		if (!can_view_forum(['id' => $post['fid'], 'private' => $post['fprivate']]))
-			continue;
-	}
 	$pthread = [];
 	if (isset($uid) || isset($time)) {
 		$pthread['id'] = $post['tid'];
@@ -323,7 +320,7 @@ for ($i = 1; $post = $posts->fetch(); $i++) {
 	} else {
 		$post['maxrevision'] = $post['cur_revision'];
 	}
-	if (isset($thread['forum']) && can_edit_forum_posts($thread['forum']) && isset($_GET['pin']) && $post['id'] == $_GET['pin'])
+	if (isset($thread['forum']) && $loguser['powerlevel'] > 1 && isset($_GET['pin']) && $post['id'] == $_GET['pin'])
 		$post['deleted'] = false;
 
 	echo "<br>".threadpost($post, $pthread);
@@ -333,7 +330,7 @@ if_empty_query($i, "No posts were found.", 0, true);
 
 echo "$pagelist" . (!isset($time) ? '<br>' : '');
 
-if (isset($thread['id']) && can_create_forum_post($faccess) && !$thread['closed']) {
+if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$thread['closed']) {
 	?><table class="c1">
 <form action="newreply.php" method="post">
 	<tr class="h"><td class="b h" colspan=2>Warp Whistle Reply</a></td>

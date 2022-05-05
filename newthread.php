@@ -17,18 +17,18 @@ $type = ($announce ? "announcement" : "thread");
 if ($announce)
 	$forum = ['id' => 0, 'readonly' => 1];
 else
-	$forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND id IN ".forums_with_view_perm(), [$fid]);
+	$forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND ? >= minread", [$fid, $loguser['powerlevel']]);
 
 if (!$forum)
 	noticemsg("Error", "Forum does not exist.", true);
-else if ($announce && !has_perm('create-forum-announcements'))
+else if ($announce && $loguser['powerlevel'] < 3)
 	$err = "You have no permissions to create announcements!";
-else if (!can_create_forum_thread($forum))
+else if ($forum['minthread'] > $loguser['powerlevel'])
 	$err = "You have no permissions to create threads in this forum!";
-else if ($loguser['lastpost'] > time() - 30 && $act == 'Submit' && !has_perm('ignore-thread-time-limit'))
+else if ($loguser['lastpost'] > time() - 30 && $act == 'Submit') // && !hasPerm('ignore-thread-time-limit')
 	$err = "Don't post threads so fast, wait a little longer.";
-else if ($loguser['lastpost'] > time() - 2 && $act == 'Submit' && has_perm('ignore-thread-time-limit'))
-	$err = "You must wait 2 seconds before posting a thread.";
+//else if ($loguser['lastpost'] > time() - 2 && $act == 'Submit' && has_perm('ignore-thread-time-limit'))
+//	$err = "You must wait 2 seconds before posting a thread.";
 
 if ($act == 'Submit') {
 	if (strlen(trim(str_replace(' ', '', $_POST['title']))) < 4)

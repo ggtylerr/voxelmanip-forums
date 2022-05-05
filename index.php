@@ -35,7 +35,9 @@ $forums = $sql->query("SELECT f.*, ".($log ? "r.time rtime, " : '').userfields('
 		. "LEFT JOIN users u ON u.id=f.lastuser "
 		. "LEFT JOIN categories c ON c.id=f.cat "
 		. ($log ? "LEFT JOIN forumsread r ON r.fid = f.id AND r.uid = ".$loguser['id'] : '')
-		. " ORDER BY c.ord,c.id,f.ord,f.id", []);
+		. " WHERE ? >= f.minread "
+		. " ORDER BY c.ord,c.id,f.ord,f.id ",
+		[$loguser['powerlevel']]);
 $cat = -1;
 
 ?>
@@ -51,7 +53,6 @@ $cat = -1;
 <?php
 
 while ($forum = $forums->fetch()) {
-	if (!can_view_forum($forum)) continue;
 
 	if ($forum['cat'] != $cat) {
 		$cat = $forum['cat'];
@@ -70,7 +71,7 @@ while ($forum = $forums->fetch()) {
 	?><tr class="center">
 		<td class="b n1"><?=$status ?></td>
 		<td class="b n2 left">
-			<?=($forum['private'] ? '(' : '') ?><a href="forum.php?id=<?=$forum['id'] ?>"><?=$forum['title'] ?></a><?=($forum['private'] ? ')' : '') ?>
+			<?=($forum['minread'] > 0 ? '(' : '') ?><a href="forum.php?id=<?=$forum['id'] ?>"><?=$forum['title'] ?></a><?=($forum['minread'] > 0 ? ')' : '') ?>
 			<br><span class="sfont"><?=str_replace("%%%RANDOM%%%", $randdesc[array_rand($randdesc)], $forum['descr']) ?></span>
 		</td>
 		<td class="b n1"><?=$forum['threads'] ?></td>
@@ -80,3 +81,5 @@ while ($forum = $forums->fetch()) {
 }
 ?></table><?php
 pagefooter();
+
+\ No newline at end of file

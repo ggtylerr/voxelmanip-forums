@@ -239,15 +239,13 @@ function announcement_row($tblspan) {
 }
 
 function forumlist($currentforum = -1) {
-	global $sql;
+	global $sql, $loguser;
 
-	$r = $sql->query("SELECT c.title ctitle,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+	$r = $sql->query("SELECT c.title ctitle,f.id,f.title,f.cat FROM forums f LEFT JOIN categories c ON c.id=f.cat WHERE ? >= f.minread ORDER BY c.ord,c.id,f.ord,f.id",
+		[$loguser['powerlevel']]);
 	$out = '<select id="forumselect">';
 	$c = -1;
 	while ($d = $r->fetch()) {
-		if (!can_view_forum($d))
-			continue;
-
 		if ($d['cat'] != $c) {
 			if ($c != -1)
 				$out .= '</optgroup>';

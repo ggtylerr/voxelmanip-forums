@@ -24,17 +24,14 @@ if (isset($_COOKIE['token'])) {
 	if ($sql->result("SELECT id FROM users WHERE token = ?", [$_COOKIE['token']])) {
 		$log = true;
 		$loguser = $sql->fetch("SELECT * FROM users WHERE token = ?", [$_COOKIE['token']]);
-		load_user_permset();
 	} else {
 		setcookie('token', 0);
-		load_guest_permset();
 	}
 } else {
-	load_guest_permset();
 }
 
 if ($lockdown) {
-	if (has_perm('bypass-lockdown'))
+	if ($loguser['powerlevel'] > 1)
 		echo '<span style="color:red"><center>LOCKDOWN!!</center></span>';
 	else {
 		echo <<<HTML
@@ -55,6 +52,7 @@ if (!$log) {
 	$loguser['theme'] = $defaulttheme;
 	$loguser['ppp'] = 20;
 	$loguser['tpp'] = 20;
+	$loguser['powerlevel'] = 0;
 }
 
 if (!$log || !$loguser['timezone'])
@@ -67,13 +65,12 @@ if ($loguser['ppp'] < 1) $loguser['ppp'] = 20;
 if ($loguser['tpp'] < 1) $loguser['tpp'] = 20;
 
 //Unban users whose tempbans have expired.
-$sql->query("UPDATE users SET group_id = ?, title = '', tempbanned = 0 WHERE tempbanned < ? AND tempbanned > 0", [$defaultgroup, time()]);
+$sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE tempbanned < ? AND tempbanned > 0", [time()]);
 
 $dateformat = $loguser['dateformat'].' '.$loguser['timeformat'];
 
 if (str_replace($botlist, "x", strtolower($_SERVER['HTTP_USER_AGENT'])) != strtolower($_SERVER['HTTP_USER_AGENT'])) {
 	$bot = 1;
-	load_bot_permset();
 } else {
 	$bot = 0;
 }
@@ -119,7 +116,7 @@ if ($r) {
 		echo '<table class="c1"><tr class="n2"><td class="b n1 center">Sorry, but your IP address has been banned.</td></tr></table>';
 		pagefooter();
 		die();
-	} else if (!$r['hard'] && (!$log || $loguser['group_id'] == $bannedgroup)) {
+	} else if (!$r['hard'] && (!$log || $loguser['powerlevel'] == -1)) {
 		if (!strstr($_SERVER['PHP_SELF'], "login.php")) {
 			pageheader('IP restricted');
 			echo '<table class="c1"><tr class="n2"><td class="b n1 center">Access from your IP address has been limited.<br><a href=login.php>Login</a></table>';
@@ -198,7 +195,7 @@ HTML;
 				<td class="b"><div style="width: 150px"><?=date($dateformat, time())?></div></td>
 				<tr class="n1 center"><td class="b" colspan="3"><?=($log ? userlink($loguser) : 'Not logged in ')?>
 <?php
-	if ($log && has_perm('view-own-pms')) {
+	if ($log) {
 		$unreadpms = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE userto = ? AND unread = 1 AND del_to = 0", [$loguser['id']]);
 
 		printf(
@@ -222,9 +219,9 @@ HTML;
 		$userlinks[] = ['url' => "javascript:document.logout.submit()", 'title' => 'Logout'];
 	}
 	if ($log) {
-		if (has_perm("update-own-profile"))
+		if ($loguser['powerlevel'] > 0)
 			$userlinks[] = ['url' => "editprofile.php", 'title' => 'Edit profile'];
-		if (has_perm('manage-board'))
+		if ($loguser['powerlevel'] > 2)
 			$userlinks[] = ['url' => 'management.php', 'title' => 'Management'];
 		$userlinks[] = $markread;
 	}

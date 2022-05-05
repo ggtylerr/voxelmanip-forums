@@ -1,10 +1,10 @@
 <?php
 require('lib/common.php');
 
-if (!has_perm('edit-ip-bans')) noticemsg("Error", "You have no permissions to do this!", true);
+if ($loguser['powerlevel'] < 3) noticemsg("Error", "You have no permissions to do this!", true);
 
-$action = (isset($_GET['action']) ? $_GET['action'] : 'needle');
-$what = (isset($_GET['what']) ? $_GET['what'] : 'needle');
+$action = $_GET['action'] ?? null;
+$what = $_GET['what'] ?? null;
 
 function ipfmt($a) {
 	$expl = explode(".",$a);
@@ -23,7 +23,7 @@ if ($action == "del") {
 	$sql->query("DELETE FROM ipbans WHERE ipmask = ? AND expires = ?", [$data[0], $data[1]]);
 } else if ($action == "add") {
 	if ($_POST['ipmask']) {
-		$hard = (isset($_POST['hard']) ? $_POST['hard'] : null);
+		$hard = (isset($_POST['hard']) ? $_POST['hard'] : 0);
 		$expires = ($_POST['expires'] > 0 ? ($_POST['expires'] + time()) : 0);
 		$sql->query("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES (?,?,?,?,?)",
 			[$_POST['ipmask'], $hard, $expires, addslashes($loguser['name']), $_POST['reason']]);
