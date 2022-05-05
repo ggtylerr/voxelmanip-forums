@@ -5,8 +5,6 @@ pageheader("Search");
 
 $query = (isset($_GET['q']) ? $_GET['q'] : '');
 $where = (isset($_GET['w']) ? $_GET['w'] : 0);
-$forum = (isset($_GET['f']) ? $_GET['f'] : 0);
-
 ?>
 <table class="c1">
 	<tr class="h"><td class="b h">Search</td>
@@ -35,65 +33,24 @@ if (!isset($_GET['action']) || strlen($query) < 3) {
 	die();
 }
 
-?><br>
-<table class="c1"><tr class="h"><td class="b h" style="border-bottom:0">Results</td></tr></table>
-<?php
-$squery = preg_replace("@[^\" a-zA-Z0-9]@", '', $query);
-preg_match_all("@\"([^\"]+)\"@", $squery, $matches);
-foreach ($matches[0] as $key => $value) {
-	$squery = str_replace($value, " !$key ", $squery);
-}
-$squery = str_replace('"', '', $squery);
-while (strpos($squery, "  ") != false) {
-	$squery = str_replace("  ", " ", $squery);
-}
-$wordor = explode(" ", trim($squery));
-$string = $nextbool = '';
-$lastbool = 0;
-$defbool = "AND";
-if ($where == 1) {
-	$searchfield = "pt.text";
-} else {
-	$searchfield = "t.title";
-}
-$boldify = [];
-foreach ($wordor as $num => $word) {
-	if ($lastbool == 0) {
-		$nextbool = $defbool;
-	}
-	if ((($word == "OR") || ($word == "AND")) && !empty($string)) {
-		$nextbool = $word;
-		$lastbool = 1;
-	} else {
-		if (substr($word, 0, 1) == "!") {
-			$string .= $nextbool." ".$searchfield." LIKE '%".$matches[1][substr($word, 1)]."%' ";
-			$boldify[$num] = "@".$matches[1][substr($word, 1)]."@i";
-		} else {
-			$string .= $nextbool." ".$searchfield." LIKE '%".$word."%' ";
-			$boldify[$num] = "@".$word."@i";
-		}
-	}
-}
-$string = trim(substr($string, strlen($defbool)));
-if ($forum)
-	$string .= " AND f.id='$forum' ";
+echo '<br><table class="c1"><tr class="h"><td class="b h" style="border-bottom:0">Results</td></tr></table>';
 
+$ufields = userfields('u','u');
 if ($where == 1) {
 	$fieldlist = userfields_post();
-	$posts = $sql->query("SELECT ".userfields('u','u').", $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum "
-		."FROM posts p "
-		."LEFT JOIN poststext pt ON p.id = pt.id AND pt.revision = p.revision "
-		."LEFT JOIN users u ON p.user=u.id "
-		."LEFT JOIN threads t ON p.thread=t.id "
-		."LEFT JOIN forums f ON f.id=t.forum "
-		."WHERE $string "
-		."AND ? >= f.minread"
-		."ORDER BY p.id", [$loguser['powerlevel']]);
+	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			LEFT JOIN threads t ON p.thread = t.id
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE pt.text LIKE CONCAT('%', ?, '%') AND ? >= f.minread
+			ORDER BY p.id",
+		[$query, $loguser['powerlevel']]);
 
 	for ($i = 1; $post = $posts->fetch(); $i++) {
 		$pthread['id'] = $post['tid'];
 		$pthread['title'] = $post['ttitle'];
-		$post['text'] = preg_replace($boldify,"<b>\\0</b>",$post['text']);
 		echo '<br>' . threadpost($post,$pthread);
 	}
 
@@ -101,18 +58,20 @@ if ($where == 1) {
 } else {
 	$page = (isset($_GET['page']) ? $_GET['page'] : 1);
 	if ($page < 1) $page = 1;
-	$threads = $sql->query("SELECT ".userfields('u', 'u').", t.* "
-		."FROM threads t "
-		."LEFT JOIN users u ON u.id=t.user "
-		."LEFT JOIN forums f ON f.id=t.forum "
-		."WHERE $string AND ? >= f.minread"
-		."ORDER BY t.lastdate DESC "
-		."LIMIT ".(($page-1)*$loguser['tpp']).",".$loguser['tpp'],
-	[$loguser['powerlevel']]);
-	$threadcount = $sql->result("SELECT COUNT(*) "
-		."FROM threads t "
-		."LEFT JOIN forums f ON f.id=t.forum "
-		."WHERE $string ? >= f.minread", [$loguser['powerlevel']]);
+
+	$threads = $sql->query("SELECT $ufields, t.*
+			FROM threads t
+			LEFT JOIN users u ON u.id = t.user
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE t.title LIKE CONCAT('%', ?, '%') AND ? >= f.minread
+			ORDER BY t.lastdate DESC LIMIT ?,?",
+		[$query, $loguser['powerlevel'], ($page - 1) * $loguser['tpp'], $loguser['tpp']]);
+
+	$threadcount = $sql->result("SELECT COUNT(*) FROM threads t
+			LEFT JOIN forums f ON f.id=t.forum
+			WHERE t.title LIKE CONCAT('%', ?, '%') AND ? >= f.minread",
+		[$query, $loguser['powerlevel']]);
+
 	?><table class="c1">
 		<tr class="c">
 			<td class="b h">Title</td>
@@ -136,8 +95,7 @@ if ($where == 1) {
 	if_empty_query($i, "No threads found.", 6);
 
 	$query = urlencode($query);
-	$fpagelist = pagelist($threadcount, $loguser['tpp'], "search.php?q=$query&action=Search&w=0&f=$forum", $page);
-	?></table><?php echo $fpagelist;
+	echo '</table>'.pagelist($threadcount, $userdata['tpp'], "search.php?q=$query&action=Search&w=0", $page);
 }
 
 pagefooter();
