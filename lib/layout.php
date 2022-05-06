@@ -5,40 +5,6 @@ function redirect($url) {
 	die();
 }
 
-/**
- * Renders a table in HTML using $headers for column definition and $data to fill cells with data.
- *
- * @param array $headers An associative array of column definitions:
- *	key				column key
- *	value['name']	Display text for the column header
- *	value['width']	Specify a fixed width size (CSS width:)
- *	value['align']	Align the contents in the column
- *
- * @param array $data An associative array of cell data values:
- *	key				column key (must match the header column key)
- *	value			cell value
- */
-function RenderTable($data, $headers) {
-	$zebra = 1;
-
-	echo '<table class="c1"><tr class="h">';
-	foreach ($headers as $headerID => $headerCell) {
-		$width = (isset($headerCell['width']) ? ' style="width:'.$headerCell['width'].'"' : '');
-		echo "<td class=\"b h\" $width>".$headerCell['name']."</td>";
-	}
-	echo "</tr>";
-	foreach ($data as $dataCell) {
-		echo "<tr>";
-		foreach ($dataCell as $id => $value) {
-			$align = (isset($headers[$id]['align']) ? $headers[$id]['align'] : '');
-			echo "<td class=\"b n$zebra $align\">$value</td>";
-		}
-		echo "</tr>";
-		$zebra = ($zebra == 1 ? 2 : 1);
-	}
-	echo "</table>";
-}
-
 function rendernewstatus($type) {
 	switch ($type) {
 		case "n":
@@ -62,25 +28,12 @@ function RenderActions($actions, $ret = false) {
 	$out = '';
 	$i = 0;
 	foreach ($actions as $action) {
-		if (isset($action['confirm'])) {
-			if ($action['confirm'] === true)
-				$confirmmsg = 'Are you sure you want to ' . $action['title'] . '?';
-			else
-				$confirmmsg = str_replace("'", "\\'", $action['confirm']);
+		if ($i++) $out .= ' | ';
 
-			$href = sprintf(
-				"javascript:if(confirm('%s')) window.location.href='%s'; else void('');",
-			$confirmmsg, $action['href']);
-		} else {
-			$href = $action['href'];
-		}
-		if ($i++)
-			$out .= ' | ';
-		if (isset($action['href'])) {
-			$out .= sprintf('<a href="%s">%s</a>', htmlentities($href, ENT_QUOTES), $action['title']);
-		} else {
+		if (isset($action['href']))
+			$out .= sprintf('<a href="%s">%s</a>', htmlentities($action['href'], ENT_QUOTES), $action['title']);
+		else
 			$out .= $action['title'];
-		}
 	}
 	if ($ret)
 		return $out;
@@ -106,9 +59,6 @@ function RenderPageBar($pagebar) {
 	else
 		echo "&nbsp;";
 	echo "</td></table>";
-	if (!empty($pagebar['message'])) {
-		echo '<table width=100% class=c1><tr><td class="center">'.$pagebar['message'].'</td></tr></table><br>';
-	}
 }
 
 function catheader($title) {
