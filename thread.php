@@ -142,7 +142,7 @@ if ($viewmode == "thread") {
 			LEFT JOIN forums f ON f.id = t.forum
 			WHERE p.user = ? AND ? >= f.minread
 			ORDER BY p.id LIMIT ?,?",
-		[$uid, $userdata['powerlevel'], $offset, $ppp]);
+		[$uid, $loguser['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]) - 1;
 } elseif ($viewmode == "announce") {
@@ -156,7 +156,7 @@ if ($viewmode == "thread") {
 			LEFT JOIN forums f ON f.id = t.forum
 			WHERE p.announce = 1 AND t.announce = 1 GROUP BY pt.id
 			ORDER BY p.id LIMIT ?,?",
-		[$uid, $userdata['powerlevel'], $offset, $ppp]);
+		[$uid, $loguser['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE announce = 1") - 1;
 } elseif ($viewmode == "time") {
@@ -176,7 +176,7 @@ if ($viewmode == "thread") {
 			WHERE p.date > ? AND ? >= f.minread
 			ORDER BY p.date DESC
 			LIMIT ?,?",
-		[$mintime, $userdata['powerlevel'], $offset, $ppp]);
+		[$mintime, $loguser['powerlevel'], $offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE date > ?", [$mintime]) - 1;
 } else

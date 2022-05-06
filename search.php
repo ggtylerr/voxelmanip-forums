@@ -95,7 +95,7 @@ if ($where == 1) {
 	if_empty_query($i, "No threads found.", 6);
 
 	$query = urlencode($query);
-	echo '</table>'.pagelist($threadcount, $userdata['tpp'], "search.php?q=$query&action=Search&w=0", $page);
+	echo '</table>'.pagelist($threadcount, $loguser['tpp'], "search.php?q=$query&action=Search&w=0", $page);
 }
 
 pagefooter();
