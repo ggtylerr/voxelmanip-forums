@@ -64,9 +64,8 @@ else
 
 $topbot['actions'][] = ['href' => 'sendprivate.php', 'title' => 'Send new'];
 
-if ($pmsgc <= $loguser['tpp'])
-	$fpagelist = '<br>';
-else {
+$fpagelist = '<br>';
+if ($pmsgc > $loguser['tpp']) {
 	if ($id != $loguser['id'])
 		$furl = "private.php?id=$id&view=$view";
 	else
