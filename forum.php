@@ -40,7 +40,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 
 	if (!isset($user)) noticemsg("Error", "User does not exist.", true);
 
-	pageheader("Threads by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
+	pageheader("Threads by " . ($user['displayname'] ?: $user['name']));
 
 	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*, f.id fid, "
 		. ($log ? " (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread, " : ' ')

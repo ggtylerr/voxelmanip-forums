@@ -7,7 +7,7 @@ if ($uid < 0) noticemsg("Error", "You must specify a user ID!", true);
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
 if (!$user) noticemsg("Error", "This user does not exist!", true);
 
-pageheader("Profile for ".($user['displayname'] ? $user['displayname'] : $user['name']));
+pageheader("Profile for ".($user['displayname'] ?: $user['name']));
 
 $days = (time() - $user['regdate']) / 86400;
 
@@ -143,7 +143,7 @@ $profilefields = [
 
 $topbot = [
 	'breadcrumb' => [['href' => './', 'title' => 'Main']],
-	'title' => ($user['displayname'] ? $user['displayname'] : $user['name'])
+	'title' => ($user['displayname'] ?: $user['name'])
 ];
 
 RenderPageBar($topbot);

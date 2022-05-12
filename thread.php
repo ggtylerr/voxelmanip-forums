@@ -132,7 +132,7 @@ if ($viewmode == "thread") {
 
 	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
 
-	pageheader("Posts by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
+	pageheader("Posts by " . ($user['displayname'] ?: $user['name']));
 
 	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p

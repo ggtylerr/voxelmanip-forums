@@ -152,7 +152,7 @@ function userdisp($user, $u = '') {
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
 
-	$n = ($user[$u.'displayname'] ? $user[$u.'displayname'] : $user[$u.'name']);
+	$n = ($user[$u.'displayname'] ?: $user[$u.'name']);
 
 	$userdisname = "<span style='color:#$nc;'>".str_replace(" ", "&nbsp;", esc($n)).'</span>';
 
