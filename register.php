@@ -71,7 +71,7 @@ if (!empty($err)) noticemsg("Error", $err);
 		echo fieldrow('Timezone',fieldselect('timezone',$defaulttimezone,$timezones));
 		if ($puzzle) { ?>
 			<tr>
-				<td class="b n1 center" width="120"><?=$puzzleQuestion ?></td>
+				<td class="b n1 center"><?=$puzzleQuestion ?></td>
 				<td class="b n2"><input type="text" name="puzzle" size="25" maxlength="20"></td>
 			</tr>
 		<?php } ?>
