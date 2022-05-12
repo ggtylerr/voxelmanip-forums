@@ -350,9 +350,18 @@ function pagefooter() {
 					<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
 				</span>
 				<img src="img/poweredbyacmlm.png" title="Acmlmboard 2" style="float:left; margin-right:4px;">
-				Voxelmanip Forums (commit deadbeef)<br>
+				Voxelmanip Forums (commit <?=gitCommit(true)?>)<br>
 				&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
 			</td>
 		</tr>
 	</table><?php
+}
+
+function gitCommit($trim = true) {
+	$commit = file_get_contents('.git/refs/heads/master');
+
+	if ($trim)
+		return substr($commit, 0, 7);
+	else
+		return rtrim($commit);
 }
