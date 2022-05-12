@@ -2,12 +2,12 @@
 require('lib/common.php');
 
 $page = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
-if ($page < 0) noticemsg("Error", "Invalid page number", true);
+if ($page < 1) $page = 1;
 
 $fieldlist = userfields('u', 'u') . ',' . userfields_post();
 
-$ppp = isset($_REQUEST['ppp']) ? (int)$_REQUEST['ppp'] : $loguser['ppp'];
-if ($ppp < 0) noticemsg("Error", "Invalid posts per page number", true);
+$ppp = $_GET['ppp'] ?? $loguser['ppp'];
+if ($ppp < 1) $ppp = $loguser['ppp'];
 
 if (isset($_REQUEST['id'])) {
 	$tid = (int)$_REQUEST['id'];
@@ -117,7 +117,7 @@ if ($viewmode == "thread") {
 			$sql->query("REPLACE INTO forumsread VALUES (?,?,?)", [$loguser['id'], $thread['fid'], time()]);
 	}
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.forum tforum
 			FROM posts p
 			LEFT JOIN threads t ON t.id = p.thread
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
@@ -134,7 +134,7 @@ if ($viewmode == "thread") {
 
 	pageheader("Posts by " . ($user['displayname'] ?: $user['name']));
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id
@@ -156,7 +156,7 @@ if ($viewmode == "thread") {
 			LEFT JOIN forums f ON f.id = t.forum
 			WHERE p.announce = 1 AND t.announce = 1 GROUP BY pt.id
 			ORDER BY p.id LIMIT ?,?",
-		[$uid, $loguser['powerlevel'], $offset, $ppp]);
+		[$offset, $ppp]);
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE announce = 1") - 1;
 } elseif ($viewmode == "time") {
@@ -167,12 +167,12 @@ if ($viewmode == "thread") {
 
 	pageheader('Latest posts');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
-			LEFT JOIN users u ON p.user=u.id
-			LEFT JOIN threads t ON p.thread=t.id
-			LEFT JOIN forums f ON f.id=t.forum
+			LEFT JOIN users u ON p.user = u.id
+			LEFT JOIN threads t ON p.thread = t.id
+			LEFT JOIN forums f ON f.id = t.forum
 			WHERE p.date > ? AND ? >= f.minread
 			ORDER BY p.date DESC
 			LIMIT ?,?",
@@ -182,9 +182,8 @@ if ($viewmode == "thread") {
 } else
 	pageheader();
 
-if ($thread['replies'] < $ppp) {
-	$pagelist = '';
-} else {
+$pagelist = '';
+if ($thread['replies']+1 > $ppp) {
 	if ($viewmode == "thread")
 		$furl = "thread.php?id=$tid";
 	elseif ($viewmode == "user")
@@ -213,7 +212,7 @@ if ($viewmode == "thread") {
 	}
 } elseif ($viewmode == "user") {
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ? $user['displayname'] : $user['name'])]],
+		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
 		'title' => 'Posts'
 	];
 } elseif ($viewmode == "announce") {

@@ -5,11 +5,28 @@ $page = isset($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
 $fid = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $uid = isset($_GET['user']) ? (int)$_GET['user'] : 0;
 
+$tpp = $loguser['tpp'];
+$offset = (($page - 1) * $tpp);
+
+$topbot = [];
+
+$isread = $threadsread = '';
+
+if ($log) {
+	$isread = ($log ? ', (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread ' : '');
+	$threadsread = ($log ? "LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
+		."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) " : '');
+}
+
+$ufields = userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ",";
 if (isset($_GET['id']) && $fid = $_GET['id']) {
 	if ($log) {
 		$forum = $sql->fetch("SELECT f.*, r.time rtime FROM forums f LEFT JOIN forumsread r ON (r.fid = f.id AND r.uid = ?) "
 			. "WHERE f.id = ? AND ? >= minread", [$loguser['id'], $fid, $loguser['powerlevel']]);
 		if (!$forum['rtime']) $forum['rtime'] = 0;
+
+		$isread = ", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<'$forum[rtime]') isread";
+		$threadsread = "LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])";
 	} else
 		$forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND ? >= minread", [$fid, $loguser['powerlevel']]);
 
@@ -18,16 +35,14 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 	//append the forum's title to the site title
 	pageheader($forum['title'], $fid);
 
-	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*"
-		. ($log ? ", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<'$forum[rtime]') isread" : '') . ' '
-		. "FROM threads t "
-		. "LEFT JOIN users u1 ON u1.id=t.user "
-		. "LEFT JOIN users u2 ON u2.id=t.lastuser "
-		. ($log ? "LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])" : '')
-		. "WHERE t.forum = ? AND t.announce = 0 "
-		. "ORDER BY t.sticky DESC, t.lastdate DESC "
-		. "LIMIT " . (($page - 1) * $loguser['tpp']) . "," . $loguser['tpp'],
-		[$fid]);
+	$threads = $sql->query("SELECT $ufields t.* $isread FROM threads t
+			LEFT JOIN users u1 ON u1.id = t.user
+			LEFT JOIN users u2 ON u2.id = t.lastuser
+			$threadsread
+			WHERE t.forum = ? AND t.announce = 0
+			ORDER BY t.sticky DESC, t.lastdate DESC
+			LIMIT ?,?",
+		[$fid, $offset, $tpp]);
 
 	$topbot = [
 		'breadcrumb' => [['href' => './', 'title' => 'Main']],
@@ -35,6 +50,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 	];
 	if ($loguser['powerlevel'] >= $forum['minthread'])
 		$topbot['actions'] = [['href' => "newthread.php?id=$fid", 'title' => 'New thread']];
+
 } elseif (isset($_GET['user']) && $uid = $_GET['user']) {
 	$user = $sql->fetch("SELECT displayname, name FROM users WHERE id = ?", [$uid]);
 
@@ -42,26 +58,23 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 
 	pageheader("Threads by " . ($user['displayname'] ?: $user['name']));
 
-	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*, f.id fid, "
-		. ($log ? " (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread, " : ' ')
-		. "f.title ftitle FROM threads t "
-		. "LEFT JOIN users u1 ON u1.id=t.user "
-		. "LEFT JOIN users u2 ON u2.id=t.lastuser "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. ($log ? "LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
-			. "LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) " : '')
-		. "WHERE t.user = ? "
-		. "AND ? >= minread "
-		. "ORDER BY t.sticky DESC, t.lastdate DESC "
-		. "LIMIT " . (($page - 1) * $loguser['tpp']) . "," . $loguser['tpp'],
-		[$uid]);
+	$threads = $sql->query("SELECT $ufields t.*, f.id fid $isread, f.title ftitle FROM threads t
+			LEFT JOIN users u1 ON u1.id = t.user
+			LEFT JOIN users u2 ON u2.id = t.lastuser
+			LEFT JOIN forums f ON f.id = t.forum
+			$threadsread
+			WHERE t.user = ? AND ? >= minread
+			ORDER BY t.sticky DESC, t.lastdate DESC
+			LIMIT ?,?",
+		[$uid, $loguser['powerlevel'], $offset, $tpp]);
 
-	$forum['threads'] = $sql->result("SELECT count(*) FROM threads t "
-		. "LEFT JOIN forums f ON f.id = t.forum "
-		. "WHERE t.user = ? AND ? >= minread", [$uid, $loguser['powerlevel']]);
+	$forum['threads'] = $sql->result("SELECT count(*) FROM threads t
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE t.user = ? AND ? >= minread",
+		[$uid, $loguser['powerlevel']]);
 
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ? $user['displayname'] : $user['name'])]],
+		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
 		'title' => 'Threads'
 	];
 } elseif ($time = $_GET['time']) {
@@ -72,42 +85,37 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 
 	pageheader('Latest posts');
 
-	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*, f.id fid,
-		f.title ftitle" . ($log ? ', (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread ' : ' ')
-		. "FROM threads t "
-		. "LEFT JOIN users u1 ON u1.id=t.user "
-		. "LEFT JOIN users u2 ON u2.id=t.lastuser "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. ($log ? "LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
-			. "LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) " : '')
-		. "WHERE t.lastdate>$mintime "
-		. "AND ? >= f.minread "
-		. "ORDER BY t.lastdate DESC "
-		. "LIMIT " . (($page - 1) * $loguser['tpp']) . "," . $loguser['tpp']);
-	$forum['threads'] = $sql->result("SELECT count(*) "
-		. "FROM threads t "
-		. "LEFT JOIN forums f ON f.id=t.forum "
-		. "WHERE t.lastdate > $mintime "
-		. "AND ? >= f.minread",
-	[$mintime, $loguser['powerlevel']]);
+	$threads = $sql->query("SELECT $ufields t.*, f.id fid $isread, f.title ftitle
+			FROM threads t
+			LEFT JOIN users u1 ON u1.id = t.user
+			LEFT JOIN users u2 ON u2.id = t.lastuser
+			LEFT JOIN forums f ON f.id = t.forum
+			$threadsread
+			WHERE t.lastdate > ? AND ? >= f.minread
+			ORDER BY t.lastdate DESC
+			LIMIT ?,?",
+		[$mintime, $loguser['powerlevel'], $offset, $tpp]);
 
-	$topbot = [];
+	$forum['threads'] = $sql->result("SELECT count(*) FROM threads t
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE t.lastdate > ? AND ? >= f.minread",
+		[$mintime, $loguser['powerlevel']]);
+
 } else {
 	noticemsg("Error", "Forum does not exist.", true);
 }
 
-$showforum = (isset($time) ? $time : $uid);
+$showforum = $time ?? $uid;
 
-if ($forum['threads'] <= $loguser['tpp']) {
-	$fpagelist = '';
-} else {
+$fpagelist = '';
+if ($forum['threads'] > $tpp) {
 	if ($fid)
 		$furl = "forum.php?id=$fid";
 	elseif ($uid)
 		$furl = "forum.php?user=$uid";
 	elseif ($time)
 		$furl = "forum.php?time=$time";
-	$fpagelist = '<br>'.pagelist($forum['threads'], $loguser['tpp'], $furl, $page);
+	$fpagelist = '<br>'.pagelist($forum['threads'], $tpp, $furl, $page);
 }
 
 RenderPageBar($topbot);
