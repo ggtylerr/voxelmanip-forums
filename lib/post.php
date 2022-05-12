@@ -181,7 +181,7 @@ HTML;
 
 	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	if ($loguser['blocklayouts'])
+	if ($log && $loguser['blocklayouts'])
 		$isBlocked = true;
 	else
 		if (isset($blocklayouts[$post['uid']]))
