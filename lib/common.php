@@ -27,7 +27,6 @@ if (isset($_COOKIE['token'])) {
 	} else {
 		setcookie('token', 0);
 	}
-} else {
 }
 
 if ($lockdown) {
@@ -46,13 +45,11 @@ HTML;
 
 if (!$log) {
 	$loguser = [];
-	$loguser['id'] = 0;
+	$loguser['id'] = $loguser['powerlevel'] = 0;
 	$loguser['dateformat'] = "Y-m-d";
 	$loguser['timeformat'] = "H:i";
 	$loguser['theme'] = $defaulttheme;
-	$loguser['ppp'] = 20;
-	$loguser['tpp'] = 20;
-	$loguser['powerlevel'] = 0;
+	$loguser['ppp'] = $loguser['tpp'] = 20;
 }
 
 if (!$log || !$loguser['timezone'])
@@ -135,7 +132,7 @@ if ($r) {
  */
 function pageheader($pagetitle = '', $fid = null) {
 	global $dateformat, $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
-	$theme, $meta, $favicon, $count, $bot, $defaultlogo;
+	$theme, $meta, $count, $bot, $defaultlogo;
 
 	if ($log) {
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -171,7 +168,6 @@ HTML;
 	<head>
 		<title><?=$pagetitle.$boardtitle?></title>
 		<?=$meta?>
-		<link rel="icon" type="image/png" href="<?=$favicon?>">
 		<link rel="stylesheet" href="theme/common.css">
 		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
 		<script src="lib/js/microlight.js"></script>

@@ -263,14 +263,14 @@ HTML;
 <table class="c1" id="{$post['id']}">
 	$postheaderrow
 	<tr>
-		<td class="b n1 topbar_1 $tbar1 forceBlockOnMobile" height="17">$ulink</td>
-		<td class="b n1 topbar_2 $tbar2 forceBlockOnMobile">
+		<td class="b n1 topbar_1 $tbar1" height="17">$ulink</td>
+		<td class="b n1 topbar_2 $tbar2">
 			<table style="width:100%">
-				<tr><td class="nb sfont forceBlockOnMobile">Posted on $pdate$threadlink $revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
+				<tr><td class="nb sfont">Posted on $pdate$threadlink $revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
 			</table>
 		</td>
 	</tr><tr valign="top">
-		<td class="b n1 sfont sidebar $sbar forceBlockOnMobile">
+		<td class="b n1 sfont sidebar $sbar">
 			$usertitle
 			$picture
 			<br>Posts: {$post['uposts']}
@@ -280,7 +280,7 @@ HTML;
 			<br>Last post: $lastpost
 			<br>Last view: $lastview
 		</td>
-		<td class="b n2 mainbar $mbar forceBlockOnMobile" id="post_{$post['id']}">$posttext</td>
+		<td class="b n2 mainbar $mbar" id="post_{$post['id']}">$posttext</td>
 	</tr>
 </table>
 HTML;
