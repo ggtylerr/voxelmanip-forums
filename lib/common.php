@@ -344,16 +344,19 @@ function pagefooter() {
 	$time = microtime(true) - $start;
 	?><br>
 	<table class="c1">
-		<tr>
-			<td class="b n2 sfont">
-				<span style="float:right;padding-top:0.5em">
-					<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
-				</span>
-				<img src="img/poweredbyacmlm.png" title="Acmlmboard 2" style="float:left; margin-right:4px;">
-				Voxelmanip Forums (commit <?=gitCommit(true)?>)<br>
-				&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
-			</td>
-		</tr>
+		<tr><td class="b n2 sfont footer">
+			<span class="stats">
+				<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
+			</span>
+
+			<a href="https://voxelmanip.se/">
+				<img src="img/poweredbyvoxelmanip.png" class="poweredby"
+					title="like a warm hug from someone you love">
+			</a>
+
+			Voxelmanip Forums (commit <?=gitCommit(true)?>)<br>
+			&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
+		</td></tr>
 	</table><?php
 }
 

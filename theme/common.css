@@ -82,3 +82,14 @@ ul.menulisting li:first-child {
 	border-top: 0 !important;
 	text-align: center;
 }
+
+/* Footer */
+.footer .stats {
+	float: right;
+	padding-top: 0.5em;
+}
+.footer .poweredby {
+	float: left;
+	margin-right: 4px;
+	width: 88px;
+}
