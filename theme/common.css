@@ -83,6 +83,32 @@ ul.menulisting li:first-child {
 	text-align: center;
 }
 
+/* FAQ styling */
+.faq p {
+	margin-bottom: 0.5em;
+	margin-top: 0.5em;
+}
+.faq > tbody > tr > .n1 {
+	padding: 5px 15px;
+}
+.faq li {
+	margin-bottom: 1em;
+}
+.faq .toc li {
+	margin-bottom: 0.5em;
+}
+.faq .title {
+	font-weight: bold;
+	text-decoration: underline;
+	margin-bottom: 0em;
+}
+.faq .smileytbl td {
+	padding: 5px;
+}
+.faq pre {
+	display: inline-block;
+}
+
 /* Footer */
 .footer .stats {
 	float: right;

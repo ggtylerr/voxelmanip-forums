@@ -2,56 +2,65 @@
 require('lib/common.php');
 
 //Smilies List
-$smiliewidth = ceil(sqrt(sizeof($smilies)));
-$smilietext = '<table class="smileytbl">';
-
+$smilietext = '';
 $x = 0;
 foreach ($smilies as $smily) {
 	if ($x == 0) $smilietext .= "<tr>";
 	$smilietext .= sprintf('<td class="b n1"><img src="%s"> %s</td>', $smily['url'], esc($smily['text']));
 	$x++;
-	$x %= $smiliewidth;
+	$x %= ceil(sqrt(sizeof($smilies)));
 	if ($x == 0) $smilietext .= "</tr>";
 }
-$smilietext .= '</table>';
 
-pageheader("FAQ");
-
+// Rank colours
 $nctable = '';
-
 foreach ($powerlevels as $id => $title) {
-	$nctable .= sprintf('<tr><td class="b n1"><b><span style="color:#%s">%s</span></b></td></tr>', powIdToColour($id), $title);
+	$nctable .= sprintf('<td class="b n1" width="140"><b><span style="color:#%s">%s</span></b></td>', powIdToColour($id), $title);
 }
 
 $faq = [[
+	'id' => 'disclaimer',
+	'title' => 'General Disclaimer',
+	'content' => <<<HTML
+<p>The site does not own and cannot be held responsible for statements made by members on the forum. This site is offered as-is to the user. Any statements made on the board may be altered or removed at the discretion of the staff. Furthermore, all users are expected to have read, understood, and agreed to The Rules before posting.
+</p>
+
+<p><strong>We do <em>not</em> sell, distribute or otherwise disclose member information like IP addresses or e-mail addresses to any third party.</strong> If you have questions about any information contained in this FAQ, please send a private message with your question to an administrator <em>before</em> posting.</p>
+
+<p>We only use a token cookie to keep you logged in, no cookies is placed on your device when not logged in. We do not use tracking cookies, you can verify this by looking at the cookie storage for this site in your respective web browser.</p>
+HTML
+], [
 	'id' => 'gpg',
 	'title' => 'General Posting Guidelines',
 	'content' => <<<HTML
 <p>Posting on a message forum is generally relaxed. There are, however, a few things to keep in mind when posting.</p>
-<ol>
-	<li>One word posts. These types of posts don't add to the conversation topic and should be avoided.</li>
-	<li>Trolling/flaming/drama. This behavior is totally unacceptable and will be dealt with accordingly, namely with a warning. Direct (or even indirect) personal attacks on <strong><em>any</em></strong> member will result in immediate action. Do NOT test us on this.
-	<li>Reviving, or "bumping" old threads. If the last post in a thread was a month ago or more, we ask that you do not add another post unless you have something very relevant and interesting to add to the topic.
-	<li>Spamming. Spam is a pretty broad and grey area. Spam can be generalized as multiple posts with no real meaning to the topic or what anyone else is talking about.
-	<li>Staff impersonation and "back seat moderation." Staff impersonation will <b>not</b> be tolerated. Doing so will may result in an instant ban. While you may feel you are helping by telling a fellow member that they need to stop doing something you know is wrong, you may do more harm than good. If you see an issue please report the issue to the staff immediately.
-	<li>Suggestive Material. Remember that there are others here who enjoy the board experience. Their standards are not necessarily going to be like yours all the time, so please, do not post anything pornographic or otherwise potentially disturbing to other members.
-</ol>
-<p class="title">Procedural</p>
-<p>Acmlmboard follows the "Three Strike Rule". This means if you have been warned twice by staff for whatever reason, your third notice will be a ban and a reason, coupled with a ban length. Each time you are given a "strike", you will receive a PM from a staff member stating so. This PM will also include a link to the post in question and a reason for the warning. Your third strike will come with a ban. Ban lengths are as follows:</p>
-<table>
-	<tr><td>Offence</td><td>Duration</td></tr>
-	<tr><td>1st</td><td>1 Week</td></tr>
-	<tr><td>2nd</td><td>2 Weeks</td></tr>
-	<tr><td>3rd</td><td>1 Month</td></tr>
-	<tr><td>4th</td><td>2 Months</td></tr>
-	<tr><td>5th</td><td>Indefinite</td></tr>
-</table>
-<p>Please note that these ban lengths are "soft" and may be changed and/or deviated from by staff at their discretion. Decisions made regarding length will not be negotiable.</p>
-<p class="title">Behavioral</p>
-<p>Following one rule doesn't mean your post is automatically acceptable. If it is distasteful, repugnant, or offensive, then don't post it.</p>
-<p>If your post is seen by staff to incite drama, put down others, have negative connotations/bad attitude, or otherwise find fault therein, they have absolute right in deciding what to do with it and with you.</p>
-<p class="title">Disclaimer</p>
-<p>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.</p>
+<ul>
+	<li><b>No trolling, flaming, harrassment or drama</b><br>
+		This behavior is unacceptable and will be dealt with accordingly to the severity, to make the board a pleasant experience for everyone.</li>
+
+	<li><b>No spamming</b><br>
+		Spam is a pretty broad area. Spam can be generalised as multiple posts with no real meaning to the topic or what anyone else is talking about. Also applies to registering with the sole intent of advertising something completely irrelevant.</li>
+
+	<li><b>Do not mention sensitive subjects such as politics or religion.</b><br>
+		It is irrelevant to this site and risks creating unnecessary conflict and tension.</li>
+
+	<li><b>The forum's main language is English</b><br>
+		English is a language we all understand relatively well, including the staff. Keep non-English text to an absolute minimum.</li>
+
+	<li><b>Do not back-seat moderate or "minimod"</b><br>
+		While this may depend on the circumstances, you may do more harm than good and stir up drama. If you see an issue please contact a staff member privately and they can properly handle it.</li>
+
+	<li><b>No explicit material</b><br>
+		If it is something people normally would look at to pleasure themselves, you should not post it here.</li>
+
+	<li><b>Please proofread your posts and use proper grammar and punctuation.</b><br>
+		To a certain extent of course, you are not required to write like you are writing a formal academic paper and have full perfect grammars or speeling, but please read through whatever you are writing so that it looks sane and reasonably readable.</li>
+
+	<li><b>In general, use common sense...</b><br>
+		Really goes a long way.</li>
+</ul>
+
+<p>Staff have the final say in interpretation of the rules, and may act in any way they see fit to keep the forum a pleasant experience for everyone.</p>
 HTML
 ], [
 	'id' => 'move',
@@ -66,11 +75,18 @@ HTML
 <p>Stay cool. Don't further disrupt the thread by responding <b>at all</b> to the rudeness. Let a member of staff know with a link to the offending post(s). Please note that responding to the rudeness is promoting flaming, which is a punishable offense.</p>
 HTML
 ], [
+	'id' => 'banned',
+	'title' => "I've been banned. What do I do now?",
+	'content' => <<<HTML
+<p>Check your title as it will usually show the reason as to why you were banned and an expiration date. If there is no expiration date you will need to prove to the staff why you should be unbanned, or if you would want more information please PM a staff member calmly.</p>
+HTML
+], [
 	'id' => 'smile',
 	'title' => 'Are smilies and BBCode supported?',
 	'content' => <<<HTML
 <p>Here's a table with all available smileys.</p>
-$smilietext
+<table class="smileytbl">$smilietext</table>
+
 <p>Likewise, some BBCode is supported. See the table below.</p>
 <table class="c1" style="width:auto">
 	<tr class="h">
@@ -117,56 +133,44 @@ HTML
 	'id' => 'reg',
 	'title' => 'Can I register more than one account?',
 	'content' => <<<HTML
-<p>No. Most uses for a secondary account tend to be to bypass bans. Another use is to have a different name, and we have a displayname system to allow this cleanly.</p>
+<p>No. Most uses for a secondary account tend to be to bypass bans, sockpuppet or in other ways cause havoc. All is expressly forbidden and you will be punished when found out (you most likely will).</p>
+
+<p>Another use is to have a different name, and we have a displayname system to allow this cleanly. Feel free to ask an admin to set a custom displayname for you if that is the case.</p>
 HTML
 ], [
 	'id' => 'css',
 	'title' => 'What are we not allowed to do in our custom CSS layouts?',
 	'content' => <<<HTML
 <p>While we allow very open and customizable layouts and side bars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a staff member. Staff has discretion in deciding violations.</p>
+
 <p>The following are not allowed:</p>
-<ol>
+<ul>
 	<li>Modification of anyone else's post layout <b>for any reason</b>.</li>
 	<li>Modification of any tables, images, themes, etc outside of your personal layout.</li>
 	<li>Altering your Nick color in any way. Nick color is an indicator of staff, and it will be considered impersonation of staff.</li>
-</ol>
+</ul>
+
+<p>Obnoxious, bandwidth- or resource-intensive or plain bad layouts are not allowed either, which is up to interpretation by staff when reviewing post layouts.</p>
 HTML
 ], [
 	'id' => 'usercols',
 	'title' => 'What do the username colours mean?',
 	'content' => <<<HTML
-<p>They reflect the group of the user.</p>
-<table class="center">$nctable</table>
-<p>Keep in mind that some users might have a specific colour assigned to them.</p>
+<p>They reflect the rank of the user, which are:</p>
+<table class="center"><tr>$nctable</tr></table>
+<p>Keep in mind that some users might have a custom colour assigned to them, usually if they are staff or in bed with one.</p>
 HTML
 ]];
 
+pageheader("FAQ");
+
 ?>
-<style>
-.faq p {
-	margin-bottom: 0.5em;
-	margin-top: 0.5em;
-}
-.faq > tbody > tr > .n1 {
-	padding: 10px;
-}
-.title {
-	font-weight: bold;
-	text-decoration: underline;
-	margin-bottom: 0em;
-}
-.smileytbl td {
-	padding: 5px;
-}
-</style>
 <table class="c1 faq">
 	<tr class="h"><td class="b h">FAQ</td></tr>
-	<tr><td class="b n1">
-<?php foreach ($faq as $faqitem) printf('<a href="#%s">%s</a><br>', $faqitem['id'], $faqitem['title']); ?>
-	</td></tr>
-</table>
-<br>
-<table class="c1 faq">
+	<tr><td class="b n1"><ol class="toc">
+<?php foreach ($faq as $faqitem) printf('<li><a href="#%s">%s</a></li>', $faqitem['id'], $faqitem['title']); ?>
+	</ol></td></tr>
+
 <?php
 foreach ($faq as $faqitem) {
 	printf('<tr class="h"><td class="b h" id="%s">%s</td></tr><tr><td class="b n1">%s</td></tr>',
