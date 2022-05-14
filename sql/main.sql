@@ -43,7 +43,7 @@ CREATE TABLE `forums` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `forums` (`id`, `cat`, `ord`, `title`, `descr`, `threads`, `posts`, `lastdate`, `lastuser`, `lastid`, `minread`, `minthread`, `minreply`) VALUES
-(1,	1,	1,	'General Forum',	'General topics forum',	2,	2,	1651751197,	3,	4,	-1,	1,	1),
+(1,	1,	1,	'General Forum',	'General topics forum',	0,	0,	0,	0,	0,	-1,	1,	1),
 (2,	2,	1,	'General Staff Forum',	'Generic Staff Forum',	0,	0,	0,	0,	0,	-1,	1,	1);
 
 CREATE TABLE `forumsread` (
@@ -79,7 +79,7 @@ CREATE TABLE `misc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `misc` (`views`, `botviews`, `attention`) VALUES
-(0,	0,	'<b>Welcome to your new Acmlmboard!</b>');
+(0,	0,	'<b>The Voxelmanip Forums Codebase has been setup!</b><br>Make sure to not share a link yet and register quickly as the first user gets root administrator privileges.');
 
 CREATE TABLE `pmsgs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -185,4 +185,4 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- 2022-05-05 13:36:34
+-- 2022-05-14 19:07:17
