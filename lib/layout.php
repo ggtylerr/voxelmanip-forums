@@ -6,6 +6,8 @@ function redirect($url) {
 }
 
 function rendernewstatus($type) {
+	if (!$type) return '';
+
 	switch ($type) {
 		case "n":
 			$text = "NEW";
@@ -42,9 +44,8 @@ function RenderActions($actions, $ret = false) {
 }
 
 function RenderBreadcrumb($breadcrumb) {
-	foreach ($breadcrumb as $action) {
+	foreach ($breadcrumb as $action)
 		printf('<a href=%s>%s</a> - ', '"'.htmlentities($action['href'], ENT_QUOTES).'"', $action['title']);
-	}
 }
 
 function RenderPageBar($pagebar) {
@@ -71,7 +72,7 @@ function fieldrow($title, $input) {
 
 function fieldinput($size, $max, $field, $value = null) {
 	global $user;
-	$val = str_replace('"', '&quot;', (isset($value) ? $value : $user[$field]));
+	$val = str_replace('"', '&quot;', ($value ?? $user[$field]));
 	return sprintf('<input type="text" name="%s" size="%s" maxlength="%s" value="%s">', $field, $size, $max, $val);
 }
 
@@ -120,7 +121,7 @@ function bantimeselect($name) {
 
 function pagelist($total, $limit, $url, $sel = 0, $showall = false, $tree = false) {
 	$pagelist = '';
-	$pages = ceil(($total+1) / $limit);
+	$pages = ceil($total / $limit);
 	if ($pages < 2) return '';
 	for ($i = 1; $i <= $pages; $i++) {
 		if (	$showall	// If we don't show all the pages, show:
@@ -149,10 +150,10 @@ function themelist() {
 	$themes = glob('theme/*', GLOB_ONLYDIR);
 	sort($themes);
 	foreach ($themes as $f) {
-		$themename = explode("/",$f);
-		if (file_exists("theme/$themename[1]/$themename[1].css")) {
-			if (preg_match("~/* META\n(.*?)\n~s", str_replace("\r\n", "\n", file_get_contents("theme/$themename[1]/$themename[1].css")), $matches)) {
-				$themelist[str_replace('.css', '', str_replace('.php', '', $themename[1]))] = $matches[1];
+		$themename = explode("/",$f)[1];
+		if (file_exists("theme/$themename/$themename.css")) {
+			if (preg_match("~/* META\n(.*?)\n~s", file_get_contents("theme/$themename/$themename.css"), $matches)) {
+				$themelist[$themename] = $matches[1];
 			}
 		}
 	}
@@ -176,12 +177,11 @@ function announcement_row() {
 	$cancreate = $loguser['powerlevel'] > 2;
 
 	if (isset($anc['title']) || $cancreate) {
+		$anlink = 'No announcements';
 		if (isset($anc['title'])) {
 			$anlink = sprintf(
 				'<a href="thread.php?announce=1">%s</a> - by %s on %s',
 			$anc['title'], userlink($anc), date($dateformat, $anc['date']));
-		} else {
-			$anlink = 'No announcements';
 		}
 		?><table class="c1">
 			<tr class="h"><td class="b" colspan="2">Announcements</td></tr>

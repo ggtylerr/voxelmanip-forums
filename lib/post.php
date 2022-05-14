@@ -194,12 +194,12 @@ HTML;
 
 	$postheaderrow = $threadlink = $postlinks = $revisionstr = '';
 
-	$post['id'] = (isset($post['id']) ? $post['id'] : null);
+	$post['id'] = $post['id'] ?? null;
 
 	if ($pthread)
 		$threadlink = ", in <a href=\"thread.php?id=$pthread[id]\">" . esc($pthread['title']) . "</a>";
 
-	if (isset($post['id']) && $post['id'])
+	if ($post['id'])
 		$postlinks = "<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>"; // headlinks for posts
 
 	if (isset($post['revision']) && $post['revision'] >= 2)
@@ -233,10 +233,10 @@ HTML;
 	if (isset($post['thread']))
 		$postlinks .= " | ID: $post[id]";
 
-	$tbar1 = (!$isBlocked) ? "topbar" . $post['uid'] . "_1" : '';
-	$tbar2 = (!$isBlocked) ? "topbar" . $post['uid'] . "_2" : '';
-	$sbar = (!$isBlocked) ? "sidebar" . $post['uid'] : '';
-	$mbar = (!$isBlocked) ? "mainbar" . $post['uid'] : '';
+	$tbar1 = "topbar".$post['uid']."_1";
+	$tbar2 = "topbar".$post['uid']."_2";
+	$sbar = "sidebar".$post['uid'];
+	$mbar = "mainbar".$post['uid'];
 	$ulink = userlink($post, 'u');
 	$pdate = date($dateformat, $post['date']);
 

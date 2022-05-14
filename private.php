@@ -3,9 +3,9 @@ require('lib/common.php');
 
 needs_login();
 
-$page = (isset($_GET['page']) ? $_GET['page'] : null);
+$page = $_GET['page'] ?? null;
 if (!$page) $page = 1;
-$view = (isset($_GET['view']) ? $_GET['view'] : 'read');
+$view = $_GET['view'] ?? 'read';
 
 if ($view == 'sent') {
 	$fieldn = 'to';
@@ -17,7 +17,7 @@ if ($view == 'sent') {
 	$sent = false;
 }
 
-$id = ($loguser['powerlevel'] > 3 ? (isset($_GET['id']) ? $_GET['id'] : 0) : 0);
+$id = ($loguser['powerlevel'] > 3 ? ($_GET['id'] ?? 0) : 0);
 
 $showdel = isset($_GET['showdel']);
 

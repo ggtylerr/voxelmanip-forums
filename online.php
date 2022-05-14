@@ -3,7 +3,7 @@ require('lib/common.php');
 
 pageheader('Online users');
 
-$time = (isset($_GET['time']) ? $_GET['time'] : null);
+$time = $_GET['time'] ?? null;
 
 if (!$time || !is_numeric($time)) $time = 300;
 

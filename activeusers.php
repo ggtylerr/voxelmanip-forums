@@ -2,7 +2,7 @@
 require('lib/common.php');
 pageheader('Active users');
 
-$time = (isset($_GET['time']) && is_numeric($_GET['time']) ? $_GET['time'] : 86400);
+$time = (int)($_GET['time'] ?? 86400);
 
 $users = $sql->query("SELECT ".userfields('u').",u.posts,u.regdate,COUNT(*) num FROM users u LEFT JOIN posts p ON p.user = u.id WHERE p.date > ? GROUP BY u.id ORDER BY num DESC",
 	[(time() - $time)]);

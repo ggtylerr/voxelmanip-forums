@@ -3,8 +3,8 @@ require("lib/common.php");
 
 pageheader("Search");
 
-$query = (isset($_GET['q']) ? $_GET['q'] : '');
-$where = (isset($_GET['w']) ? $_GET['w'] : 0);
+$query = $_GET['q'] ?? '';
+$where = $_GET['w'] ?? 0;
 ?>
 <table class="c1">
 	<tr class="h"><td class="b h">Search</td>
@@ -33,10 +33,11 @@ if (!isset($_GET['action']) || strlen($query) < 3) {
 	die();
 }
 
-echo '<br><table class="c1"><tr class="h"><td class="b h" style="border-bottom:0">Results</td></tr></table>';
+echo '<br><table class="c1"><tr class="h"><td class="b h" style="border-bottom:0" colspan=3>Results</td></tr>';
 
 $ufields = userfields('u','u');
 if ($where == 1) {
+	echo '</table>';
 	$fieldlist = userfields_post();
 	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum
 			FROM posts p
@@ -56,7 +57,7 @@ if ($where == 1) {
 
 	if_empty_query($i, 'No posts found.', 1, true);
 } else {
-	$page = (isset($_GET['page']) ? $_GET['page'] : 1);
+	$page = $_GET['page'] ?? 1;
 	if ($page < 1) $page = 1;
 
 	$threads = $sql->query("SELECT $ufields, t.*
@@ -72,7 +73,7 @@ if ($where == 1) {
 			WHERE t.title LIKE CONCAT('%', ?, '%') AND ? >= f.minread",
 		[$query, $loguser['powerlevel']]);
 
-	?><table class="c1">
+	?>
 		<tr class="c">
 			<td class="b h">Title</td>
 			<td class="b h" style="min-width:80px">Started by</td>
@@ -80,8 +81,6 @@ if ($where == 1) {
 		</tr><?php
 
 	for ($i = 1; $thread = $threads->fetch(); $i++) {
-		if (!$thread['title']) $thread['title'] = '';
-
 		$tr = ($i % 2 ? 'n2' :'n3');
 
 		?><tr class="<?=$tr ?> center">

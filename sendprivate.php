@@ -76,7 +76,7 @@ if (!isset($_POST['action'])) {
 			<tr class="h"><td class="b h" colspan="2">Send message</td></tr>
 			<tr>
 				<td class="b n1 center" width="120">Send to:</td>
-				<td class="b n2"><input type="text" name="userto" size=25 maxlength=25 value="<?=esc((isset($_POST['userto']) ? $_POST['userto'] : '')) ?>"></td>
+				<td class="b n2"><input type="text" name="userto" size=25 maxlength=25 value="<?=esc($_POST['userto'] ?? '') ?>"></td>
 			</tr><tr>
 				<td class="b n1 center">Title:</td>
 				<td class="b n2"><input type="text" name="title" size="80" maxlength="255" value="<?=esc($_POST['title']) ?>"></td>

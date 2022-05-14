@@ -14,6 +14,7 @@ foreach (glob("lib/*.php") as $filename)
 header("Content-type: text/html; charset=utf-8");
 
 $userip = $_SERVER['REMOTE_ADDR'];
+$useragent = $_SERVER['HTTP_USER_AGENT'];
 $url = getenv("SCRIPT_NAME");
 if ($q = getenv("QUERY_STRING")) $url .= "?$q";
 
@@ -66,16 +67,14 @@ $sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE t
 
 $dateformat = $loguser['dateformat'].' '.$loguser['timeformat'];
 
-if (str_replace($botlist, "x", strtolower($_SERVER['HTTP_USER_AGENT'])) != strtolower($_SERVER['HTTP_USER_AGENT'])) {
+$bot = 0;
+if (str_replace($botlist, "x", strtolower($useragent)) != strtolower($useragent))
 	$bot = 1;
-} else {
-	$bot = 0;
-}
 
 $sql->query("DELETE FROM guests WHERE ip = ? OR date < ?", [$userip, (time() - 300)]);
 if ($log) {
 	$sql->query("UPDATE users SET lastview = ?, ip = ?, url = ? WHERE id = ?",
-		[time(), $userip, addslashes($url), $loguser['id']]);
+		[time(), $userip, $url, $loguser['id']]);
 } else {
 	$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
 }
@@ -91,18 +90,15 @@ $views = $sql->result("SELECT views FROM misc");
 $count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
 $date = date("m-d-y", time());
 
+$theme = $loguser['theme'];
 //Config definable theme override
-if ($override_theme) {
+if ($override_theme)
 	$theme = $override_theme;
-} elseif (isset($_GET['theme'])) {
+elseif (isset($_GET['theme']))
 	$theme = $_GET['theme'];
-} else {
-	$theme = $loguser['theme'];
-}
 
-if (!is_file("theme/$theme/$theme.css")) {
+if (!is_file("theme/$theme/$theme.css"))
 	$theme = $defaulttheme;
-}
 
 $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
 
@@ -132,7 +128,7 @@ if ($r) {
  */
 function pageheader($pagetitle = '', $fid = null) {
 	global $dateformat, $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
-	$theme, $meta, $count, $bot, $defaultlogo;
+	$theme, $meta, $count, $bot, $defaultlogo, $rankset_names;
 
 	if ($log) {
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -184,7 +180,7 @@ HTML;
 					| <a href="memberlist.php">Memberlist</a>
 					| <a href="activeusers.php">Active users</a>
 					| <a href="thread.php?time=86400">Latest posts</a>
-					| <a href="ranks.php">Ranks</a>
+					<?php if (count($rankset_names) > 1) { ?>| <a href="ranks.php">Ranks</a><?php } ?>
 					| <a href="online.php">Online users</a>
 					| <a href="search.php">Search</a>
 				</td>

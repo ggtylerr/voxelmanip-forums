@@ -23,10 +23,10 @@ if ($action == "del") {
 	$sql->query("DELETE FROM ipbans WHERE ipmask = ? AND expires = ?", [$data[0], $data[1]]);
 } else if ($action == "add") {
 	if ($_POST['ipmask']) {
-		$hard = (isset($_POST['hard']) ? $_POST['hard'] : 0);
+		$hard = $_POST['hard'] ?? 0;
 		$expires = ($_POST['expires'] > 0 ? ($_POST['expires'] + time()) : 0);
 		$sql->query("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES (?,?,?,?,?)",
-			[$_POST['ipmask'], $hard, $expires, addslashes($loguser['name']), $_POST['reason']]);
+			[$_POST['ipmask'], $hard, $expires, $loguser['name'], $_POST['reason']]);
 	} else {
 		$err = "You must enter an IP mask";
 	}

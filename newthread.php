@@ -3,13 +3,13 @@ require('lib/common.php');
 
 needs_login();
 
-$announce = (isset($_REQUEST['announce']) ? $_REQUEST['announce'] : null);
+$announce = $_REQUEST['announce'] ?? null;
 
 if (!isset($_POST['action'])) $_POST['action'] = '';
 if ($act = $_POST['action']) {
 	$fid = $_POST['fid'];
 } else {
-	$fid = (isset($_GET['id']) ? $_GET['id'] : 0);
+	$fid = $_GET['id'] ?? 0;
 }
 
 $type = ($announce ? "announcement" : "thread");

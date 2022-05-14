@@ -4,7 +4,7 @@ needs_login();
 
 $fieldlist = userfields('u', 'u').','.userfields_post();
 
-$pid = (isset($_GET['id']) ? $_GET['id'] : null);
+$pid = $_GET['id'] ?? null;
 
 if (!$pid) noticemsg("Error", "Private message does not exist.", true);
 

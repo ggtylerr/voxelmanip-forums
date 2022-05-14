@@ -3,12 +3,8 @@ require("lib/common.php");
 
 needs_login();
 
-$targetuserid = $loguser['id'];
-$act = isset($_POST['action']) ? $_POST['action'] : '';
-
-if (isset($_GET['id'])) {
-	$targetuserid = $_GET['id'];
-}
+$targetuserid = $_GET['id'] ?? $loguser['id'];
+$act = $_POST['action'] ?? '';
 
 $token = $loguser['token'];
 if ($act == 'Edit profile') {

@@ -2,10 +2,10 @@
 require('lib/common.php');
 pageheader('Memberlist');
 
-$sort = isset($_REQUEST['sort']) ? $_REQUEST['sort'] : 'posts';
-$pow = isset($_REQUEST['pow']) ? $_REQUEST['pow'] : '';
-$page = isset($_REQUEST['page']) ? $_REQUEST['page'] : '';
-$orderby = isset($_REQUEST['orderby']) ? $_REQUEST['orderby'] : '';
+$sort = $_GET['sort'] ?? 'posts';
+$pow = $_GET['pow'] ?? '';
+$page = $_GET['page'] ?? '';
+$orderby = $_GET['orderby'] ?? '';
 
 $ppp = 50;
 if ($page < 1) $page = 1;

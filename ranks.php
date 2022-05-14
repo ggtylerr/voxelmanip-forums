@@ -1,8 +1,7 @@
 <?php
 require("lib/common.php");
 
-if (!isset($_GET['rankset']) || !is_numeric($_GET['rankset'])) $getrankset = 1;
-else $getrankset = $_GET['rankset'];
+$getrankset = (int)($_GET['rankset'] ?? 1);
 
 $linkuser = [];
 $allusers = $sql->query("SELECT ".userfields().", posts, lastview FROM users WHERE rankset = ? ORDER BY id", [$getrankset]);

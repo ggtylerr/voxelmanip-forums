@@ -1,7 +1,7 @@
 <?php
 require('lib/common.php');
 
-$page = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
+$page = (int)($_REQUEST['page'] ?? 1);
 if ($page < 1) $page = 1;
 
 $fieldlist = userfields('u', 'u') . ',' . userfields_post();
@@ -50,7 +50,7 @@ else
 	$threadcreator = 0;
 
 $action = '';
-$act = isset($_POST['action']) ? $_POST['action'] : '';
+$act = $_POST['action'] ?? '';
 
 if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 2 ||
 		($loguser['id'] == $threadcreator && $act == "rename" && $loguser['powerlevel'] > 0))) {
@@ -69,8 +69,6 @@ if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 2 ||
 		$action = ",title=?";
 	} elseif ($act == 'move') {
 		editthread($tid, '', $_POST['arg']);
-	} else {
-		noticemsg("Error", "Unknown action.", true);
 	}
 }
 
@@ -303,12 +301,10 @@ if (isset($time)) {
 			<a href="forum.php?time=<?=$time ?>">By Threads</a> | By Posts</a><br><br>
 			<?=timelink(900,'thread').' | '.timelink(3600,'thread').' | '.timelink(86400,'thread').' | '.timelink(604800,'thread') ?>
 		</td></tr>
-	</table><?php
+	</table><br><?php
 }
 
 echo "$modlinks $pagelist";
-
-//if ($posts) echo '<br>';
 
 for ($i = 1; $post = $posts->fetch(); $i++) {
 	$pthread = [];

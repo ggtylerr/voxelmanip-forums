@@ -1,9 +1,9 @@
 <?php
 require('lib/common.php');
 
-$page = isset($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
-$fid = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$uid = isset($_GET['user']) ? (int)$_GET['user'] : 0;
+$page = (int)($_GET['page'] ?? 1);
+$fid = (int)($_GET['id'] ?? 0);
+$uid = (int)($_GET['user'] ?? 0);
 
 $tpp = $loguser['tpp'];
 $offset = (($page - 1) * $tpp);
@@ -148,22 +148,14 @@ $lsticky = 0;
 for ($i = 1; $thread = $threads->fetch(); $i++) {
 	$pagelist = ' '.pagelist($thread['replies'], $loguser['ppp'], 'thread.php?id='.$thread['id'], 0, false, true);
 
-	$status = '';
-	if ($thread['closed']) $status .= 'o';
+	$status = ($thread['closed'] ? 'o' : '');
 
-	if ($log) {
+	if ($log)
 		if (!$thread['isread']) $status .= 'n';
-	} else {
-		if ($thread['lastdate'] > (time() - 3600)) $status .= 'n';
-	}
-
-	if ($status)
-		$status = rendernewstatus($status);
 	else
-		$status = '';
+		if ($thread['lastdate'] > (time() - 3600)) $status .= 'n';
 
-	if (!$thread['title'])
-		$thread['title'] = '';
+	$status = rendernewstatus($status);
 
 	if ($thread['sticky'] && !$showforum)
 		$tr = 'n1';

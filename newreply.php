@@ -3,14 +3,14 @@ require('lib/common.php');
 
 needs_login();
 
-$_POST['action'] = (isset($_POST['action']) ? $_POST['action'] : null);
+$_POST['action'] = $_POST['action'] ?? null;
 
 if ($act = $_POST['action']) {
 	$tid = $_POST['tid'];
 } else {
 	$tid = $_GET['id'];
 }
-$act = (isset($act) ? $act : null);
+$act = $act ?? null;
 
 $thread = $sql->fetch("SELECT t.*, f.title ftitle, f.minreply fminreply
 	FROM threads t LEFT JOIN forums f ON f.id=t.forum
@@ -44,7 +44,7 @@ $topbot = [
 	'title' => "New reply"
 ];
 
-$pid = isset($_GET['pid']) ? (int)$_GET['pid'] : 0;
+$pid = (int)($_GET['pid'] ?? 0);
 $quotetext = '';
 if ($pid) {
 	$post = $sql->fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, p.thread "

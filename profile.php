@@ -1,7 +1,7 @@
 <?php
 require("lib/common.php");
 
-$uid = isset($_GET['id']) ? (int)$_GET['id'] : -1;
+$uid = (int)$_GET['id'] ?? -1;
 if ($uid < 0) noticemsg("Error", "You must specify a user ID!", true);
 
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
