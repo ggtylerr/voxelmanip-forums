@@ -35,7 +35,7 @@ CREATE TABLE `forums` (
   `posts` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `lastdate` int(11) unsigned NOT NULL DEFAULT 0,
   `lastuser` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `lastid` int(11) unsigned NOT NULL,
+  `lastid` int(11) unsigned NOT NULL DEFAULT 0,
   `minread` tinyint(4) NOT NULL DEFAULT -1,
   `minthread` tinyint(4) NOT NULL DEFAULT 1,
   `minreply` tinyint(4) NOT NULL DEFAULT 1,
