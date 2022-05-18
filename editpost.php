@@ -18,7 +18,7 @@ if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
 needs_login();
 
 $thread = $sql->fetch("SELECT p.user puser, t.*, f.title ftitle FROM posts p LEFT JOIN threads t ON t.id = p.thread "
-	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND (? >= f.minread OR (t.forum IN (0, NULL) AND t.announce >= 1))", [$pid, $loguser['powerlevel']]);
+	."LEFT JOIN forums f ON f.id=t.forum WHERE p.id = ? AND ? >= f.minread", [$pid, $loguser['powerlevel']]);
 
 if (!$thread) $pid = 0;
 
@@ -31,17 +31,13 @@ if ($thread['closed'] && $loguser['powerlevel'] <= 1) {
 }
 
 $topbot = [
-	'breadcrumb' => [['href' => './', 'title' => 'Main']],
+	'breadcrumb' => [
+		['href' => './', 'title' => 'Main'],
+		['href' => "forum.php?id={$thread['forum']}", 'title' => $thread['ftitle']],
+		['href' => "thread.php?id={$thread['id']}", 'title' => esc($thread['title'])]
+	],
 	'title' => 'Edit post'
 ];
-
-if ($thread['announce']) {
-	array_push($topbot['breadcrumb'], ['href' => 'thread.php?announce=1', 'title' => 'Announcements']);
-} else {
-	array_push($topbot['breadcrumb'],
-		['href' => "forum.php?id={$thread['forum']}", 'title' => $thread['ftitle']],
-		['href' => "thread.php?id={$thread['id']}", 'title' => esc($thread['title'])]);
-}
 
 $post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p
 		LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision

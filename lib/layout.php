@@ -170,24 +170,23 @@ function ranklist() {
 }
 
 function announcement_row() {
-	global $dateformat, $sql, $loguser;
+	global $dateformat, $sql, $newsid;
 
-	$anc = $sql->fetch("SELECT t.title,t.user,t.lastdate date,".userfields('u')." FROM threads t JOIN users u ON t.user = u.id WHERE t.announce = 1 ORDER BY lastdate DESC LIMIT 1");
+	if (!isset($newsid) || !$newsid) return;
 
-	$cancreate = $loguser['powerlevel'] > 2;
+	$ufields = userfields('u');
+	$anc = $sql->fetch("SELECT t.id tid,t.title,t.user,t.lastdate date,$ufields FROM threads t JOIN users u ON t.user = u.id WHERE t.forum = $newsid ORDER BY lastdate DESC LIMIT 1");
 
-	if (isset($anc['title']) || $cancreate) {
-		$anlink = 'No announcements';
-		if (isset($anc['title'])) {
-			$anlink = sprintf(
-				'<a href="thread.php?announce=1">%s</a> - by %s on %s',
-			$anc['title'], userlink($anc), date($dateformat, $anc['date']));
-		}
+	if (isset($anc['title'])) {
+		$anlink = sprintf(
+			'<a href="thread.php?id=%s">%s</a> - by %s on %s',
+		$anc['tid'], $anc['title'], userlink($anc), date($dateformat, $anc['date']));
+
 		?><table class="c1">
-			<tr class="h"><td class="b" colspan="2">Announcements</td></tr>
+			<tr class="h"><td class="b" colspan="2">Latest Announcement</td></tr>
 			<tr class="n1 center"><td class="center b n1" width="32">&nbsp;</td>
 			<td class="b left"><?=$anlink ?>
-			<?=($cancreate ? '<span class="right" style="float:right"><a href=newthread.php?announce=1>New Announcement</a></span>' : '') ?>
+			<span class="right" style="float:right"><a href="forum.php?id=<?=$newsid?>">All announcements</a></span>
 		</td></tr></table><?php
 	}
 }

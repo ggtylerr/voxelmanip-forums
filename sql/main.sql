@@ -104,7 +104,6 @@ CREATE TABLE `posts` (
   `revision` smallint(5) unsigned NOT NULL DEFAULT 1,
   `ip` char(15) NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0,
-  `announce` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `threadid` (`thread`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -132,7 +131,6 @@ CREATE TABLE `threads` (
   `lastid` int(11) unsigned NOT NULL DEFAULT 0,
   `closed` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `sticky` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `announce` tinyint(1) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

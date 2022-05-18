@@ -39,7 +39,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 			LEFT JOIN users u1 ON u1.id = t.user
 			LEFT JOIN users u2 ON u2.id = t.lastuser
 			$threadsread
-			WHERE t.forum = ? AND t.announce = 0
+			WHERE t.forum = ?
 			ORDER BY t.sticky DESC, t.lastdate DESC
 			LIMIT ?,?",
 		[$fid, $offset, $tpp]);
