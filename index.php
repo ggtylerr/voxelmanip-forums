@@ -62,7 +62,7 @@ while ($forum = $forums->fetch()) {
 	if ($forum['posts'] > 0 && $forum['lastdate'] > 0)
 		$lastpost = sprintf(
 			'<nobr>%s</nobr><br><span class=sfont>by %s<a href="thread.php?pid=%s#%s">&raquo;</a></span>',
-		date($dateformat, $forum['lastdate']), userlink($forum, 'u'), $forum['lastid'], $forum['lastid']);
+		dateformat($forum['lastdate']), userlink($forum, 'u'), $forum['lastid'], $forum['lastid']);
 
 	$status = ($forum['lastdate'] > ($log ? $forum['rtime'] : time() - 3600) ? rendernewstatus("n") : '');
 

@@ -121,10 +121,10 @@ $profilefields = [
 		['title' => 'Total posts', 'value' => sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days)],
 		['title' => 'Total threads', 'value' => $user['threads'].' ('.sprintf('%1.02f', $user['threads'] / $days).' per day)'],
 		['title' => 'Registered on', 'value' => date($dateformat, $user['regdate']).' ('.timeunits($days * 86400).' ago)'],
-		['title' => 'Last post', 'value'=>($user['lastpost'] ? date($dateformat, $user['lastpost'])." (".timeunits(time()-$user['lastpost'])." ago)" : "None").$lastpostlink],
+		['title' => 'Last post', 'value'=>($user['lastpost'] ? dateformat($user['lastpost'])." (".timeunits(time()-$user['lastpost'])." ago)" : "None").$lastpostlink],
 		['title' => 'Last view', 'value' => sprintf(
 				'%s (%s ago) %s %s',
-			date($dateformat, $user['lastview']), timeunits(time() - $user['lastview']),
+			dateformat($user['lastview']), timeunits(time() - $user['lastview']),
 			($user['url'] ? sprintf('<br>at <a href="%s">%s</a>', esc($user['url']), esc($user['url'])) : ''),
 			($loguser['powerlevel'] > 2 ? '<br>from IP: '.$user['ip'] : ''))]
 	],

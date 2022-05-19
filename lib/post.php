@@ -145,7 +145,7 @@ function LoadBlocklayouts() {
 }
 
 function threadpost($post, $pthread = '') {
-	global $dateformat, $loguser, $blocklayouts, $log;
+	global $loguser, $blocklayouts, $log;
 
 	if (isset($post['deleted']) && $post['deleted']) {
 		if ($loguser['powerlevel'] > 1) {
@@ -200,7 +200,7 @@ HTML;
 		$postlinks = "<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>"; // headlinks for posts
 
 	if (isset($post['revision']) && $post['revision'] >= 2)
-		$revisionstr = " (rev. {$post['revision']} of " . date($dateformat, $post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
+		$revisionstr = " (rev. {$post['revision']} of " . dateformat($post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
 
 	if (isset($post['thread']) && $log) {
 		if (isset($post['thread']) && $post['id'])
@@ -231,7 +231,7 @@ HTML;
 	$sbar = "sidebar".$post['uid'];
 	$mbar = "mainbar".$post['uid'];
 	$ulink = userlink($post, 'u');
-	$pdate = date($dateformat, $post['date']);
+	$pdate = dateformat($post['date']);
 
 	$regdate = date('Y-m-d', $post['uregdate']);
 	$lastpost = ($post['ulastpost'] ? timeunits(time() - $post['ulastpost']) : 'none');

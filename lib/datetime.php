@@ -23,3 +23,8 @@ function timelink($timex, $file) {
 	global $time;
 	return ($time == $timex ? timeunits2($timex) : "<a href=\"$file.php?time=$timex\">".timeunits2($timex).'</a>');
 }
+
+function dateformat($time) {
+	global $dateformat;
+	return date($dateformat, $time);
+}

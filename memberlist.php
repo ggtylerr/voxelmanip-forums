@@ -71,7 +71,7 @@ for ($i = 1; $user = $users->fetch(); $i++) {
 		<td class="b center"><?=$user['id'] ?>.</td>
 		<td class="b center"><?=$picture ?></td>
 		<td class="b"><?=userlink($user) ?></td>
-		<td class="b center"><?=date($dateformat,$user['regdate']) ?></td>
+		<td class="b center"><?=dateformat($user['regdate']) ?></td>
 		<td class="b center"><?=$user['posts'] ?></td>
 	</tr><?php
 }

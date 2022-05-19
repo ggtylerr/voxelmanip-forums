@@ -98,7 +98,7 @@ RenderPageBar($topbot);
 			<td class="b n1"><?=$status ?></td>
 			<td class="b left" style="word-break:break-word"><a href="showprivate.php?id=<?=$pmsg['id'] ?>"><?=esc($pmsg['title']) ?></a></td>
 			<td class="b"><?=userlink($pmsg, 'u') ?></td>
-			<td class="b"><nobr><?=date($dateformat, $pmsg['date']) ?></nobr></td>
+			<td class="b"><nobr><?=dateformat($pmsg['date']) ?></nobr></td>
 		</tr>
 		<?php
 	}

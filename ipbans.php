@@ -68,9 +68,7 @@ if (isset($err)) noticemsg("Error", $err);
 	<tr>
 		<td class="b n1"><span style="font-family:monospace"><?=ipfmt($i['ipmask']) ?></span></td>
 		<td class="b n2 center"><?=($i['hard'] ? "Yes" : "No") ?></td>
-		<td class="b n2 center">
-			<?=($i['expires'] ? date($loguser['dateformat'],$i['expires'])."&nbsp;".date($loguser['timeformat'],$i['expires']) : "never") ?>
-		</td>
+		<td class="b n2 center"><?=($i['expires'] ? dateformat($i['expires']) : "never") ?></td>
 		<td class="b n2 center"><?=$i['banner'] ?></td>
 		<td class="b n2"><?=$i['reason'] ?></td>
 		<td class="b n2 center">

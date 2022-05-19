@@ -170,7 +170,7 @@ function ranklist() {
 }
 
 function announcement_row() {
-	global $dateformat, $sql, $newsid;
+	global $sql, $newsid;
 
 	if (!isset($newsid) || !$newsid) return;
 
@@ -180,7 +180,7 @@ function announcement_row() {
 	if (isset($anc['title'])) {
 		$anlink = sprintf(
 			'<a href="thread.php?id=%s">%s</a> - by %s on %s',
-		$anc['tid'], $anc['title'], userlink($anc), date($dateformat, $anc['date']));
+		$anc['tid'], $anc['title'], userlink($anc), dateformat($anc['date']));
 
 		?><table class="c1">
 			<tr class="h"><td class="b" colspan="2">Latest Announcement</td></tr>

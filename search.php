@@ -88,7 +88,7 @@ if ($where == 1) {
 				<a href="thread.php?id=<?=$thread['id'] ?>"><?=esc($thread['title']) ?></a> <?=($thread['sticky'] ? ' (Sticky)' : '')?>
 			</td>
 			<td class="b"><?=userlink($thread,'u') ?></td>
-			<td class="b"><?=date($dateformat,$thread['lastdate']) ?></td>
+			<td class="b"><?=dateformat($thread['lastdate']) ?></td>
 		</tr><?php
 	}
 	if_empty_query($i, "No threads found.", 6);

@@ -126,7 +126,7 @@ if ($r) {
  * @return void
  */
 function pageheader($pagetitle = '', $fid = null) {
-	global $dateformat, $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
+	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
 	$theme, $meta, $count, $bot, $defaultlogo, $rankset_names;
 
 	if ($log) {
@@ -183,7 +183,7 @@ HTML;
 					| <a href="online.php">Online users</a>
 					| <a href="search.php">Search</a>
 				</td>
-				<td class="b"><div style="width: 150px"><?=date($dateformat, time())?></div></td>
+				<td class="b"><div style="width: 150px"><?=dateformat(time())?></div></td>
 				<tr class="n1 center"><td class="b" colspan="3"><?=($log ? userlink($loguser) : 'Not logged in ')?>
 <?php
 	if ($log) {

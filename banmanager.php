@@ -16,7 +16,7 @@ $user = $sql->fetch("SELECT * FROM users WHERE id = ?",[$uid]);
 
 if (isset($_POST['banuser']) && $_POST['banuser'] == "Ban User") {
 	if ($_POST['tempbanned'] > 0) {
-		$banreason = "Banned until ".date("m-d-y h:i A",time() + ($_POST['tempbanned']));
+		$banreason = "Banned until ".date("Y-m-d H:i",time() + ($_POST['tempbanned']));
 	} else {
 		$banreason = "Banned permanently";
 	}

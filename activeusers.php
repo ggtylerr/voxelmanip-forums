@@ -25,7 +25,7 @@ for ($i = 1; $user = $users->fetch(); $i++) {
 	?><tr class="n<?=$tr ?> center">
 		<td class="b"><?=$i ?>.</td>
 		<td class="b left"><?=userlink($user) ?></td>
-		<td class="b"><?=date($dateformat,$user['regdate']) ?></td>
+		<td class="b"><?=dateformat($user['regdate']) ?></td>
 		<td class="b"><b><?=$user['num'] ?></b></td>
 		<td class="b"><b><?=$user['posts'] ?></b></td>
 	</tr><?php
