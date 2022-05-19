@@ -8,6 +8,7 @@ $sqlpass = 'sqlpassword';
 $sqldb   = 'sqldatabase';
 
 $trashid = 2; // Designates the id for your trash forum.
+//$newsid = 3; // Designates the id for your announcements forum. (uncomment to enable)
 
 $boardtitle = "Insert title here"; // This is what will be displayed at the top of your browser window.
 $defaultlogo = "theme/abII.png"; // Replace with the logo of your choice.

@@ -119,8 +119,8 @@ $profilefields = [
 		['title' => 'Real handle', 'value' => '<span style="color:#'.powIdToColour($user['powerlevel']).';"><b>'.esc($user['name']).'</b></span>'],
 		['title' => 'Group', 'value' => powIdToName($user['powerlevel'])],
 		['title' => 'Total posts', 'value' => sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days)],
-		['title' => 'Total threads', 'value' => $user['threads'].' ('.sprintf('%1.02f', $user['threads'] / $days).' per day)'],
-		['title' => 'Registered on', 'value' => date($dateformat, $user['regdate']).' ('.timeunits($days * 86400).' ago)'],
+		['title' => 'Total threads', 'value' => sprintf('%s (%1.02f per day)' ,$user['threads'], $user['threads'] / $days)],
+		['title' => 'Registered on', 'value' => dateformat($user['regdate']).' ('.timeunits($days * 86400).' ago)'],
 		['title' => 'Last post', 'value'=>($user['lastpost'] ? dateformat($user['lastpost'])." (".timeunits(time()-$user['lastpost'])." ago)" : "None").$lastpostlink],
 		['title' => 'Last view', 'value' => sprintf(
 				'%s (%s ago) %s %s',

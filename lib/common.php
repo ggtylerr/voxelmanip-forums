@@ -78,16 +78,10 @@ if ($log) {
 	$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
 }
 
-if (!$bot) {
+if (!$bot)
 	$sql->query("UPDATE misc SET views = views + 1");
-} else {
-	$sql->query("UPDATE misc SET botviews = botviews + 1");
-}
 
 $views = $sql->result("SELECT views FROM misc");
-
-$count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
-$date = date("m-d-y", time());
 
 $theme = $loguser['theme'];
 //Config definable theme override
@@ -127,7 +121,7 @@ if ($r) {
  */
 function pageheader($pagetitle = '', $fid = null) {
 	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
-	$theme, $meta, $count, $bot, $defaultlogo, $rankset_names;
+	$theme, $meta, $defaultlogo, $rankset_names;
 
 	if ($log) {
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -202,10 +196,8 @@ HTML;
 	$userlinks = [];
 
 	if (!$log) {
-		if (!$bot) {
-			$userlinks[] = ['url' => "register.php", 'title' => 'Register'];
-			$userlinks[] = ['url' => "login.php", 'title' => 'Login'];
-		}
+		$userlinks[] = ['url' => "register.php", 'title' => 'Register'];
+		$userlinks[] = ['url' => "login.php", 'title' => 'Login'];
 	} else {
 		$userlinks[] = ['url' => "javascript:document.logout.submit()", 'title' => 'Logout'];
 	}
@@ -278,6 +270,8 @@ HTML;
 			$birthdaystoday = implode(", ", $birthdays);
 			$birthdaybox = "<tr class=\"n1 center\"><td class=\"b n2 center\">Birthdays today: $birthdaystoday</td></tr>";
 		}
+
+		$count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
 
 		$count['d'] = $sql->result("SELECT COUNT(*) FROM posts WHERE date > ?", [(time() - 86400)]);
 		$count['h'] = $sql->result("SELECT COUNT(*) FROM posts WHERE date > ?", [(time() - 3600)]);
