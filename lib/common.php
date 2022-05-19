@@ -15,8 +15,7 @@ header("Content-type: text/html; charset=utf-8");
 
 $userip = $_SERVER['REMOTE_ADDR'];
 $useragent = $_SERVER['HTTP_USER_AGENT'];
-$url = getenv("SCRIPT_NAME");
-if ($q = getenv("QUERY_STRING")) $url .= "?$q";
+$url = $_SERVER['REQUEST_URI'];
 
 $log = false;
 $logpermset = [];

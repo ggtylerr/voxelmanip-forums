@@ -184,10 +184,7 @@ HTML;
 	if ($log && $loguser['blocklayouts'])
 		$isBlocked = true;
 	else
-		if (isset($blocklayouts[$post['uid']]))
-			$isBlocked = true;
-		else
-			$isBlocked = false;
+		$isBlocked = isset($blocklayouts[$post['uid']]);
 
 	if ($isBlocked)
 		$post['usign'] = $post['uhead'] = '';
@@ -205,14 +202,10 @@ HTML;
 	if (isset($post['revision']) && $post['revision'] >= 2)
 		$revisionstr = " (rev. {$post['revision']} of " . date($dateformat, $post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
 
-	// I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
-	if (isset($post['isannounce'])) {
-		$postheaderrow = '<tr class="h"><td class="b" colspan=2>' . $post['ttitle'] . '</td></tr>';
-	} else if (isset($post['thread']) && $post['id'] && $loguser['id'] != 0) {
-		$postlinks .= ($postlinks ? ' | ' : '') . "<a href=\"newreply.php?id=$post[thread]&pid=$post[id]\">Reply</a>";
-	}
-
 	if (isset($post['thread']) && $log) {
+		if (isset($post['thread']) && $post['id'])
+			$postlinks .= " | <a href=\"newreply.php?id=$post[thread]&pid=$post[id]\">Reply</a>";
+
 		// "Edit" link for admins or post owners, but not banned users
 		if ($loguser['powerlevel'] > 2 || $loguser['id'] == $post['uid'])
 			$postlinks .= " | <a href=\"editpost.php?pid=$post[id]\">Edit</a>";
