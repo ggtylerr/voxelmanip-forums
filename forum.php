@@ -10,6 +10,7 @@ $offset = (($page - 1) * $tpp);
 
 $topbot = [];
 
+$fieldlist = userfields('u1', 'u1').",".userfields('u2', 'u2');
 $isread = $threadsread = '';
 
 if ($log) {
@@ -78,10 +79,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 		'title' => 'Threads'
 	];
 } elseif ($time = $_GET['time']) {
-	if (is_numeric($time))
-		$mintime = time() - $time;
-	else
-		$mintime = 86400;
+	$mintime = ($time > 0 && $time <= 2592000 ? time() - $time : 86400);
 
 	pageheader('Latest posts');
 
@@ -109,12 +107,9 @@ $showforum = $time ?? $uid;
 
 $fpagelist = '';
 if ($forum['threads'] > $tpp) {
-	if ($fid)
-		$furl = "forum.php?id=$fid";
-	elseif ($uid)
-		$furl = "forum.php?user=$uid";
-	elseif ($time)
-		$furl = "forum.php?time=$time";
+	if ($fid)		$furl = "forum.php?id=$fid";
+	elseif ($uid)	$furl = "forum.php?user=$uid";
+	elseif ($time)	$furl = "forum.php?time=$time";
 	$fpagelist = '<br>'.pagelist($forum['threads'], $tpp, $furl, $page);
 }
 

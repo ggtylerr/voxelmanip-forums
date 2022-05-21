@@ -18,7 +18,7 @@ if ($sort == 'reg') $order = 'regdate' . $sortby;
 
 $where = (is_numeric($pow) ? "WHERE powerlevel = $pow" : '');
 
-$users = $sql->query("SELECT * FROM users $where ORDER BY $order LIMIT " . ($page - 1) * $ppp . ",$ppp");
+$users = $sql->query("SELECT * FROM users $where ORDER BY $order LIMIT ?,?", [($page - 1) * $ppp, $ppp]);
 $num = $sql->result("SELECT COUNT(*) FROM users $where");
 
 $pagelist = '';

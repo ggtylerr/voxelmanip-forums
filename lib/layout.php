@@ -8,25 +8,21 @@ function redirect($url) {
 function rendernewstatus($type) {
 	if (!$type) return '';
 
-	switch ($type) {
-		case "n":
-			$text = "NEW";
-			$statusimg = "new.png";
-		break;
-		case "o":
-			$text = "OFF";
-			$statusimg = "off.png";
-		break;
-		case "on":
-			$text = "OFF";
-			$statusimg = "offnew.png";
-		break;
-	}
+	$text = match ($type) {
+		'n'  => 'NEW',
+		'o'  => 'OFF',
+		'on' => 'OFF'
+	};
+	$statusimg = match ($type) {
+		'n'  => 'new.png',
+		'o'  => 'off.png',
+		'on' => 'offnew.png'
+	};
 
 	return "<img src=\"img/status/$statusimg\" alt=\"$text\">";
 }
 
-function RenderActions($actions, $ret = false) {
+function RenderActions($actions) {
 	$out = '';
 	$i = 0;
 	foreach ($actions as $action) {
@@ -37,23 +33,17 @@ function RenderActions($actions, $ret = false) {
 		else
 			$out .= $action['title'];
 	}
-	if ($ret)
-		return $out;
-	else
-		echo $out;
-}
-
-function RenderBreadcrumb($breadcrumb) {
-	foreach ($breadcrumb as $action)
-		printf('<a href=%s>%s</a> - ', '"'.htmlentities($action['href'], ENT_QUOTES).'"', $action['title']);
+	echo $out;
 }
 
 function RenderPageBar($pagebar) {
 	if (empty($pagebar)) return;
 
 	echo "<table width=100%><td class=nb>";
-	if (!empty($pagebar['breadcrumb']))
-		RenderBreadcrumb($pagebar['breadcrumb']);
+	if (!empty($pagebar['breadcrumb'])) {
+		foreach ($pagebar['breadcrumb'] as $action)
+			printf('<a href=%s>%s</a> - ', '"'.htmlentities($action['href'], ENT_QUOTES).'"', $action['title']);
+	}
 	echo $pagebar['title'].'</td><td class="nb right">';
 	if (!empty($pagebar['actions']))
 		RenderActions($pagebar['actions']);

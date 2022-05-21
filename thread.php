@@ -71,10 +71,7 @@ $offset = (($page - 1) * $ppp);
 if ($viewmode == "thread") {
 	if (!$tid) $tid = 0;
 
-	if ($act == 'rename')
-		$params = [$_POST['title'], $tid];
-	else
-		$params = [$tid];
+	$params = ($act == 'rename' ? [$_POST['title'], $tid] : [$tid]);
 	$sql->query("UPDATE threads SET views = views + 1 $action WHERE id = ?", $params);
 
 	$thread = $sql->fetch("SELECT t.*, f.title ftitle, t.forum fid".($log ? ', r.time frtime' : '').' '
@@ -132,10 +129,7 @@ if ($viewmode == "thread") {
 
 	$thread['replies'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]) - 1;
 } elseif ($viewmode == "time") {
-	if (is_numeric($time))
-		$mintime = time() - $time;
-	else
-		$mintime = 86400;
+	$mintime = ($time > 0 && $time <= 2592000 ? time() - $time : 86400);
 
 	pageheader('Latest posts');
 
@@ -156,12 +150,9 @@ if ($viewmode == "thread") {
 
 $pagelist = '';
 if ($thread['replies']+1 > $ppp) {
-	if ($viewmode == "thread")
-		$furl = "thread.php?id=$tid";
-	elseif ($viewmode == "user")
-		$furl = "thread.php?user=$uid";
-	elseif ($viewmode == "time")
-		$furl = "thread.php?time=$time";
+	if ($viewmode == "thread")		$furl = "thread.php?id=$tid";
+	elseif ($viewmode == "user")	$furl = "thread.php?user=$uid";
+	elseif ($viewmode == "time")	$furl = "thread.php?time=$time";
 	$pagelist = '<br>'.pagelist($thread['replies']+1, $ppp, $furl, $page, true);
 }
 
