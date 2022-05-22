@@ -159,8 +159,8 @@ HTML;
 		<?=$meta?>
 		<link rel="stylesheet" href="theme/common.css">
 		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
-		<script src="lib/js/microlight.js"></script>
-		<script src="lib/js/tools.js"></script>
+		<script src="js/microlight.js"></script>
+		<script src="js/tools.js"></script>
 	</head>
 	<body>
 		<table class="c1">
