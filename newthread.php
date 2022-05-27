@@ -104,12 +104,17 @@ if (isset($err)) {
 	$sql->query("UPDATE users SET posts = posts + 1,threads = threads + 1,lastpost = ? WHERE id = ?", [time(), $loguser['id']]);
 	$sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser) VALUES (?,?,?,?,?)",
 		[$_POST['title'],$fid,$loguser['id'],time(),$loguser['id']]);
+
 	$tid = $sql->insertid();
 	$sql->query("INSERT INTO posts (user,thread,date,ip) VALUES (?,?,?,?)",
 		[$loguser['id'],$tid,time(),$userip]);
+
 	$pid = $sql->insertid();
 	$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
 		[$pid,$_POST['message']]);
+
+	$sql->query("UPDATE forums SET threads = threads + 1, posts = posts + 1, lastdate = ?,lastuser = ?,lastid = ? WHERE id = ?",
+		[time(), $loguser['id'], $pid, $fid]);
 
 	$sql->query("UPDATE threads SET lastid = ? WHERE id = ?", [$pid, $tid]);
 
