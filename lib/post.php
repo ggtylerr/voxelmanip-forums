@@ -93,9 +93,13 @@ function postfilter($msg) {
 
 	$msg = preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si', "get_username_link", $msg);
 
+	// Quotes
 	$msg = preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si", '<blockquote><span class="quotedby"><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small></span><hr>', $msg);
-	$msg = preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\](.*?)\[/quote\]'si", '<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>\\3<hr></blockquote>', $msg);
-	$msg = preg_replace("'\[quote=(.*?)\](.*?)\[/quote\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span><hr>\\2<hr></blockquote>', $msg);
+	$msg = preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si", '<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>', $msg);
+	$msg = preg_replace("'\[quote=(.*?)\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span>', $msg);
+	$msg = str_replace('[/reply]', '<hr></blockquote>', $msg);
+	$msg = str_replace('[/quote]', '<hr></blockquote>', $msg);
+	
 	$msg = preg_replace("'>>([0-9]+)'si", '>><a href=thread.php?pid=\\1#\\1>\\1</a>', $msg);
 
 	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si", '<iframe width="427" height="240" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
