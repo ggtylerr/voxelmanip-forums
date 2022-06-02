@@ -108,11 +108,7 @@ function postfilter($msg) {
 }
 
 function esc($text) {
-	$text = str_replace('&', '&amp;', $text);
-	$text = str_replace('<', '&lt;', $text);
-	$text = str_replace('"', '&quot;', $text);
-	$text = str_replace('>', '&gt;', $text);
-	return $text;
+	return htmlspecialchars($text);
 }
 
 function posttoolbutton($name, $title, $leadin, $leadout) {
