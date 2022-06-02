@@ -88,7 +88,7 @@ function postfilter($msg) {
 	$msg = preg_replace("'\[img\](.*?)\[/img\]'si", '<img src=\\1>', $msg);
 	$msg = preg_replace("'\[quote\](.*?)\[/quote\]'si", '<blockquote><hr>\\1<hr></blockquote>', $msg);
 	$msg = preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si", '<span style="color: #\\1">\\2</span>', $msg);
-	
+
 	$msg = preg_replace("'\[pre\](.*?)\[/pre\]'si", '<code>\\1</code>', $msg);
 
 	$msg = preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si', "get_username_link", $msg);
@@ -99,7 +99,7 @@ function postfilter($msg) {
 	$msg = preg_replace("'\[quote=(.*?)\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span>', $msg);
 	$msg = str_replace('[/reply]', '<hr></blockquote>', $msg);
 	$msg = str_replace('[/quote]', '<hr></blockquote>', $msg);
-	
+
 	$msg = preg_replace("'>>([0-9]+)'si", '>><a href=thread.php?pid=\\1#\\1>\\1</a>', $msg);
 
 	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si", '<iframe width="427" height="240" src="https://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
@@ -150,16 +150,16 @@ function threadpost($post, $pthread = '') {
 	global $loguser, $blocklayouts, $log;
 
 	if (isset($post['deleted']) && $post['deleted']) {
+		$postlinks = '';
 		if ($loguser['powerlevel'] > 1) {
 			$postlinks = sprintf(
-				'<a href="thread.php?pid=%s&pin=%s&rev=%s#%s">Peek</a> | <a href="editpost.php?pid=%s&act=undelete">Undelete</a> | ID: %s',
-			$post['id'], $post['id'], $post['revision'], $post['id'], $post['id'], $post['id']);
-		} else {
-			$postlinks = 'ID: '.$post['id'];
+				'<a href="thread.php?pid=%s&pin=%s&rev=%s#%s">Peek</a> | <a href="editpost.php?pid=%s&act=undelete">Undelete</a> | ',
+			$post['id'], $post['id'], $post['revision'], $post['id'], $post['id']);
 		}
+		$postlinks .= 'ID: '.$post['id'];
 
 		$ulink = userlink($post, 'u');
-		$text = <<<HTML
+		return <<<HTML
 <table class="c1"><tr>
 	<td class="b n1" style="border-right:0;width:180px">$ulink</td>
 	<td class="b n1" style="border-left:0">
@@ -170,7 +170,6 @@ function threadpost($post, $pthread = '') {
 	</td>
 </tr></table>
 HTML;
-		return $text;
 	}
 
 	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
