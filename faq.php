@@ -35,22 +35,22 @@ HTML
 	'content' => <<<HTML
 <p>Posting on a message forum is generally relaxed. There are, however, a few things to keep in mind when posting.</p>
 <ul>
-	<li><b>No trolling, flaming, harrassment or drama</b><br>
+	<li><b>No trolling, flaming, harrassment or drama.</b><br>
 		This behavior is unacceptable and will be dealt with accordingly to the severity, to make the board a pleasant experience for everyone.</li>
 
-	<li><b>No spamming</b><br>
+	<li><b>No spamming.</b><br>
 		Spam is a pretty broad area. Spam can be generalised as multiple posts with no real meaning to the topic or what anyone else is talking about. Also applies to registering with the sole intent of advertising something completely irrelevant.</li>
 
 	<li><b>Do not mention sensitive subjects such as politics or religion.</b><br>
 		It is irrelevant to this site and risks creating unnecessary conflict and tension.</li>
 
-	<li><b>The forum's main language is English</b><br>
+	<li><b>The forum's main language is English.</b><br>
 		English is a language we all understand relatively well, including the staff. Keep non-English text to an absolute minimum.</li>
 
-	<li><b>Do not back-seat moderate or "minimod"</b><br>
+	<li><b>Do not back-seat moderate or "minimod".</b><br>
 		While this may depend on the circumstances, you may do more harm than good and stir up drama. If you see an issue please contact a staff member privately and they can properly handle it.</li>
 
-	<li><b>No explicit material</b><br>
+	<li><b>No explicit material.</b><br>
 		If it is something people normally would look at to pleasure themselves, you should not post it here.</li>
 
 	<li><b>Please proofread your posts and use proper grammar and punctuation.</b><br>
@@ -108,23 +108,32 @@ HTML
 		<td class="b n1">[color=<b>hexcolor</b>]<i>text</i>[/color]</td>
 		<td class="b n2"><span style="color:#BCDE9A">Custom color Text</span></td>
 	</tr><tr>
-		<td class="b n1">[img]<i>URL of image to display</i>[/img]</td>
-		<td class="b n2">Displays an image.</td>
+		<td class="b n1">
+			[url]<i>URL of site or page to link to</i>[/url]<br>
+			[url=<i>URL</i>]<i>Link title</i>[/url]
+		</td>
+		<td class="b n2">Creates a link with or without a title.</td>
 	</tr><tr>
 		<td class="b n1">[spoiler]<i>text</i>[/spoiler]</td>
 		<td class="b n2">Used for hiding spoiler text.</td>
 	</tr><tr>
+		<td class="b n1">[quote]<i>text</i>[/quote]</td>
+		<td class="b n2">Displays a blockquote with the text</td>
+	</tr><tr>
 		<td class="b n1">[code]<i>code text</i>[/code]</td>
 		<td class="b n2">Displays code in a formatted box.</td>
 	</tr><tr>
-		<td class="b n1">[url]<i>URL of site or page to link to</i>[/url]<br>[url=<i>URL</i>]<i>Link title</i>[/url]</td>
-		<td class="b n2">Creates a link with or without a title.</td>
+		<td class="b n1">[img]<i>URL of image to display</i>[/img]</td>
+		<td class="b n2">Displays an image.</td>
+	</tr><tr>
+		<td class="b n1">[youtube]<i>video id</i>[/youtube]</td>
+		<td class="b n2">Creates an embeded YouTube video.</td>
 	</tr><tr>
 		<td class="b n1">@"<i>User Name</i>"</td>
 		<td class="b n2">Creates a link to a user's profile complete with name colour.</td>
 	</tr><tr>
-		<td class="b n1">[youtube]<i>video id</i>[/youtube]</td>
-		<td class="b n2">Creates an embeded YouTube video.</td>
+		<td class="b n1">&gt;&gt;<i>Post ID</i></td>
+		<td class="b n2">Simple link reference to a particular post for replying to it.</td>
 	</tr>
 </table>
 <p>Also, most HTML tags are able to be used in your posts.</p>
