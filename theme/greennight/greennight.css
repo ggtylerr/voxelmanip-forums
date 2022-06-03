@@ -9,7 +9,7 @@ body {
 
 table.c1,td.b {
 	border: 1px solid #208000;
-	padding: 5px;
+	padding: 4px;
 }
 
 .h { background: #041000 url('gradient.png') repeat-x; border: 0 !important }

@@ -34,7 +34,12 @@ td.b {
 .n2 { background: #3B1E09; background: rgba(0, 0, 0, .40); }
 .n3 { background: #934003; background: rgba(0, 0, 0, .20); }
 
-textarea, input, select {
+.postformatting button {
+	margin: 4px;
+	padding: 2px 6px;
+}
+
+textarea, input, select, button {
 	border: #643007 inset 2px;
 	color: #FFFFFF;
 	background: #24150A;
@@ -42,7 +47,7 @@ textarea, input, select {
 	font: 1em verdana;
 }
 
-input[type=submit] {
+input[type=submit], button {
 	border: #643007 outset 2px;
 	background: url("wood.jpg") #643007;
 	font-weight: bold;

@@ -86,6 +86,11 @@ input[type="text"], input[type="password"], input[type="file"], input[type="emai
 	color: white;
 }
 
+button, input[type="submit"], select, input[type="text"], input[type="password"], input[type="file"], input[type="email"], textarea {
+	margin: 2px;
+	padding: 2px 6px;
+}
+
 input[type="checkbox"], input[type="radio"] {
 	background: hsl(210, 20%, 15%);
 	border: 0px none;

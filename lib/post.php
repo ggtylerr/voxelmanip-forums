@@ -113,14 +113,14 @@ function esc($text) {
 
 function posttoolbutton($name, $title, $leadin, $leadout) {
 	return sprintf(
-		'<td style="text-align:center">
-			<a href="javascript:toolBtn(\'%s\',\'%s\')"><input style="font-size:10pt;" type="button" title="%s" value="%s"></a>
+		'<td>
+			<a href="javascript:toolBtn(\'%s\',\'%s\')"><button style="font-size:11pt;" title="%s">%s</button></a>
 		</td>',
 	$leadin, $leadout, $title, $name);
 }
 
 function posttoolbar() {
-	return '<table><tr>'
+	return '<table class="postformatting"><tr>'
 		. posttoolbutton("B", "Bold", "[b]", "[/b]")
 		. posttoolbutton("I", "Italic", "[i]", "[/i]")
 		. posttoolbutton("U", "Underline", "[u]", "[/u]")
