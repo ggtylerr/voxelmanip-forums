@@ -1,39 +1,59 @@
 <?php
 require('lib/common.php');
-
 needs_login();
 
 $_POST['action'] = $_POST['action'] ?? null;
 
-if ($act = $_POST['action']) {
+if ($action = $_POST['action']) {
 	$tid = $_POST['tid'];
 } else {
 	$tid = $_GET['id'];
 }
-$act = $act ?? null;
+$action = $action ?? null;
 
 $thread = $sql->fetch("SELECT t.*, f.title ftitle, f.minreply fminreply
 	FROM threads t LEFT JOIN forums f ON f.id=t.forum
 	WHERE t.id = ? AND ? >= f.minread", [$tid, $loguser['powerlevel']]);
 
-$err = '';
+$error = '';
 if (!$thread) {
 	noticemsg("Error", "Thread does not exist.", true);
 } else if ($thread['fminreply'] > $loguser['powerlevel']) {
-	$err = "You have no permissions to create posts in this forum!";
+	$error = "You have no permissions to create posts in this forum!";
 } elseif ($thread['closed'] && $loguser['powerlevel'] < 2) {
-	$err = "You can't post in closed threads!";
+	$error = "You can't post in closed threads!";
 }
-if ($act == 'Submit') {
+if ($error) noticemsg('Error', $error, true);
+
+if ($action == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
 	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && $loguser['powerlevel'] < 4)
-		$err = "You can't double post until it's been at least one day!";
+		$error = "You can't double post until it's been at least one day!";
 	//if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && !has_perm('consecutive-posts'))
-	//	$err = "You must wait 2 seconds before posting consecutively.";
+	//	$error = "You must wait 2 seconds before posting consecutively.";
 	if (strlen(trim($_POST['message'])) == 0)
-		$err = "Your post is empty! Enter a message and try again.";
-	if ($loguser['regdate'] > (time() - 2))
-		$err = "You must wait 2 seconds before posting on a freshly registered account.";
+		$error = "Your post is empty! Enter a message and try again.";
+
+	if (!$error) {
+		$sql->query("UPDATE users SET posts = posts + 1, lastpost = ? WHERE id = ?", [time(), $loguser['id']]);
+		$sql->query("INSERT INTO posts (user,thread,date,ip) VALUES (?,?,?,?)",
+			[$loguser['id'],$tid,time(),$userip]);
+
+		$pid = $sql->insertid();
+		$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
+			[$pid,$_POST['message']]);
+
+		$sql->query("UPDATE threads SET replies = replies + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
+			[time(), $loguser['id'], $pid, $tid]);
+
+		$sql->query("UPDATE forums SET posts = posts + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
+			[time(), $loguser['id'], $pid, $thread['forum']]);
+
+		// nuke entries of this thread in the "threadsread" table
+		$sql->query("DELETE FROM threadsread WHERE tid = ? AND NOT (uid = ?)", [$thread['id'], $loguser['id']]);
+
+		redirect("thread.php?pid=$pid#$pid");
+	}
 }
 
 $topbot = [
@@ -44,17 +64,19 @@ $topbot = [
 	'title' => "New reply"
 ];
 
+pageheader('New reply', $thread['forum']);
+
+$message = $_POST['message'] ?? '';
+
 $pid = (int)($_GET['pid'] ?? 0);
-$quotetext = '';
 if ($pid) {
-	$post = $sql->fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, p.thread "
-			. "FROM posts p "
-			. "LEFT JOIN poststext pt ON p.id=pt.id "
-			. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
-			. "LEFT JOIN users u ON p.user=u.id "
-			. "LEFT JOIN threads t ON t.id=p.thread "
-			. "LEFT JOIN forums f ON f.id=t.forum "
-			. "WHERE p.id = ? AND ISNULL(pt2.id)", [$pid]);
+	$post = $sql->fetch("SELECT u.name name, p.user, pt.text, f.id fid, p.thread, f.minread
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			LEFT JOIN threads t ON t.id = p.thread
+			LEFT JOIN forums f ON f.id = t.forum
+			WHERE p.id = ?", [$pid]);
 
 	//does the user have reading access to the quoted post?
 	if ($loguser['powerlevel'] < $post['minread']) {
@@ -62,41 +84,32 @@ if ($pid) {
 		$post['text'] = '';
 	}
 
-	$quotetext = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", $post['text']));
+	$message = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", $post['text']));
 }
 
-if ($err) {
-	pageheader('New reply', $thread['forum']);
-	$topbot['title'] .= ' (Error)';
-	RenderPageBar($topbot);
-	echo '<br>';
-	noticemsg("Error", $err."<br><a href=\"thread.php?id=$tid\">Back to thread</a>");
-} elseif ($act == 'Preview' || !$act) {
-	$post['date'] = time();
+if ($action == 'Preview') {
+	$post['date'] = $post['ulastpost'] = time();
 	$loguser['posts']++;
-	$post['text'] = ($act == 'Preview' ? $_POST['message'] : $quotetext);
+	$post['text'] = $message;
 	foreach ($loguser as $field => $val)
-		$post['u' . $field] = $val;
-	$post['ulastpost'] = time();
+		$post['u'.$field] = $val;
 
-	if ($act == 'Preview') {
-		pageheader('New reply', $thread['forum']);
-		$topbot['title'] .= ' (Preview)';
-		RenderPageBar($topbot);
-		echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">Post preview</table>'.threadpost($post);
-	} else {
-		pageheader('New reply', $thread['forum']);
-		RenderPageBar($topbot);
-	}
-	?><br>
-	<form action="newreply.php" method="post"><table class="c1">
+	$topbot['title'] .= ' (Preview)';
+	RenderPageBar($topbot);
+	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">Post preview</table>'.threadpost($post);
+} else {
+	RenderPageBar($topbot);
+}
+?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+<form action="newreply.php" method="post">
+	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">Reply</td></tr>
 		<tr>
 			<td class="b n1 center" width="120">Format:</td>
 			<td class="b n2"><?=posttoolbar() ?></td>
 		</tr><tr>
 			<td class="b n1 center">Post:</td>
-			<td class="b n2"><textarea name="message" id="message" rows="20" cols="80"><?=esc($post['text']) ?></textarea></td>
+			<td class="b n2"><textarea name="message" id="message" rows="20" cols="80"><?=esc($message) ?></textarea></td>
 		</tr><tr>
 			<td class="b n1"></td>
 			<td class="b n1">
@@ -105,29 +118,10 @@ if ($err) {
 				<input type="submit" name="action" value="Preview">
 			</td>
 		</tr>
-	</table></form><?php
-} elseif ($act == 'Submit') {
-	$sql->query("UPDATE users SET posts = posts + 1, lastpost = ? WHERE id = ?", [time(), $loguser['id']]);
-	$sql->query("INSERT INTO posts (user,thread,date,ip) VALUES (?,?,?,?)",
-		[$loguser['id'],$tid,time(),$userip]);
+	</table>
+</form><br>
+<?php
 
-	$pid = $sql->insertid();
-	$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
-		[$pid,$_POST['message']]);
-
-	$sql->query("UPDATE threads SET replies = replies + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
-		[time(), $loguser['id'], $pid, $tid]);
-
-	$sql->query("UPDATE forums SET posts = posts + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
-		[time(), $loguser['id'], $pid, $thread['forum']]);
-
-	// nuke entries of this thread in the "threadsread" table
-	$sql->query("DELETE FROM threadsread WHERE tid = ? AND NOT (uid = ?)", [$thread['id'], $loguser['id']]);
-
-	redirect("thread.php?pid=$pid#$pid");
-}
-
-echo '<br>';
 RenderPageBar($topbot);
 
 pagefooter();

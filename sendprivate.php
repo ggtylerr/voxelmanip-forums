@@ -1,7 +1,8 @@
 <?php
 require('lib/common.php');
-
 needs_login();
+
+$action = $_POST['action'] ?? '';
 
 $topbot = [
 	'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "private.php", 'title' => 'Private messages']],
@@ -10,99 +11,15 @@ $topbot = [
 
 if ($loguser['powerlevel'] < 1) noticemsg("Error", "You have no permissions to do this!", true);
 
-if (!isset($_POST['action'])) {
-	$userto = '';
-	if (isset($_GET['pid']) && $pid = $_GET['pid']) {
-		$post = $sql->fetch("SELECT IF(u.displayname = '',u.name,u.displayname) name, p.title, p.text "
-			."FROM pmsgs p LEFT JOIN users u ON p.userfrom = u.id "
-			."WHERE p.id = ?" . ($loguser['powerlevel'] < 4 ? " AND (p.userfrom=".$loguser['id']." OR p.userto=".$loguser['id'].")" : ''), [$pid]);
-		if ($post) {
-			$quotetext = '[reply="'.$post['name'].'" id="'.$pid.'"]'.$post['text'].'[/quote]' . PHP_EOL;
-			$title = 'Re:' . $post['title'];
-			$userto = $post['name'];
-		}
-	}
+$error = '';
 
-	if (isset($_GET['uid']) && $uid = $_GET['uid']) {
-		$userto = $sql->result("SELECT IF(displayname = '',name,displayname) name FROM users WHERE id = ?", [$uid]);
-	} elseif (!isset($userto)) {
-		$userto = $_POST['userto'];
-	}
-
-	pageheader('Send private message');
-	RenderPageBar($topbot);
-	?><br>
-	<form action="sendprivate.php" method="post">
-		<table class="c1">
-			<tr class="h"><td class="b h" colspan="2">Send message</td></tr>
-			<tr>
-				<td class="b n1 center" width="120">Send to:</td>
-				<td class="b n2"><input type="text" name="userto" size="25" maxlength=25 value="<?=esc($userto) ?>"></td>
-			</tr><tr>
-				<td class="b n1 center">Title:</td>
-				<td class="b n2"><input type="text" name="title" size="80" maxlength="255" value="<?=esc((isset($title) ? $title : '')) ?>"></td>
-			</tr><tr>
-				<td class="b n1 center" width="120">Format:</td>
-				<td class="b n2"><?=posttoolbar() ?></td>
-			</tr><tr>
-				<td class="b n1 center"></td>
-				<td class="b n2"><textarea name="message" id="message" rows="20" cols="80"><?=esc((isset($quotetext) ? $quotetext : '')) ?></textarea></td>
-			</tr><tr>
-				<td class="b n1"></td>
-				<td class="b n1">
-					<input type="submit" name="action" value="Submit">
-					<input type="submit" name="action" value="Preview">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
-} elseif ($_POST['action'] == 'Preview') {
-	$post['date'] = time();
-	$post['text'] = $_POST['message'];
-	foreach ($loguser as $field => $val)
-		$post['u' . $field] = $val;
-	$post['ulastpost'] = time();
-
-	pageheader('Send private message');
-	$topbot['title'] .= ' (Preview)';
-	RenderPageBar($topbot);
-	?><br>
-	<table class="c1"><tr class="h"><td class="b h" colspan="2">Message preview</td></tr></table>
-	<?=threadpost($post) ?>
-	<br>
-	<form action="sendprivate.php" method="post">
-		<table class="c1">
-			<tr class="h"><td class="b h" colspan="2">Send message</td></tr>
-			<tr>
-				<td class="b n1 center" width="120">Send to:</td>
-				<td class="b n2"><input type="text" name="userto" size=25 maxlength=25 value="<?=esc($_POST['userto'] ?? '') ?>"></td>
-			</tr><tr>
-				<td class="b n1 center">Title:</td>
-				<td class="b n2"><input type="text" name="title" size="80" maxlength="255" value="<?=esc($_POST['title']) ?>"></td>
-			</tr><tr>
-				<td class="b n1 center" width="120">Format:</td>
-				<td class="b n2"><?=posttoolbar() ?></td>
-			</tr><tr>
-				<td class="b n1 center">Post:</td>
-				<td class="b n2"><textarea name="message" id="message" rows="20" cols="80"><?=esc($_POST['message']) ?></textarea></td>
-			</tr><tr>
-				<td class="b n1"></td>
-				<td class="b n1">
-					<input type="submit" name="action" value="Submit">
-					<input type="submit" name="action" value="Preview">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
-} elseif ($_POST['action'] == 'Submit') {
+if ($action == 'Submit') {
 	$userto = $sql->result("SELECT id FROM users WHERE name LIKE ? OR displayname LIKE ?", [$_POST['userto'], $_POST['userto']]);
 
 	if ($userto && $_POST['message']) {
 		$recentpms = $sql->fetch("SELECT date FROM pmsgs WHERE date >= (UNIX_TIMESTAMP()-15) AND userfrom = ?", [$loguser['id']]);
 		if ($recentpms) {
-			$msg = "You can't send more than one PM within 15 seconds!";
+			$error = "You can't send more than one PM within 15 seconds!";
 		} else {
 			$sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,title,text) VALUES (?,?,?,?,?,?)",
 				[time(),$userip,$userto,$loguser['id'],$_POST['title'],$_POST['message']]);
@@ -110,19 +27,72 @@ if (!isset($_POST['action'])) {
 			redirect("private.php");
 		}
 	} elseif (!$userto) {
-		$msg = "That user doesn't exist!<br>Go back or <a href=sendprivate.php>try again</a>";
+		$error = "That user doesn't exist!";
 	} elseif (!$_POST['message']) {
-		$msg = "You can't send a blank message!<br>Go back or <a href=sendprivate.php>try again</a>";
+		$error = "You can't send a blank message!";
 	}
-
-	pageheader('Send private message');
-	$topbot['title'] .= ' (Error)';
-	RenderPageBar($topbot);
-	echo '<br>';
-	noticemsg("Error", $msg);
 }
 
-echo '<br>';
+$userto = $_POST['userto'] ?? '';
+$title = $_POST['title'] ?? '';
+$message = $_POST['message'] ?? '';
+
+if (isset($_GET['pid']) && $pid = $_GET['pid']) {
+	$post = $sql->fetch("SELECT IF(u.displayname = '',u.name,u.displayname) name, p.title, p.text "
+		."FROM pmsgs p LEFT JOIN users u ON p.userfrom = u.id "
+		."WHERE p.id = ?" . ($loguser['powerlevel'] < 4 ? " AND (p.userfrom=".$loguser['id']." OR p.userto=".$loguser['id'].")" : ''), [$pid]);
+	if ($post) {
+		$userto = $post['name'];
+		$title = 'Re: '.$post['title'];
+		$message = '[reply="'.$post['name'].'" id="'.$pid.'"]'.$post['text'].'[/reply]';
+	}
+}
+
+if (isset($_GET['uid']) && $uid = $_GET['uid']) {
+	$userto = $sql->result("SELECT IF(displayname = '',name,displayname) name FROM users WHERE id = ?", [$uid]);
+}
+
+pageheader('Send private message');
+
+if ($action == 'Preview') {
+	$post['date'] = $post['ulastpost'] = time();
+	$post['text'] = $message;
+	foreach ($loguser as $field => $val)
+		$post['u'.$field] = $val;
+
+	$topbot['title'] .= ' (Preview)';
+	RenderPageBar($topbot);
+
+	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">Post preview</table>'.threadpost($post);
+} else {
+	RenderPageBar($topbot);
+}
+?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+<form action="sendprivate.php" method="post">
+	<table class="c1">
+		<tr class="h"><td class="b h" colspan="2">Send message</td></tr>
+		<tr>
+			<td class="b n1 center" width="120">Send to:</td>
+			<td class="b n2"><input type="text" name="userto" size="25" maxlength=25 value="<?=esc($userto) ?>"></td>
+		</tr><tr>
+			<td class="b n1 center">Title:</td>
+			<td class="b n2"><input type="text" name="title" size="80" maxlength="255" value="<?=esc($title) ?>"></td>
+		</tr><tr>
+			<td class="b n1 center" width="120">Format:</td>
+			<td class="b n2"><?=posttoolbar() ?></td>
+		</tr><tr>
+			<td class="b n1 center"></td>
+			<td class="b n2"><textarea name="message" id="message" rows="20" cols="80"><?=esc($message) ?></textarea></td>
+		</tr><tr>
+			<td class="b n1"></td>
+			<td class="b n1">
+				<input type="submit" name="action" value="Submit">
+				<input type="submit" name="action" value="Preview">
+			</td>
+		</tr>
+	</table>
+</form><br>
+<?php
 RenderPageBar($topbot);
 
 pagefooter();
