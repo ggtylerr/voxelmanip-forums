@@ -24,7 +24,7 @@ $pagebar = [
 		['href' => './', 'title' => 'Main'],
 		['href' => "private.php".(!$tologuser ? '?id='.$pmsg['userto'] : ''), 'title' => 'Private messages']
 	],
-	'title' => ($pmsgs['title'] ? esc($pmsgs['title']) : '(untitled)'),
+	'title' => ($pmsg['title'] ? esc($pmsg['title']) : '(untitled)'),
 	'actions' => [['href' => "sendprivate.php?pid=$pid", 'title' => 'Reply']]
 ];
 
