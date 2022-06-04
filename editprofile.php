@@ -6,10 +6,7 @@ needs_login();
 $targetuserid = $_GET['id'] ?? $loguser['id'];
 $act = $_POST['action'] ?? '';
 
-$token = $loguser['token'];
 if ($act == 'Edit profile') {
-	if ($_POST['token'] !== $token) die('No.');
-
 	if ($_POST['pass'] != '' && $_POST['pass'] == $_POST['pass2'] && $targetuserid == $loguser['id']) {
 		$newtoken = bin2hex(random_bytes(32));
 		setcookie('token', $newtoken, 2147483647);
@@ -252,11 +249,6 @@ echo
 .fieldrow('Post layouts', fieldoption('blocklayouts', $user['blocklayouts'], ['Show everything in general', 'Block everything']))
 .	catheader('&nbsp;'); ?>
 <tr class="n1"><td class="b"></td><td class="b"><input type="submit" name="action" value="Edit profile"></td>
-</table><input type="hidden" name="token" value="<?=$token?>"></form>
-<script>
-function themePreview(id) {
-	document.head.getElementsByTagName('link')[2].href = 'theme/'+id+'/'+id+'.css';
-}
-</script><?php
+</table></form><?php
 
 pagefooter();

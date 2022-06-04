@@ -62,7 +62,7 @@ function fieldrow($title, $input) {
 
 function fieldinput($size, $max, $field, $value = null) {
 	global $user;
-	$val = str_replace('"', '&quot;', ($value ?? $user[$field]));
+	$val = str_replace('"', '&quot;', ($value ?? $user[$field]) ?: '');
 	return sprintf('<input type="text" name="%s" size="%s" maxlength="%s" value="%s">', $field, $size, $max, $val);
 }
 

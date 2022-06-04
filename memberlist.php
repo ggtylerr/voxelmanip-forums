@@ -38,7 +38,7 @@ foreach ($powerlevels as $id => $title) {
 <table class="c1">
 	<tr class="h"><td class="b h" colspan="2">Memberlist</td></tr>
 	<tr>
-		<td class="b n1" width="80">Sort by:</td>
+		<td class="b n1 center">Sort by:</td>
 		<td class="b n2 center">
 			<?=mlink('Posts', '', $pow, $page, $orderby) ?> |
 			<?=mlink('Username', 'name', $pow, $page, $orderby) ?> |
@@ -47,7 +47,7 @@ foreach ($powerlevels as $id => $title) {
 			<?=mlink('[ &#x25B2; ]', $sort, $pow, $page, 'a') ?>
 		</td>
 	</tr><tr>
-		<td class="b n1">Group:</td>
+		<td class="b n1 center">Group:</td>
 		<td class="b n2 center">
 			<?php foreach ($groups as $group) echo $group.' | ' ?>
 			<?=mlink('All', $sort, '', $page, $orderby) ?>

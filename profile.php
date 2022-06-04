@@ -136,7 +136,7 @@ $profilefields = [
 	],
 	"User settings" => [
 		['title' => 'Theme', 'value' => esc($themename)],
-		['title' => 'Time offset', 'value' => sprintf("%d:%02d", ($usertzoff - $logtzoff) / 3600, abs(($usertzoff - $logtzoff) / 60) % 60)." from you (Current time: $userct)"],
+		['title' => 'Time offset', 'value' => sprintf("%d:%02d from you (Current time: %s)", ($usertzoff - $logtzoff) / 3600, abs(($usertzoff - $logtzoff) / 60) % 60, $userct)],
 		['title' => 'Items per page', 'value' => $user['ppp']." posts, ".$user['tpp']." threads"]
 	]
 ];

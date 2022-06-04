@@ -6,24 +6,24 @@ pageheader("Search");
 $query = $_GET['q'] ?? '';
 $where = $_GET['w'] ?? 0;
 ?>
+<form action="search.php" method="get">
 <table class="c1">
-	<tr class="h"><td class="b h">Search</td>
-	<tr><td class="b n1">
-		<form action="search.php" method="get"><table>
-			<tr>
-				<td>Search for</td>
-				<td><input type="text" name="q" size="40" value="<?=htmlspecialchars($query, ENT_QUOTES) ?>"></td>
-			</tr><tr>
-				<td></td>
-				<td>
-					in <input type="radio" class="radio" name="w" value="0" id="threadtitle" <?=(($where == 0) ? 'checked' : '') ?>><label for="threadtitle">thread title</label>
-					<input type="radio" class="radio" name="w" value="1" id="posttext" <?=(($where == 1) ? 'checked' : '') ?>><label for="posttext">post text</label>
-					<br><input type="submit" name="action" value="Search">
-				</td>
-			</tr>
-		</table></form>
-	</td></tr>
+	<tr class="h"><td class="b h" colspan="2">Search</td>
+	<tr>
+		<td width="150">Search for</td>
+		<td><input type="text" name="q" size="40" value="<?=esc($query) ?>"></td>
+	</tr><tr>
+		<td></td>
+		<td>
+			in <input type="radio" class="radio" name="w" value="0" id="threadtitle" <?=(($where == 0) ? 'checked' : '') ?>><label for="threadtitle">thread title</label>
+			<input type="radio" class="radio" name="w" value="1" id="posttext" <?=(($where == 1) ? 'checked' : '') ?>><label for="posttext">post text</label>
+		</td>
+	</tr><tr>
+		<td></td>
+		<td><input type="submit" name="action" value="Search"></td>
+	</tr>
 </table>
+</form>
 <?php
 if (!isset($_GET['action']) || strlen($query) < 3) {
 	if (isset($_GET['action']) && strlen($query) < 3) {
@@ -73,12 +73,11 @@ if ($where == 1) {
 			WHERE t.title LIKE CONCAT('%', ?, '%') AND ? >= f.minread",
 		[$query, $loguser['powerlevel']]);
 
-	?>
-		<tr class="c">
-			<td class="b h">Title</td>
-			<td class="b h" style="min-width:80px">Started by</td>
-			<td class="b h" width="200">Date</td>
-		</tr><?php
+	?><tr class="c">
+		<td class="b h">Title</td>
+		<td class="b h" style="min-width:80px">Started by</td>
+		<td class="b h" width="200">Date</td>
+	</tr><?php
 
 	for ($i = 1; $thread = $threads->fetch(); $i++) {
 		$tr = ($i % 2 ? 'n2' :'n3');

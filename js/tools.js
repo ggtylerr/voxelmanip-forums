@@ -45,3 +45,7 @@ function submitmove(fid){
 	document.mod.arg.value=fid;
 	submitmod('move')
 }
+
+function themePreview(id) {
+	document.head.getElementsByTagName('link')[1].href = 'theme/'+id+'/'+id+'.css';
+}

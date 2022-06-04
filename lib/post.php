@@ -62,6 +62,8 @@ function filterstyle($match) {
 function postfilter($msg) {
 	global $smilies;
 
+	if (empty($msg)) return;
+
 	//[code] tag
 	$msg = preg_replace_callback("'\[code\](.*?)\[/code\]'si", 'makecode', $msg);
 
@@ -96,7 +98,7 @@ function postfilter($msg) {
 	// Quotes
 	$msg = preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si", '<blockquote><span class="quotedby"><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small></span><hr>', $msg);
 	$msg = preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si", '<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>', $msg);
-	$msg = preg_replace("'\[quote=(.*?)\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span>', $msg);
+	$msg = preg_replace("'\[quote=(.*?)\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span><hr>', $msg);
 	$msg = str_replace('[/reply]', '<hr></blockquote>', $msg);
 	$msg = str_replace('[/quote]', '<hr></blockquote>', $msg);
 
@@ -108,7 +110,7 @@ function postfilter($msg) {
 }
 
 function esc($text) {
-	return htmlspecialchars($text);
+	return $text ? htmlspecialchars($text) : '';
 }
 
 function posttoolbutton($name, $title, $leadin, $leadout) {
@@ -172,13 +174,11 @@ function threadpost($post, $pthread = '') {
 HTML;
 	}
 
-	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
-
 	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
 	$post['utitle'] = $post['ranktext']
 			. ((strlen($post['ranktext']) >= 1) ? '<br>' : '')
 			. $post['utitle']
-			. ((strlen($post['utitle']) >= 1) ? '<br>' : '');
+			. ((strlen((string)$post['utitle']) >= 1) ? '<br>' : '');
 
 	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.

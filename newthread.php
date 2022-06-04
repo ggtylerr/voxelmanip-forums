@@ -16,6 +16,8 @@ if (!$forum)
 if ($forum['minthread'] > $loguser['powerlevel'])
 	noticemsg("Error", "You have no permissions to create threads in this forum!", true);
 
+$error = '';
+
 if ($action == 'Submit') {
 	if ($loguser['lastpost'] > time() - 30 && $loguser['powerlevel'] < 4)
 		$error = "Don't post threads so fast, wait a little longer.";
