@@ -5,11 +5,11 @@ $id = (int)$_GET['id'];
 
 $tuser = $sql->result("SELECT powerlevel FROM users WHERE id = ?",[$id]);
 if ($loguser['powerlevel'] < 2 || $loguser['powerlevel'] <= $tuser['powerlevel'])
-	noticemsg("Error", "You have no permissions to do this!", true);
+	error("You have no permissions to do this!");
 
 if ($uid = $_GET['id']) {
 	$numid = $sql->fetch("SELECT id FROM users WHERE id = ?",[$uid]);
-	if (!$numid) noticemsg("Error", "Invalid user ID.", true);
+	if (!$numid) error("Invalid user ID.");
 }
 
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?",[$uid]);
@@ -29,7 +29,7 @@ if (isset($_POST['banuser']) && $_POST['banuser'] == "Ban User") {
 
 	redirect("profile.php?id=$user[id]");
 } elseif (isset($_POST['unbanuser']) && $_POST['unbanuser'] == "Unban User") {
-	if ($user['powerlevel'] != -1) noticemsg("Error", "This user is not a banned user.", true);
+	if ($user['powerlevel'] != -1) error("This user is not a banned user.");
 
 	$sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE id = ?", [$user['id']]);
 

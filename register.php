@@ -51,7 +51,7 @@ foreach (timezone_identifiers_list() as $tz) {
 	$timezones[$tz] = $tz;
 }
 
-if (!empty($err)) noticemsg("Error", $err);
+if (!empty($err)) noticemsg($err);
 ?>
 <form action="register.php" method="post">
 	<table class="c1">

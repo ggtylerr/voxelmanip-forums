@@ -1,7 +1,7 @@
 <?php
 require('lib/common.php');
 
-if ($loguser['powerlevel'] < 3) noticemsg('Error', 'You have no permissions to do this!', true);
+if ($loguser['powerlevel'] < 3) error('You have no permissions to do this!');
 
 $error = '';
 
@@ -70,7 +70,7 @@ if (isset($_POST['savecat'])) {
 
 pageheader('Forum management');
 
-if ($error) noticemsg("Error", $error);
+if ($error) noticemsg($error);
 
 if (isset($_GET['cid']) && $cid = $_GET['cid']) {
 	// category editor

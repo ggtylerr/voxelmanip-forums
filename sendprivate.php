@@ -9,7 +9,7 @@ $topbot = [
 	'title' => 'Send'
 ];
 
-if ($loguser['powerlevel'] < 1) noticemsg("Error", "You have no permissions to do this!", true);
+if ($loguser['powerlevel'] < 1) error("You have no permissions to do this!");
 
 $error = '';
 
@@ -67,7 +67,7 @@ if ($action == 'Preview') {
 } else {
 	RenderPageBar($topbot);
 }
-?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+?><br><?=($error ? noticemsg($error).'<br>' : '')?>
 <form action="sendprivate.php" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">Send message</td></tr>

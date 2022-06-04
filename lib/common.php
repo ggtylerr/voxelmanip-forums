@@ -112,13 +112,6 @@ if ($r) {
 	}
 }
 
-/**
- * Print page header
- *
- * @param string $pagetitle Title of page.
- * @param integer $fid Forum ID of the page.
- * @return void
- */
 function pageheader($pagetitle = '', $fid = null) {
 	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
 	$theme, $meta, $defaultlogo, $rankset_names;
@@ -298,32 +291,20 @@ HTML;
 	}
 }
 
-/**
- * Print a notice message.
- *
- * @param string $name Header text
- * @param string $msg Message
- * @param bool $error Is it an error? (Break the page loading)
- * @return void
- */
-function noticemsg($name, $msg, $error = false) {
-	if ($error) {
-		pageheader('Error');
-	}
+function noticemsg($msg, $title = "Error") {
 	?><table class="c1">
-		<tr class="h"><td class="b h center"><?=$name ?></td></tr>
-		<tr><td class="b n1 center"><?=$msg ?><?=($error ? '<br><a href="./">Back to main</a>' : '') ?></td></tr>
+		<tr class="h"><td class="b h center"><?=$title ?></td></tr>
+		<tr><td class="b n1 center"><?=$msg ?></td></tr>
 	</table><?php
-	if ($error) {
-		pagefooter(); die();
-	}
 }
 
-/**
- * Print page footer.
- *
- * @return void
- */
+function error($msg) {
+	pageheader('Error');
+	noticemsg($msg.'<br><a href="./">Back to main</a>', 'Error');
+	pagefooter();
+	die();
+}
+
 function pagefooter() {
 	global $start;
 	$time = microtime(true) - $start;

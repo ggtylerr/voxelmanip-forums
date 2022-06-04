@@ -18,7 +18,7 @@ if ($act == 'Login') {
 
 pageheader('Login');
 if (isset($err))
-	noticemsg("Error", $err);
+	noticemsg($err);
 ?>
 <form action="login.php" method="post"><table class="c1">
 	<tr class="h"><td class="b h" colspan="2">Login</td></tr>

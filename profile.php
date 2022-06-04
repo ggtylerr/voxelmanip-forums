@@ -2,10 +2,10 @@
 require("lib/common.php");
 
 $uid = (int)$_GET['id'] ?? -1;
-if ($uid < 0) noticemsg("Error", "You must specify a user ID!", true);
+if ($uid < 0) error("You must specify a user ID!");
 
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
-if (!$user) noticemsg("Error", "This user does not exist!", true);
+if (!$user) error("This user does not exist!");
 
 pageheader("Profile for ".($user['displayname'] ?: $user['name']));
 

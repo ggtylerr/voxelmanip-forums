@@ -15,16 +15,15 @@ $thread = $sql->fetch("SELECT t.*, f.title ftitle, f.minreply fminreply
 	FROM threads t LEFT JOIN forums f ON f.id=t.forum
 	WHERE t.id = ? AND ? >= f.minread", [$tid, $loguser['powerlevel']]);
 
-$error = '';
 if (!$thread) {
-	noticemsg("Error", "Thread does not exist.", true);
+	error("Thread does not exist.");
 } else if ($thread['fminreply'] > $loguser['powerlevel']) {
-	$error = "You have no permissions to create posts in this forum!";
+	error("You have no permissions to create posts in this forum!");
 } elseif ($thread['closed'] && $loguser['powerlevel'] < 2) {
-	$error = "You can't post in closed threads!";
+	error("You can't post in closed threads!");
 }
-if ($error) noticemsg('Error', $error, true);
 
+$error = '';
 if ($action == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
 	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && $loguser['powerlevel'] < 4)
@@ -100,7 +99,7 @@ if ($action == 'Preview') {
 } else {
 	RenderPageBar($topbot);
 }
-?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+?><br><?=($error ? noticemsg($error).'<br>' : '')?>
 <form action="newreply.php" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">Reply</td></tr>

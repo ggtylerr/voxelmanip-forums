@@ -26,7 +26,7 @@ if (isset($_GET['action']) && $_GET['action'] == "del") {
 	if ($loguser['powerlevel'] > 3 || $owner == $loguser['id']) {
 		$sql->query("UPDATE pmsgs SET del_$fieldn2 = ? WHERE id = ?", [!$showdel, $id]);
 	} else {
-		noticemsg("Error", "You are not allowed to (un)delete that message.", true);
+		error("You are not allowed to (un)delete that message.");
 	}
 	$id = 0;
 }
@@ -34,7 +34,7 @@ if (isset($_GET['action']) && $_GET['action'] == "del") {
 $ptitle = 'Private messages' . ($sent ? ' (sent)' : '');
 if ($id && $loguser['powerlevel'] > 3) {
 	$user = $sql->fetch("SELECT id,name,displayname,nick_color,powerlevel FROM users WHERE id = ?", [$id]);
-	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
+	if ($user == null) error("User doesn't exist.");
 	pageheader($user['name']."'s ".strtolower($ptitle));
 	$title = userlink($user)."'s ".strtolower($ptitle);
 } else {

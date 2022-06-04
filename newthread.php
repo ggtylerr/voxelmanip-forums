@@ -12,9 +12,9 @@ if ($action = $_POST['action']) {
 $forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND ? >= minread", [$fid, $loguser['powerlevel']]);
 
 if (!$forum)
-	noticemsg("Error", "Forum does not exist.", true);
+	error("Forum does not exist.");
 if ($forum['minthread'] > $loguser['powerlevel'])
-	noticemsg("Error", "You have no permissions to create threads in this forum!", true);
+	error("You have no permissions to create threads in this forum!");
 
 $error = '';
 
@@ -75,7 +75,7 @@ if ($action == 'Preview') {
 } else {
 	RenderPageBar($topbot);
 }
-?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+?><br><?=($error ? noticemsg($error).'<br>' : '')?>
 <form action="newthread.php" method="post"><table class="c1">
 	<tr class="h"><td class="b h" colspan="2">Thread</td></tr>
 	<tr>

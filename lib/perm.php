@@ -4,7 +4,7 @@ function needs_login() {
 	global $log;
 	if (!$log) {
 		pageheader('Login required');
-		noticemsg("Error", "You need to be logged in to do that!<br><a href=login.php>Please login here.</a>");
+		noticemsg("You need to be logged in to do that!<br><a href=login.php>Please login here.</a>");
 		pagefooter();
 		die();
 	}

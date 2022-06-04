@@ -22,18 +22,18 @@ $thread = $sql->fetch("SELECT p.user puser, t.*, f.title ftitle FROM posts p LEF
 if (!$thread) $pid = 0;
 
 if ($thread['closed'] && $loguser['powerlevel'] <= 1)
-	noticemsg("Error", "You can't edit a post in closed threads!", true);
+	error("You can't edit a post in closed threads!");
 if ($loguser['powerlevel'] < 3 && $loguser['id'] != $thread['puser'])
-	noticemsg("Error", "You do not have permission to edit this post.", true);
+	error("You do not have permission to edit this post.");
 if ($pid == -1)
-	noticemsg("Error", "Invalid post ID.", true);
+	error("Invalid post ID.");
 
 $post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p
 		LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 		LEFT JOIN users u ON p.user = u.id WHERE p.id = ?",
 	[$pid]);
 
-if (!$post) noticemsg("Error", "Post doesn't exist.", true);
+if (!$post) error("Post doesn't exist.");
 
 $error = '';
 
@@ -57,7 +57,7 @@ if ($action == 'Submit') {
 		$topbot['title'] .= ' (Error)';
 		RenderPageBar($topbot);
 		echo '<br>';
-		noticemsg("Error", "You do not have the permission to do this.");
+		error("You do not have the permission to do this.");
 	} else {
 		$sql->query("UPDATE posts SET deleted = ? WHERE id = ?", [($action == 'delete' ? 1 : 0), $pid]);
 		redirect("thread.php?pid=$pid#edit");
@@ -91,7 +91,7 @@ if ($action == 'Preview') {
 	RenderPageBar($topbot);
 }
 
-?><br><?=($error ? noticemsg('Error', $error).'<br>' : '')?>
+?><br><?=($error ? noticemsg($error).'<br>' : '')?>
 <form action="editpost.php" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan=2>Edit Post</td></tr>

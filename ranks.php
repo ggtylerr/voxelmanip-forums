@@ -20,7 +20,7 @@ foreach ($rankset_names as $rankset) {
 	$ranksetcount++;
 }
 
-if ($ranksetcount <= 1) noticemsg('Error', "There's no ranksets defined.", true);
+if ($ranksetcount <= 1) error("There's no ranksets defined.");
 
 pageheader("Ranks");
 

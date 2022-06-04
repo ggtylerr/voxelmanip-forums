@@ -1,7 +1,7 @@
 <?php
 require('lib/common.php');
 
-if ($loguser['powerlevel'] < 3) noticemsg("Error", "You have no permissions to do this!", true);
+if ($loguser['powerlevel'] < 3) error("Error", "You have no permissions to do this!");
 
 $action = $_GET['action'] ?? null;
 $what = $_GET['what'] ?? null;
@@ -32,7 +32,7 @@ if ($action == "del") {
 	}
 }
 $ipbans = $sql->query("SELECT * FROM ipbans");
-if (isset($err)) noticemsg("Error", $err);
+if (isset($err)) noticemsg($err);
 ?><form action="ipbans.php?action=add" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">New IP ban</td></tr>

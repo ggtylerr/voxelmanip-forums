@@ -16,9 +16,9 @@ if ($act == 'Edit profile') {
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$targetuserid]);
 
 if ($loguser['id'] != $targetuserid && ($loguser['powerlevel'] < 3 || $loguser['powerlevel'] <= $user['powerlevel']))
-	noticemsg("Error", "You have no permissions to do this!", true);
+	error("You have no permissions to do this!");
 
-if (!$user) noticemsg("Error", "This user doesn't exist!", true);
+if (!$user) error("This user doesn't exist!");
 
 $user['timezone'] = $user['timezone'] ?: $defaulttimezone;
 
@@ -177,7 +177,7 @@ if ($act == 'Edit profile') {
 
 		redirect("profile.php?id=$user[id]");
 	} else {
-		noticemsg("Error", "Couldn't save the profile changes. The following errors occured:<br><br>" . $error);
+		noticemsg("Couldn't save the profile changes. The following errors occured:<br><br>" . $error);
 
 		$act = '';
 		foreach ($_POST as $k => $v)

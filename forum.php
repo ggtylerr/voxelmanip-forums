@@ -31,7 +31,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 	} else
 		$forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND ? >= minread", [$fid, $loguser['powerlevel']]);
 
-	if (!isset($forum['id'])) noticemsg("Error", "Forum does not exist.", true);
+	if (!isset($forum['id'])) error("Forum does not exist.");
 
 	//append the forum's title to the site title
 	pageheader($forum['title'], $fid);
@@ -55,7 +55,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 } elseif (isset($_GET['user']) && $uid = $_GET['user']) {
 	$user = $sql->fetch("SELECT displayname, name FROM users WHERE id = ?", [$uid]);
 
-	if (!isset($user)) noticemsg("Error", "User does not exist.", true);
+	if (!isset($user)) error("User does not exist.");
 
 	pageheader("Threads by " . ($user['displayname'] ?: $user['name']));
 
@@ -100,7 +100,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 		[$mintime, $loguser['powerlevel']]);
 
 } else {
-	noticemsg("Error", "Forum does not exist.", true);
+	error("Forum does not exist.");
 }
 
 $showforum = $time ?? $uid;

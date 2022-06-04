@@ -18,18 +18,16 @@ if (isset($_REQUEST['id'])) {
 } elseif (isset($_GET['time'])) {
 	$time = (int)$_GET['time'];
 	$viewmode = "time";
-}
-// "link" support (i.e., thread.php?pid=999whatever)
-elseif (isset($_GET['pid'])) {
+} elseif (isset($_GET['pid'])) { // "link" support (i.e., thread.php?pid=999whatever)
 	$pid = (int)$_GET['pid'];
 	$numpid = $sql->fetch("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread = t.id WHERE p.id = ?", [$pid]);
-	if (!$numpid) noticemsg("Error", "Thread post does not exist.", true);
+	if (!$numpid) error("Thread post does not exist.");
 
 	$tid = $sql->result("SELECT thread FROM posts WHERE id = ?", [$pid]);
 	$page = floor($sql->result("SELECT COUNT(*) FROM posts WHERE thread = ? AND id < ?", [$tid, $pid]) / $ppp) + 1;
 	$viewmode = "thread";
 } else {
-	noticemsg("Error", "Thread does not exist.", true);
+	error("Thread does not exist.");
 }
 
 if ($viewmode == "thread")
@@ -80,7 +78,7 @@ if ($viewmode == "thread") {
 			. "WHERE t.id = ? AND ? >= f.minread",
 			[$tid, $loguser['powerlevel']]);
 
-	if (!isset($thread['id'])) noticemsg("Error", "Thread does not exist.", true);
+	if (!isset($thread['id'])) error("Thread does not exist.");
 
 	//append thread's title to page title
 	pageheader($thread['title'], $thread['fid']);
@@ -113,7 +111,7 @@ if ($viewmode == "thread") {
 } elseif ($viewmode == "user") {
 	$user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
 
-	if ($user == null) noticemsg("Error", "User doesn't exist.", true);
+	if ($user == null) error("User doesn't exist.");
 
 	pageheader("Posts by " . ($user['displayname'] ?: $user['name']));
 
@@ -179,10 +177,6 @@ if ($viewmode == "thread") {
 } elseif ($viewmode == "time") {
 	$topbot = [];
 	$time = $_GET['time'];
-} else {
-	noticemsg("Error", "Thread does not exist.<br><a href=./>Back to main</a>");
-	pagefooter();
-	die();
 }
 
 $modlinks = '';
