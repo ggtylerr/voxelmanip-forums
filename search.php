@@ -10,17 +10,17 @@ $where = $_GET['w'] ?? 0;
 <table class="c1">
 	<tr class="h"><td class="b h" colspan="2">Search</td>
 	<tr>
-		<td width="150">Search for</td>
-		<td><input type="text" name="q" size="40" value="<?=esc($query) ?>"></td>
+		<td class="n1 center" width="150">Search for</td>
+		<td class="n1"><input type="text" name="q" size="40" value="<?=esc($query) ?>"></td>
 	</tr><tr>
-		<td></td>
-		<td>
+		<td class="n1"></td>
+		<td class="n1">
 			in <input type="radio" class="radio" name="w" value="0" id="threadtitle" <?=(($where == 0) ? 'checked' : '') ?>><label for="threadtitle">thread title</label>
 			<input type="radio" class="radio" name="w" value="1" id="posttext" <?=(($where == 1) ? 'checked' : '') ?>><label for="posttext">post text</label>
 		</td>
 	</tr><tr>
-		<td></td>
-		<td><input type="submit" name="action" value="Search"></td>
+		<td class="n1"></td>
+		<td class="n1"><input type="submit" name="action" value="Search"></td>
 	</tr>
 </table>
 </form>
@@ -39,7 +39,7 @@ $ufields = userfields('u','u');
 if ($where == 1) {
 	echo '</table>';
 	$fieldlist = userfields_post();
-	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, pt.user ptuser, t.id tid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id
