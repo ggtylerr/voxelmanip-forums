@@ -74,12 +74,11 @@ CREATE TABLE `ipbans` (
 
 CREATE TABLE `misc` (
   `views` int(11) unsigned NOT NULL DEFAULT 0,
-  `botviews` int(11) unsigned NOT NULL DEFAULT 0,
   `attention` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `misc` (`views`, `botviews`, `attention`) VALUES
-(0,	0,	'<b>The Voxelmanip Forums Codebase has been setup!</b><br>Make sure to not share a link yet and register quickly as the first user gets root administrator privileges.');
+INSERT INTO `misc` (`views`, `attention`) VALUES
+(0,	'<b>The Voxelmanip Forums Codebase has been setup!</b><br>Make sure to not share a link yet and register quickly as the first user gets root administrator privileges.');
 
 CREATE TABLE `pmsgs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
