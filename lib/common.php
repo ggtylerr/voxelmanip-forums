@@ -152,7 +152,6 @@ HTML;
 		<?=$meta?>
 		<link rel="stylesheet" href="theme/common.css">
 		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
-		<script src="js/microlight.js"></script>
 		<script src="js/tools.js"></script>
 	</head>
 	<body>
