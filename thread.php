@@ -9,8 +9,8 @@ $fieldlist = userfields('u', 'u') . ',' . userfields_post();
 $ppp = $_GET['ppp'] ?? $loguser['ppp'];
 if ($ppp < 1) $ppp = $loguser['ppp'];
 
-if (isset($_REQUEST['id'])) {
-	$tid = (int)$_REQUEST['id'];
+if (isset($_GET['id'])) {
+	$tid = (int)$_GET['id'];
 	$viewmode = "thread";
 } elseif (isset($_GET['user'])) {
 	$uid = (int)$_GET['user'];
@@ -183,16 +183,16 @@ $modlinks = '';
 if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['user'] && !$thread['closed'] && $loguser['powerlevel'] > 0))) {
 	$link = "<a href=javascript:submitmod";
 	if ($loguser['powerlevel'] > 2) {
-		$stick = ($thread['sticky'] ? "$link('unstick')>Unstick</a>" : "$link('stick')>Stick</a>");
+		$stick = '<li>'.$link.($thread['sticky'] ? "('unstick')>Unstick" : "('stick')>Stick").'</a></li>';
 		$stick2 = addcslashes($stick, "'");
 
-		$close = '| ' . ($thread['closed'] ? "$link('open')>Open</a>" : "$link('close')>Close</a>");
+		$close = '<li>'.$link.($thread['closed'] ? "('open')>Open" : "('close')>Close").'</a></li>';
 		$close2 = addcslashes($close, "'");
 
-		$trash = '| ' . ($thread['forum'] != $trashid ? '<a href=javascript:submitmod(\'trash\') onclick="trashConfirm(event)">Trash</a>' : '');
+		$trash = ($thread['forum'] != $trashid ? '<li><a href=javascript:submitmod(\'trash\') onclick="trashConfirm(event)">Trash</a></li>' : '');
 		$trash2 = addcslashes($trash, "'");
 
-		$edit = '| <a href="javascript:showrbox()">Rename</a> | <a href="javascript:showmove()">Move</a>';
+		$edit = '<li><a href="javascript:showrbox()">Rename</a></li><li><a href="javascript:showmove()">Move</a></li>';
 
 		$fmovelinks = addslashes(forumlist($thread['forum']))
 		.	'<input type="submit" id="move" value="Submit" name="movethread" onclick="submitmove(movetid())">'
@@ -210,31 +210,30 @@ if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['us
 	$threadtitle = addcslashes(htmlentities($thread['title'], ENT_COMPAT | ENT_HTML401, 'UTF-8'), "'");
 
 	$modlinks = <<<HTML
-<form action="thread.php" method="post" name="mod" id="mod">
+<form action="thread.php?id=$tid" method="post" name="mod" id="mod">
 <table class="c1"><tr class="n2">
 	<td class="b n2">
-		<span id="moptions">Thread options: $stick $close $trash $edit</span>
+		<span id="moptions">Thread options: <ul class="menulisting">$stick$close$trash$edit</ul></span>
 		<span id="mappend"></span>
-		<span id="canceledit"></span>
 		<script>
-function showrbox(){
-	document.getElementById('moptions').innerHTML='Rename thread:';
-	document.getElementById('mappend').innerHTML='$renamefield';
-	document.getElementById('mappend').style.display = '';
+mappend = document.getElementById('mappend');
+moptions = document.getElementById('moptions');
+function showrbox() {
+	moptions.innerHTML='Rename thread: ';
+	mappend.innerHTML='$renamefield';
+	mappend.style.display = '';
 }
-function showmove(){
-	document.getElementById('moptions').innerHTML='Move to: ';
-	document.getElementById('mappend').innerHTML='$fmovelinks';
-	document.getElementById('mappend').style.display = '';
+function showmove() {
+	moptions.innerHTML='Move to: ';
+	mappend.innerHTML='$fmovelinks';
+	mappend.style.display = '';
 }
 function hidethreadedit() {
-	document.getElementById('moptions').innerHTML = 'Thread options: $stick2 $close2 $trash2 $edit';
-	document.getElementById('mappend').innerHTML = '<input type=hidden name=tmp style="width:80%!important;border-width:0px!important;padding:0px!important" onkeypress="submit_on_return(event,\'rename\')" value="$threadtitle" maxlength="100">';
-	document.getElementById('canceledit').style.display = 'none';
+	moptions.innerHTML = 'Thread options: <ul class="menulisting">$stick2$close2$trash2$edit</ul>';
+	mappend.innerHTML = '';
 }
 		</script>
 		<input type=hidden id="arg" name="arg" value="">
-		<input type=hidden id="id" name="id" value="$tid">
 		<input type=hidden id="action" name="action" value="">
 	</td>
 </table>
@@ -251,7 +250,7 @@ if (isset($time)) {
 			<a href="forum.php?time=<?=$time ?>">By Threads</a> | By Posts</a><br><br>
 			<?=timelink(900,'thread').' | '.timelink(3600,'thread').' | '.timelink(86400,'thread').' | '.timelink(604800,'thread') ?>
 		</td></tr>
-	</table><br><?php
+	</table><?php
 }
 
 echo "$modlinks $pagelist";

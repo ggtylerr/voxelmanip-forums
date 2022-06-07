@@ -60,8 +60,8 @@ ul.menulisting {
 }
 ul.menulisting li {
 	display: inline-block;
-	border-left: 1.5px solid white;
-	padding: 0px 6px;
+	border-left: 1.75px solid white;
+	padding: 0px 7px;
 }
 ul.menulisting li:first-child {
 	border-left-width: 0;
