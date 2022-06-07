@@ -33,7 +33,7 @@ for ($i = 1; $user = $users->fetch(); $i++) {
 		<td class="b left"><?=userlink($user) ?></td>
 		<td class="b"><?=date($loguser['timeformat'], $user['lastview']) ?></td>
 		<td class="b left"><?=($user['url'] ? "<a href=$user[url]>" . str_replace(['%20','_'], ' ', $user['url']) . '</a>' : '-') ?></td>
-		<?=($showips ? '<td class="b">'.$user['ip'].'</td>':'') ?>
+		<?=($showips ? '<td class="b"><span class="sensitive">'.$user['ip'].'</span></td>':'') ?>
 	</tr>
 <?php }
 if_empty_query($i, "There are no users online in the given timespan.", 5);

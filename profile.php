@@ -126,7 +126,7 @@ $profilefields = [
 				'%s (%s ago) %s %s',
 			dateformat($user['lastview']), timeunits(time() - $user['lastview']),
 			($user['url'] ? sprintf('<br>at <a href="%s">%s</a>', esc($user['url']), esc($user['url'])) : ''),
-			($loguser['powerlevel'] > 2 ? '<br>from IP: '.$user['ip'] : ''))]
+			($loguser['powerlevel'] > 2 ? '<br>from IP: <span class="sensitive">'.$user['ip'].'</span>' : ''))]
 	],
 	"User information" => [
 		['title' => 'Bio', 'value' => ($user['bio'] ? postfilter($user['bio']) : '')],

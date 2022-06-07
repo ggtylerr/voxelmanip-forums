@@ -79,6 +79,7 @@ table.postformatting {
 /* threadpost */
 .topbar_1 {
 	border-bottom: 0 !important;
+	border-right: 0 !important;
 	min-width: 180px;
 	text-align: center;
 	height: 24px;
@@ -92,6 +93,10 @@ table.postformatting {
 	border-top: 0 !important;
 	text-align: center;
 }
+
+/* sensitive info (censor things like IPs unless hovered) */
+.sensitive { color: #636363; background-color: #636363; }
+.sensitive:hover { color: unset; background-color: unset; }
 
 /* FAQ styling */
 .faq p {

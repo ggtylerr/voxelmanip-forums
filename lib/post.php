@@ -215,7 +215,7 @@ HTML;
 			$postlinks .= " | <a href=\"editpost.php?pid=" . urlencode($post['id']) . "&act=delete\">Delete</a>";
 
 		if ($loguser['powerlevel'] > 2)
-			$postlinks .= " | IP: $post[ip]";
+			$postlinks .= ' | IP: <span class="sensitive">'.$post['ip'].'</span>';
 
 		if (isset($post['maxrevision']) && $loguser['powerlevel'] > 1 && $post['maxrevision'] > 1) {
 			$revisionstr.=" | Revision ";
