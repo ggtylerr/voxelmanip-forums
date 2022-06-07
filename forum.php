@@ -145,10 +145,11 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 
 	$status = ($thread['closed'] ? 'o' : '');
 
-	if ($log)
+	if ($log) {
 		if (!$thread['isread']) $status .= 'n';
-	else
+	} else {
 		if ($thread['lastdate'] > (time() - 3600)) $status .= 'n';
+	}
 
 	$status = rendernewstatus($status);
 
