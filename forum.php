@@ -4,6 +4,7 @@ require('lib/common.php');
 $page = (int)($_GET['page'] ?? 1);
 $fid = (int)($_GET['id'] ?? 0);
 $uid = (int)($_GET['user'] ?? 0);
+$time = (int)($_GET['time'] ?? 0);
 
 $tpp = $loguser['tpp'];
 $offset = (($page - 1) * $tpp);
@@ -20,7 +21,7 @@ if ($log) {
 }
 
 $ufields = userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ",";
-if (isset($_GET['id']) && $fid = $_GET['id']) {
+if ($fid) {
 	if ($log) {
 		$forum = $sql->fetch("SELECT f.*, r.time rtime FROM forums f LEFT JOIN forumsread r ON (r.fid = f.id AND r.uid = ?) "
 			. "WHERE f.id = ? AND ? >= minread", [$loguser['id'], $fid, $loguser['powerlevel']]);
@@ -52,10 +53,10 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 	if ($loguser['powerlevel'] >= $forum['minthread'])
 		$topbot['actions'] = [['href' => "newthread.php?id=$fid", 'title' => 'New thread']];
 
-} elseif (isset($_GET['user']) && $uid = $_GET['user']) {
+} elseif ($uid) {
 	$user = $sql->fetch("SELECT displayname, name FROM users WHERE id = ?", [$uid]);
 
-	if (!isset($user)) error("User does not exist.");
+	if (!$user) error("User does not exist.");
 
 	pageheader("Threads by " . ($user['displayname'] ?: $user['name']));
 
@@ -78,7 +79,7 @@ if (isset($_GET['id']) && $fid = $_GET['id']) {
 		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
 		'title' => 'Threads'
 	];
-} elseif ($time = $_GET['time']) {
+} elseif ($time) {
 	$mintime = ($time > 0 && $time <= 2592000 ? time() - $time : 86400);
 
 	pageheader('Latest posts');
@@ -115,7 +116,7 @@ if ($forum['threads'] > $tpp) {
 
 RenderPageBar($topbot);
 
-if (isset($time)) {
+if ($time) {
 	?><table class="c1" style="width:auto">
 		<tr class="h"><td class="b">Latest Threads</td></tr>
 		<tr><td class="b n1 center">
@@ -177,7 +178,7 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 }
 if_empty_query($i, "No threads found.", ($showforum ? 7 : 6));
 
-echo "</table>$fpagelist".(!isset($time) ? '<br>' : '');
+echo "</table>$fpagelist".(!$time ? '<br>' : '');
 
 RenderPageBar($topbot);
 

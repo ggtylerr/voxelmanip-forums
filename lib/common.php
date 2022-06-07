@@ -11,8 +11,6 @@ require('conf/config.php');
 foreach (glob("lib/*.php") as $filename)
 	require_once($filename);
 
-header("Content-type: text/html; charset=utf-8");
-
 $userip = $_SERVER['REMOTE_ADDR'];
 $useragent = $_SERVER['HTTP_USER_AGENT'];
 $url = $_SERVER['REQUEST_URI'];
@@ -113,41 +111,35 @@ if ($r) {
 }
 
 function pageheader($pagetitle = '', $fid = null) {
-	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo,
-	$theme, $meta, $defaultlogo, $rankset_names;
+	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo, $theme, $meta, $defaultlogo, $rankset_names;
 
-	if ($log) {
+	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
-	} else {
+	else
 		$sql->query("UPDATE guests SET lastforum = ? WHERE ip = ?", [($fid == null ? 0 : $fid), $_SERVER['REMOTE_ADDR']]);
-	}
 
 	if ($pagetitle) $pagetitle .= " - ";
 
-	$t = $sql->result("SELECT attention FROM misc");
-
-	if ($t != '')
-		$extratitle = <<<HTML
-<table class="c1 center" width="100%">
-	<tr class="h"><td class="b h">News</td></tr>
-	<tr class="n1 center"><td class="b sfont">$t</td></tr>
-</table>
-HTML;
-
 	$boardlogo = sprintf('<a href="./">'.$boardlogo.'</a>', $defaultlogo);
 
-	if (isset($extratitle)) {
+	$attn = $sql->result("SELECT attention FROM misc");
+	if ($attn)
 		$boardlogo = <<<HTML
-<table width="100%"><tr class="center">
-	<td class="nb" valign="center">$boardlogo</td>
-	<td class="nb" valign="center" width="300">$extratitle</td>
+<table width="100%"><tr>
+	<td>$boardlogo</td>
+	<td width="300">
+		<table class="c1 center">
+			<tr class="h"><td class="b h">News</td></tr>
+			<tr class="n1 center"><td class="b sfont">$attn</td></tr>
+		</table>
+	</td>
 </tr></table>
 HTML;
-	}
 
 	?><!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8">
 		<title><?=$pagetitle.$boardtitle?></title>
 		<?=$meta?>
 		<link rel="stylesheet" href="theme/common.css">
@@ -190,9 +182,9 @@ HTML;
 	if (!$log) {
 		$userlinks[] = ['url' => "register.php", 'title' => 'Register'];
 		$userlinks[] = ['url' => "login.php", 'title' => 'Login'];
-	} else {
+	} else
 		$userlinks[] = ['url' => "javascript:document.logout.submit()", 'title' => 'Logout'];
-	}
+
 	if ($log) {
 		if ($loguser['powerlevel'] > 0)
 			$userlinks[] = ['url' => "editprofile.php", 'title' => 'Edit profile'];
@@ -201,18 +193,13 @@ HTML;
 		$userlinks[] = $markread;
 	}
 
-	foreach ($userlinks as $v) {
+	foreach ($userlinks as $v)
 		echo " | <a href=\"{$v['url']}\">{$v['title']}</a>";
-	}
 
-	echo "</td></table>";
-	if ($log) {
-		?><form action="login.php" method="post" name="logout">
-			<input type="hidden" name="action" value="logout">
-		</form><?php
-	}
-
-	echo '<br>';
+	?></td></table>
+	<form action="login.php" method="post" name="logout">
+		<input type="hidden" name="action" value="logout">
+	</form><br><?php
 
 	if ($fid || $fid == 0) {
 		$onusers = $sql->query("SELECT ".userfields().",lastpost,lastview FROM users WHERE lastview > ? ".($fid != 0 ? " AND lastforum =".$fid : '')." ORDER BY name",
