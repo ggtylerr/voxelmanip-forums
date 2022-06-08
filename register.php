@@ -35,6 +35,11 @@ if ($act == 'Register') {
 			$sql->query("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", [$id, time()]);
 			$sql->query("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", [$id, time()]);
 
+			if (function_exists('sendWelcomePM')) {
+				$sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,title,text) VALUES (?,'127.0.0.1',?,1,'Welcome!',?)",
+					[time(),$id,sendWelcomePM($name)]);
+			}
+
 			setcookie('token', $token, 2147483647);
 
 			redirect('./');

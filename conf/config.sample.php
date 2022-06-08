@@ -64,6 +64,9 @@ $smilies = [
 	['text' => 'OwO', 'url' => 'img/smilies/owo.png']
 ];
 
+// Define this function to send a welcome PM to all newly registered users.
+// function sendWelcomePM($username) { }
+
 // Ranksets
 //require('img/ranks/rankset.php'); // Default (Mario) rankset
 
