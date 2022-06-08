@@ -167,7 +167,7 @@ HTML
 	'content' => <<<HTML
 <p>They reflect the rank of the user, which are:</p>
 <table class="center"><tr>$nctable</tr></table>
-<p>Keep in mind that some users might have a custom colour assigned to them, usually if they are staff or in bed with one.</p>
+<p>Keep in mind that some users might have a custom colour assigned to them, usually if they are staff or friends with one.</p>
 HTML
 ]];
 
