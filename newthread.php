@@ -12,6 +12,9 @@ if (!$forum)
 if ($forum['minthread'] > $loguser['powerlevel'])
 	error("You have no permissions to create threads in this forum!");
 
+$title = $_POST['title'] ?? '';
+$message = $_POST['message'] ?? '';
+
 $error = '';
 
 if ($action == 'Submit') {
@@ -27,7 +30,7 @@ if ($action == 'Submit') {
 	if (!$error) {
 		$sql->query("UPDATE users SET posts = posts + 1,threads = threads + 1,lastpost = ? WHERE id = ?", [time(), $loguser['id']]);
 		$sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser) VALUES (?,?,?,?,?)",
-			[$_POST['title'],$fid,$loguser['id'],time(),$loguser['id']]);
+			[$title,$fid,$loguser['id'],time(),$loguser['id']]);
 
 		$tid = $sql->insertid();
 		$sql->query("INSERT INTO posts (user,thread,date,ip) VALUES (?,?,?,?)",
@@ -35,7 +38,7 @@ if ($action == 'Submit') {
 
 		$pid = $sql->insertid();
 		$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
-			[$pid,$_POST['message']]);
+			[$pid,$message]);
 
 		$sql->query("UPDATE forums SET threads = threads + 1, posts = posts + 1, lastdate = ?,lastuser = ?,lastid = ? WHERE id = ?",
 			[time(), $loguser['id'], $pid, $fid]);
@@ -55,9 +58,6 @@ $topbot = [
 ];
 
 pageheader("New thread", $forum['id']);
-
-$title = $_POST['title'] ?? '';
-$message = $_POST['message'] ?? '';
 
 if ($action == 'Preview') {
 	$post['date'] = $post['ulastpost'] = time();

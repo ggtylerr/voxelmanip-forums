@@ -17,16 +17,18 @@ if (!$thread) {
 	error("You can't post in closed threads!");
 }
 
+$message = $_POST['message'] ?? '';
+
 $error = '';
 if ($action == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
 	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && $loguser['powerlevel'] < 4)
 		$error = "You can't double post until it's been at least one day!";
-	//if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && !has_perm('consecutive-posts'))
-	//	$error = "You must wait 2 seconds before posting consecutively.";
-	if (strlen(trim($_POST['message'])) == 0)
+	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && $loguser['powerlevel'] > 3)
+		$error = "You must wait 2 seconds before posting consecutively.";
+	if (strlen(trim($message)) == 0)
 		$error = "Your post is empty! Enter a message and try again.";
-	if (strlen(trim($_POST['message'])) < 35)
+	if (strlen(trim($message)) < 35)
 		$error = "Your post is too short to be meaningful. Please try to write something longer or refrain from posting.";
 
 	if (!$error) {
@@ -36,7 +38,7 @@ if ($action == 'Submit') {
 
 		$pid = $sql->insertid();
 		$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
-			[$pid,$_POST['message']]);
+			[$pid,$message]);
 
 		$sql->query("UPDATE threads SET replies = replies + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
 			[time(), $loguser['id'], $pid, $tid]);
@@ -60,8 +62,6 @@ $topbot = [
 ];
 
 pageheader('New reply', $thread['forum']);
-
-$message = $_POST['message'] ?? '';
 
 $pid = (int)($_GET['pid'] ?? 0);
 if ($pid) {

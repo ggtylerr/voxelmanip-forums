@@ -11,31 +11,31 @@ $topbot = [
 
 if ($loguser['powerlevel'] < 1) error("You have no permissions to do this!");
 
+$userto = $_POST['userto'] ?? '';
+$title = $_POST['title'] ?? '';
+$message = $_POST['message'] ?? '';
+
 $error = '';
 
 if ($action == 'Submit') {
-	$userto = $sql->result("SELECT id FROM users WHERE name LIKE ? OR displayname LIKE ?", [$_POST['userto'], $_POST['userto']]);
+	$userto = $sql->result("SELECT id FROM users WHERE name LIKE ? OR displayname LIKE ?", [$userto, $userto]);
 
-	if ($userto && $_POST['message']) {
+	if ($userto && $message) {
 		$recentpms = $sql->fetch("SELECT date FROM pmsgs WHERE date >= (UNIX_TIMESTAMP()-15) AND userfrom = ?", [$loguser['id']]);
 		if ($recentpms) {
 			$error = "You can't send more than one PM within 15 seconds!";
 		} else {
 			$sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,title,text) VALUES (?,?,?,?,?,?)",
-				[time(),$userip,$userto,$loguser['id'],$_POST['title'],$_POST['message']]);
+				[time(),$userip,$userto,$loguser['id'],$title,$message]);
 
 			redirect("private.php");
 		}
 	} elseif (!$userto) {
 		$error = "That user doesn't exist!";
-	} elseif (!$_POST['message']) {
+	} elseif (!$message) {
 		$error = "You can't send a blank message!";
 	}
 }
-
-$userto = $_POST['userto'] ?? '';
-$title = $_POST['title'] ?? '';
-$message = $_POST['message'] ?? '';
 
 if (isset($_GET['pid']) && $pid = $_GET['pid']) {
 	$post = $sql->fetch("SELECT IF(u.displayname = '',u.name,u.displayname) name, p.title, p.text "

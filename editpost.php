@@ -32,9 +32,10 @@ $post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p
 if (!$post) error("Post doesn't exist.");
 
 $error = '';
+$message = $_POST['message'] ?? $post['text'];
 
 if ($action == 'Submit') {
-	if ($post['text'] == $_POST['message'])
+	if ($post['text'] == $message)
 		$error = "No changes detected.";
 
 	if (!$error) {
@@ -43,7 +44,7 @@ if ($action == 'Submit') {
 		$sql->query("UPDATE posts SET revision = ? WHERE id = ?", [$newrev, $pid]);
 
 		$sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES (?,?,?,?,?)",
-			[$pid, $_POST['message'], $newrev, $loguser['id'], time()]);
+			[$pid, $message, $newrev, $loguser['id'], time()]);
 
 		redirect("thread.php?pid=$pid#edit");
 	}
@@ -68,8 +69,6 @@ $topbot = [
 	],
 	'title' => 'Edit post'
 ];
-
-$message = $_POST['message'] ?? esc($post['text']);
 
 pageheader('Edit post',$thread['forum']);
 
@@ -96,7 +95,7 @@ if ($action == 'Preview') {
 			<td class="b n2"><?=posttoolbar() ?></td>
 		</tr><tr>
 			<td class="b n1 center" width=120>Post:</td>
-			<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows=20 cols=80><?=$message ?></textarea></td>
+			<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows=20 cols=80><?=esc($message) ?></textarea></td>
 		</tr><tr>
 			<td class="b n1"></td>
 			<td class="b n1">
