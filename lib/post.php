@@ -115,9 +115,7 @@ function esc($text) {
 
 function posttoolbutton($name, $title, $leadin, $leadout) {
 	return sprintf(
-		'<td>
-			<a href="javascript:toolBtn(\'%s\',\'%s\')"><button style="font-size:11pt;" title="%s">%s</button></a>
-		</td>',
+		'<td><a href="javascript:toolBtn(\'%s\',\'%s\')"><input style="font-size:11pt" type="button" title="%s" value="%s"></a></td>',
 	$leadin, $leadout, $title, $name);
 }
 
