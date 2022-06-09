@@ -231,8 +231,7 @@ function showmove() {
 function hidethreadedit() {
 	moptions.innerHTML = 'Thread options: <ul class="menulisting">$stick2$close2$trash2$edit</ul>';
 	mappend.innerHTML = '';
-}
-		</script>
+}		</script>
 		<input type=hidden id="arg" name="arg" value="">
 		<input type=hidden id="action" name="action" value="">
 	</td>
@@ -278,8 +277,8 @@ if_empty_query($i, "No posts were found.", 0, true);
 echo "$pagelist" . (!isset($time) ? '<br>' : '');
 
 if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$thread['closed']) {
-	?><table class="c1">
-<form action="newreply.php" method="post">
+	?><form action="newreply.php?id=<?=$tid?>" method="post">
+<table class="c1">
 	<tr class="h"><td class="b h" colspan=2>Warp Whistle Reply</a></td>
 	<tr>
 		<td class="b n1 center" width=120>Format:</td>
@@ -290,12 +289,11 @@ if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$
 	</tr><tr class="n1">
 		<td class="b"></td>
 		<td class="b">
-			<input type="hidden" name="tid" value="<?=$tid ?>">
 			<input type="submit" name="action" value="Submit">
 			<input type="submit" name="action" value="Preview">
 		</td>
 	</tr>
-</form></table><br><?php
+</table></form><br><?php
 }
 
 RenderPageBar($topbot);
