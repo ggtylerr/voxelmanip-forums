@@ -32,6 +32,8 @@ if ($action == 'Submit') {
 	//	$error = "You must wait 2 seconds before posting consecutively.";
 	if (strlen(trim($_POST['message'])) == 0)
 		$error = "Your post is empty! Enter a message and try again.";
+	if (strlen(trim($_POST['message'])) < 35)
+		$error = "Your post is too short to be meaningful. Please try to write something longer or refrain from posting.";
 
 	if (!$error) {
 		$sql->query("UPDATE users SET posts = posts + 1, lastpost = ? WHERE id = ?", [time(), $loguser['id']]);

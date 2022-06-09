@@ -19,10 +19,12 @@ if ($forum['minthread'] > $loguser['powerlevel'])
 $error = '';
 
 if ($action == 'Submit') {
+	if (strlen(trim($title)) < 25)
+	$error = "You need to enter a longer title.";
+	if (strlen(trim($message)) == 0)
+		$error = "You need to enter a message to your thread.";
 	if ($loguser['lastpost'] > time() - 30 && $loguser['powerlevel'] < 4)
 		$error = "Don't post threads so fast, wait a little longer.";
-	if (strlen(trim(str_replace(' ', '', $_POST['title']))) < 4)
-		$error = "You need to enter a longer title.";
 	//if ($loguser['lastpost'] > time() - 2 && has_perm('ignore-thread-time-limit'))
 	//	$error = "You must wait 2 seconds before posting a thread.";
 
