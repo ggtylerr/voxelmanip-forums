@@ -2,12 +2,8 @@
 require('lib/common.php');
 needs_login();
 
-if (!isset($_POST['action'])) $_POST['action'] = '';
-if ($action = $_POST['action']) {
-	$fid = $_POST['fid'];
-} else {
-	$fid = $_GET['id'] ?? 0;
-}
+$fid = $_GET['id'] ?? null;
+$action = $_POST['action'] ?? null;
 
 $forum = $sql->fetch("SELECT * FROM forums WHERE id = ? AND ? >= minread", [$fid, $loguser['powerlevel']]);
 
@@ -78,7 +74,7 @@ if ($action == 'Preview') {
 	RenderPageBar($topbot);
 }
 ?><br><?=($error ? noticemsg($error).'<br>' : '')?>
-<form action="newthread.php" method="post"><table class="c1">
+<form action="newthread.php?id=<?=$fid?>" method="post"><table class="c1">
 	<tr class="h"><td class="b h" colspan="2">Thread</td></tr>
 	<tr>
 		<td class="b n1 center" width="120">Thread title:</td>
@@ -92,7 +88,6 @@ if ($action == 'Preview') {
 	</tr><tr>
 		<td class="b n1"></td>
 		<td class="b n1">
-			<input type="hidden" name="fid" value="<?=$fid ?>">
 			<input type="submit" name="action" value="Submit">
 			<input type="submit" name="action" value="Preview">
 		</td>

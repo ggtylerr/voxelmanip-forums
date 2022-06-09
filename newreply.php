@@ -2,14 +2,8 @@
 require('lib/common.php');
 needs_login();
 
-$_POST['action'] = $_POST['action'] ?? null;
-
-if ($action = $_POST['action']) {
-	$tid = $_POST['tid'];
-} else {
-	$tid = $_GET['id'];
-}
-$action = $action ?? null;
+$tid = $_GET['id'] ?? null;
+$action = $_POST['action'] ?? null;
 
 $thread = $sql->fetch("SELECT t.*, f.title ftitle, f.minreply fminreply
 	FROM threads t LEFT JOIN forums f ON f.id=t.forum
@@ -102,7 +96,7 @@ if ($action == 'Preview') {
 	RenderPageBar($topbot);
 }
 ?><br><?=($error ? noticemsg($error).'<br>' : '')?>
-<form action="newreply.php" method="post">
+<form action="newreply.php?id=<?=$tid?>" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">Reply</td></tr>
 		<tr>
@@ -114,7 +108,6 @@ if ($action == 'Preview') {
 		</tr><tr>
 			<td class="b n1"></td>
 			<td class="b n1">
-				<input type="hidden" name="tid" value="<?=$tid ?>">
 				<input type="submit" name="action" value="Submit">
 				<input type="submit" name="action" value="Preview">
 			</td>

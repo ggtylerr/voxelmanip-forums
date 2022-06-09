@@ -2,16 +2,12 @@
 require('lib/common.php');
 needs_login();
 
-$_GET['act'] = $_GET['act'] ?? '';
-$_POST['action'] = $_POST['action'] ?? '';
+$act = $_GET['act'] ?? '';
+$action = $_POST['action'] ?? '';
 
-if ($action = $_POST['action']) {
-	$pid = $_POST['pid'];
-} else {
-	$pid = $_GET['pid'];
-}
+$pid = $_GET['pid'] ?? null;
 
-if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
+if ($act == 'delete' || $act == 'undelete') {
 	$action = $_GET['act'];
 	$pid = $pid;
 }
@@ -92,7 +88,7 @@ if ($action == 'Preview') {
 }
 
 ?><br><?=($error ? noticemsg($error).'<br>' : '')?>
-<form action="editpost.php" method="post">
+<form action="editpost.php?pid=<?=$pid?>" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan=2>Edit Post</td></tr>
 		<tr>
@@ -104,7 +100,6 @@ if ($action == 'Preview') {
 		</tr><tr>
 			<td class="b n1"></td>
 			<td class="b n1">
-				<input type="hidden" name="pid" value="<?=$pid ?>">
 				<input type="submit" name="action" value="Submit">
 				<input type="submit" name="action" value="Preview">
 			</td>
