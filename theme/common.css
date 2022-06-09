@@ -94,6 +94,10 @@ table.postformatting {
 	text-align: center;
 }
 
+.mainbar img {
+	max-width: 100%;
+}
+
 /* sensitive info (censor things like IPs unless hovered) */
 .sensitive { color: #636363; background-color: #636363; }
 .sensitive:hover { color: unset; background-color: unset; }
