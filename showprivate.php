@@ -21,7 +21,6 @@ pageheader($pmsg['title']);
 
 $pagebar = [
 	'breadcrumb' => [
-		['href' => './', 'title' => 'Main'],
 		['href' => "private.php".(!$tologuser ? '?id='.$pmsg['userto'] : ''), 'title' => 'Private messages']
 	],
 	'title' => ($pmsg['title'] ? esc($pmsg['title']) : '(untitled)'),

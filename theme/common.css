@@ -37,10 +37,11 @@ a:active, a:hover	{ color: #FFFFFF }
 .center	{ text-align: center; }
 .right	{ text-align: right; }
 
-.pagelist {
-	margin-left: 4px;
-	margin-top: 4px;
-	margin-bottom: 4px;
+.pagelist, .breadcrumb {
+	margin: 3px 7px;
+}
+.breadcrumb .actions {
+	float: right;
 }
 
 .microlight {

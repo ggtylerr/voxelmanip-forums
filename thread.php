@@ -156,7 +156,7 @@ if ($thread['replies']+1 > $ppp) {
 
 if ($viewmode == "thread") {
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main'],['href' => 'forum.php?id='.$thread['forum'], 'title' => $thread['ftitle']]],
+		'breadcrumb' => [['href' => 'forum.php?id='.$thread['forum'], 'title' => $thread['ftitle']]],
 		'title' => esc($thread['title'])
 	];
 
@@ -171,7 +171,7 @@ if ($viewmode == "thread") {
 	}
 } elseif ($viewmode == "user") {
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
+		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
 		'title' => 'Posts'
 	];
 } elseif ($viewmode == "time") {

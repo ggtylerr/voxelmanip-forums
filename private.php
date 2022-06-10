@@ -53,7 +53,6 @@ $pmsgs = $sql->query("SELECT ".userfields('u', 'u').", p.* FROM pmsgs p "
 				[$id, $showdel]);
 
 $topbot = [
-	'breadcrumb' => [['href' => './', 'title' => 'Main']],
 	'title' => $title
 ];
 

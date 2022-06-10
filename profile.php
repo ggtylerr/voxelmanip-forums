@@ -142,7 +142,6 @@ $profilefields = [
 ];
 
 $topbot = [
-	'breadcrumb' => [['href' => './', 'title' => 'Main']],
 	'title' => ($user['displayname'] ?: $user['name'])
 ];
 

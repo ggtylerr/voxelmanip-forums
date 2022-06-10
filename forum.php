@@ -47,7 +47,6 @@ if ($fid) {
 		[$fid, $offset, $tpp]);
 
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main']],
 		'title' => $forum['title']
 	];
 	if ($loguser['powerlevel'] >= $forum['minthread'])
@@ -76,7 +75,7 @@ if ($fid) {
 		[$uid, $loguser['powerlevel']]);
 
 	$topbot = [
-		'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
+		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
 		'title' => 'Threads'
 	];
 } elseif ($time) {

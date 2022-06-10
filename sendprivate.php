@@ -5,7 +5,7 @@ needs_login();
 $action = $_POST['action'] ?? '';
 
 $topbot = [
-	'breadcrumb' => [['href' => './', 'title' => 'Main'], ['href' => "private.php", 'title' => 'Private messages']],
+	'breadcrumb' => [['href' => "private.php", 'title' => 'Private messages']],
 	'title' => 'Send'
 ];
 

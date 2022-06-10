@@ -29,7 +29,7 @@ function RenderActions($actions) {
 		if ($i++) $out .= ' | ';
 
 		if (isset($action['href']))
-			$out .= sprintf('<a href="%s">%s</a>', htmlentities($action['href'], ENT_QUOTES), $action['title']);
+			$out .= sprintf('<a href="%s">%s</a>', esc($action['href']), $action['title']);
 		else
 			$out .= $action['title'];
 	}
@@ -39,17 +39,15 @@ function RenderActions($actions) {
 function RenderPageBar($pagebar) {
 	if (empty($pagebar)) return;
 
-	echo "<table width=100%><td class=nb>";
+	echo '<div class="breadcrumb"><a href="./">Main</a> &raquo; ';
 	if (!empty($pagebar['breadcrumb'])) {
 		foreach ($pagebar['breadcrumb'] as $action)
-			printf('<a href=%s>%s</a> - ', '"'.htmlentities($action['href'], ENT_QUOTES).'"', $action['title']);
+			printf('<a href=%s>%s</a> &raquo; ', '"'.esc($action['href']).'"', esc($action['title']));
 	}
-	echo $pagebar['title'].'</td><td class="nb right">';
+	echo esc($pagebar['title']).'<div class="actions">';
 	if (!empty($pagebar['actions']))
-		RenderActions($pagebar['actions']);
-	else
-		echo "&nbsp;";
-	echo "</td></table>";
+		renderActions($pagebar['actions']);
+	echo "</div></div>";
 }
 
 function catheader($title) {
