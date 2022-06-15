@@ -7,7 +7,7 @@ $time = (int)($_GET['time'] ?? 86400);
 $users = $sql->query("SELECT ".userfields('u').",u.posts,u.regdate,COUNT(*) num FROM users u LEFT JOIN posts p ON p.user = u.id WHERE p.date > ? GROUP BY u.id ORDER BY num DESC",
 	[(time() - $time)]);
 ?>
-<table class="c1" style="width:auto">
+<table class="c1 autowidth">
 	<tr class="h"><td class="b">Active users during the last <?=timeunits2($time) ?></td></tr>
 	<tr class="n1"><td class="b n1 center"><?=timelink(3600,'activeusers').' | '.timelink(86400,'activeusers').' | '.timelink(604800,'activeusers').' | '.timelink(2592000,'activeusers') ?></td></tr>
 </table><br>

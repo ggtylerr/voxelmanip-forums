@@ -37,6 +37,10 @@ a:active, a:hover	{ color: #FFFFFF }
 .center	{ text-align: center; }
 .right	{ text-align: right; }
 
+.f-right { float: right }
+
+.autowidth { width: auto !important }
+
 .pagelist, .breadcrumb {
 	margin: 3px 7px;
 }

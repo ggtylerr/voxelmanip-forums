@@ -116,7 +116,7 @@ if ($forum['threads'] > $tpp) {
 RenderPageBar($topbot);
 
 if ($time) {
-	?><table class="c1" style="width:auto">
+	?><table class="c1 autowidth">
 		<tr class="h"><td class="b">Latest Threads</td></tr>
 		<tr><td class="b n1 center">
 			By Threads | <a href="thread.php?time=<?=$time ?>">By Posts</a></a><br><br>

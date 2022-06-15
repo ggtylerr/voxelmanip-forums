@@ -25,7 +25,7 @@ if ($ranksetcount <= 1) error("There's no ranksets defined.");
 pageheader("Ranks");
 
 if ($ranksetcount != 2) { ?>
-<table class="c1 center" style="width:auto">
+<table class="c1 center autowidth">
 	<tr class="h"><td class="b">Rank Set</td></tr>
 	<tr class="n1"><td class="b n1"><?=$rankselection ?></td></tr>
 </table><br>

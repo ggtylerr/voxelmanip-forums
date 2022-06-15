@@ -88,7 +88,7 @@ HTML
 <table class="smileytbl">$smilietext</table>
 
 <p>Likewise, some BBCode is supported. See the table below.</p>
-<table class="c1" style="width:auto">
+<table class="c1 autowidth">
 	<tr class="h">
 		<td class="b h">Tag</td>
 		<td class="b h">Effect</td>

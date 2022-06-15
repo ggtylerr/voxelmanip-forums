@@ -35,7 +35,7 @@ foreach ($powerlevels as $id => $title) {
 }
 
 ?>
-<table class="c1">
+<table class="c1 autowidth">
 	<tr class="h"><td class="b h" colspan="2">Memberlist</td></tr>
 	<tr>
 		<td class="b n1 center">Sort by:</td>

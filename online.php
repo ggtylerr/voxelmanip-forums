@@ -11,7 +11,7 @@ $showips = $loguser['powerlevel'] > 2;
 
 $users = $sql->query("SELECT * FROM users WHERE lastview > ?", [(time()-$time)]);
 ?>
-<table class="c1" style="width:auto">
+<table class="c1 autowidth">
 	<tr class="h"><td class="b">Online users during the last <?=str_replace('.', '', timeunits2($time)) ?>:</td></tr>
 	<tr class="n1"><td class="b n1 center"><?=timelink(60,'online').' | '.timelink(300,'online').' | '.timelink(3600,'online').' | '.timelink(86400,'online') ?></td></tr>
 </table><br>

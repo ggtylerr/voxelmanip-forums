@@ -174,7 +174,7 @@ function announcement_row() {
 			<tr class="h"><td class="b" colspan="2">Latest Announcement</td></tr>
 			<tr class="n1 center"><td class="center b n1" width="32">&nbsp;</td>
 			<td class="b left"><?=$anlink ?>
-			<span class="right" style="float:right"><a href="forum.php?id=<?=$newsid?>">All announcements</a></span>
+			<span class="f-right"><a href="forum.php?id=<?=$newsid?>">All announcements</a></span>
 		</td></tr></table><?php
 	}
 }
