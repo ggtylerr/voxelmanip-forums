@@ -263,12 +263,12 @@ HTML;
 			<?=$birthdaybox ?>
 			<tr><td class="b n1">
 				<table style="width:100%"><tr>
-					<td class="nb" width="170"></td>
-					<td class="nb center"><span class="white-space:nowrap">
+					<td class="nb" width="200"></td>
+					<td class="nb center" style="min-width:100px"><span class="white-space:nowrap">
 						<?=$count['t'] ?> threads and <?=$count['p'] ?> posts total.<br><?=$count['d'] ?> new posts
 						today, <?=$count['h'] ?> last hour.<br>
 					</span></td>
-					<td class="nb right" width="170">
+					<td class="nb right" width="200">
 						<?=$count['u'] ?> registered users<br> Newest: <?=userlink($lastuser) ?>
 					</td>
 				</tr></table>
