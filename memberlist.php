@@ -42,9 +42,11 @@ foreach ($powerlevels as $id => $title) {
 		<td class="b n2 center">
 			<?=mlink('Posts', '', $pow, $page, $orderby) ?> |
 			<?=mlink('Username', 'name', $pow, $page, $orderby) ?> |
-			<?=mlink('Registration date', 'reg', $pow, $page, $orderby) ?> |
-			<?=mlink('[ &#x25BC; ]', $sort, $pow, $page, 'd') ?>
-			<?=mlink('[ &#x25B2; ]', $sort, $pow, $page, 'a') ?>
+			<?=mlink('Registration date', 'reg', $pow, $page, $orderby) ?>
+			<span class="f-right">
+				<?=mlink('[ &#x25BC; ]', $sort, $pow, $page, 'd') ?>
+				<?=mlink('[ &#x25B2; ]', $sort, $pow, $page, 'a') ?>
+			</span>
 		</td>
 	</tr><tr>
 		<td class="b n1 center">Group:</td>
