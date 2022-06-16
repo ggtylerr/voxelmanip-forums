@@ -15,7 +15,7 @@ body {
 }
 
 td {
-	padding: 2px 4px 2px 4px;
+	padding: 4px 6px 4px 6px;
 }
 
 tr.c td, tr.h td {
@@ -57,7 +57,7 @@ font.sfont a[href*="page"] {
 	display: inline-block;
 }
 
-button, input[type="submit"], select {
+button, input[type="submit"], input[type="button"], select {
 	border: 0px none;
 	background: linear-gradient(hsl(210, 20%, 15%), hsl(210, 20%, 12.5%));
 	border-radius: 4px;
