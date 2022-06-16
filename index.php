@@ -10,17 +10,18 @@ $action = $_GET['action'] ?? null;
 //mark forum read
 if ($log && $action == 'markread') {
 	$fid = $_GET['fid'];
-	if ($fid != 'all') {
+	if ($fid == 'all') {
+		//mark all read
+		$sql->query("DELETE FROM threadsread WHERE uid = ?", [$loguser['id']]);
+		$sql->query("REPLACE INTO forumsread (uid,fid,time) SELECT " . $loguser['id'] . ",f.id," . time() . " FROM forums f");
+		redirect('index.php');
+	} else {
 		//delete obsolete threadsread entries
 		$sql->query("DELETE r FROM threadsread r LEFT JOIN threads t ON t.id = r.tid WHERE t.forum = ? AND r.uid = ?", [$fid, $loguser['id']]);
 		//add new forumsread entry
 		$sql->query("REPLACE INTO forumsread VALUES (?,?,?)", [$loguser['id'], $fid, time()]);
-	} else {
-		//mark all read
-		$sql->query("DELETE FROM threadsread WHERE uid=" . $loguser['id']);
-		$sql->query("REPLACE INTO forumsread (uid,fid,time) SELECT " . $loguser['id'] . ",f.id," . time() . " FROM forums f");
+		redirect("forum.php?id=$fid");
 	}
-	redirect('index.php');
 }
 
 pageheader(null,0);
@@ -39,6 +40,9 @@ $forums = $sql->query("SELECT f.*, ".($log ? "r.time rtime, " : '').userfields('
 		. " ORDER BY c.ord,c.id,f.ord,f.id ",
 		[$loguser['powerlevel']]);
 $cat = -1;
+
+if ($log)
+	echo '<a class="f-right" href="./?action=markread&fid=all">Mark all forums read</a>';
 
 announcement_row();
 echo '<br>';

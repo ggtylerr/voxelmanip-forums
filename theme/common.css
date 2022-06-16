@@ -143,3 +143,17 @@ table.postformatting {
 	margin-right: 4px;
 	width: 88px;
 }
+
+.headermenu a {
+	margin-left: 20px;
+	display: inline-block;
+	padding: 7px 0px;
+}
+.headermenu_right {
+	text-align: right;
+}
+.headermenu_right .menulink {
+	margin-right: 20px;
+	display: inline-block;
+	padding: 7px 0px;
+}

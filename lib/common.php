@@ -110,8 +110,8 @@ if ($r) {
 	}
 }
 
-function pageheader($pagetitle = '', $fid = null) {
-	global $sql, $log, $loguser, $views, $boardtitle, $boardlogo, $theme, $meta, $defaultlogo, $rankset_names;
+function pageheader($pagetitle = '', int $fid = null) {
+	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $meta, $defaultlogo, $rankset_names;
 
 	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -150,35 +150,34 @@ HTML;
 	<body>
 		<table class="c1">
 			<tr class="nt n2 center"><td class="b n1 center" colspan="3"><?=$boardlogo?></td></tr>
-			<tr class="n2 center">
-				<td class="b"><div style="width: 150px">Views: <?=number_format($views) ?></div></td>
-				<td class="b" width="100%">
+			<tr class="n2">
+				<td class="b headermenu">
 					<a href="./">Main</a>
-					| <a href="faq.php">FAQ</a>
-					| <a href="memberlist.php">Memberlist</a>
-					| <a href="activeusers.php">Active users</a>
-					| <a href="thread.php?time=86400">Latest posts</a>
-					<?php if (count($rankset_names) > 1) { ?>| <a href="ranks.php">Ranks</a><?php } ?>
-					| <a href="online.php">Online users</a>
-					| <a href="search.php">Search</a>
+					<a href="faq.php">FAQ</a>
+					<a href="memberlist.php">Memberlist</a>
+					<a href="activeusers.php">Active users</a>
+					<a href="thread.php?time=86400">Latest posts</a>
+					<?php if (count($rankset_names) > 1) { ?><a href="ranks.php">Ranks</a><?php } ?>
+					<a href="online.php">Online users</a>
+					<a href="search.php">Search</a>
 				</td>
-				<td class="b"><div style="width: 150px"><?=dateformat(time())?></div></td>
-				<tr class="n1 center"><td class="b" colspan="3"><?=($log ? userlink($loguser) : 'Not logged in ')?>
-<?php
+				<td class="b headermenu_right"><?php
 	if ($log) {
 		$unreadpms = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE userto = ? AND unread = 1 AND del_to = 0", [$loguser['id']]);
 
 		printf(
-			' <a href="private.php"><img src="img/pm%s.png" width="20" alt="Private messages"></a> %s ',
+			'<span class="menulink">'.userlink($loguser).' <a href="private.php"><img src="img/pm%s.png" width="20" alt="Private messages"></a> %s</span>  ',
 		(!$unreadpms ? '-off' : ''), ($unreadpms ? "($unreadpms new)" : ''));
 	}
 
-	if ($fid && is_numeric($fid))
-		$markread = ['url' => "index.php?action=markread&fid=$fid", 'title' => "Mark forum read"];
-	else
-		$markread = ['url' => "index.php?action=markread&fid=all", 'title' => "Mark all forums read"];
-
 	$userlinks = [];
+
+	if ($log) {
+		if ($loguser['powerlevel'] > 0)
+			$userlinks[] = ['url' => "editprofile.php", 'title' => 'Edit profile'];
+		if ($loguser['powerlevel'] > 2)
+			$userlinks[] = ['url' => 'management.php', 'title' => 'Admin'];
+	}
 
 	if (!$log) {
 		$userlinks[] = ['url' => "register.php", 'title' => 'Register'];
@@ -186,16 +185,8 @@ HTML;
 	} else
 		$userlinks[] = ['url' => "javascript:document.logout.submit()", 'title' => 'Logout'];
 
-	if ($log) {
-		if ($loguser['powerlevel'] > 0)
-			$userlinks[] = ['url' => "editprofile.php", 'title' => 'Edit profile'];
-		if ($loguser['powerlevel'] > 2)
-			$userlinks[] = ['url' => 'management.php', 'title' => 'Management'];
-		$userlinks[] = $markread;
-	}
-
 	foreach ($userlinks as $v)
-		echo " | <a href=\"{$v['url']}\">{$v['title']}</a>";
+		echo "<a class=\"menulink\" href=\"{$v['url']}\">{$v['title']}</a> ";
 
 	?></td></table>
 	<form action="login.php" method="post" name="logout">

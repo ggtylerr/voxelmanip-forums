@@ -47,10 +47,14 @@ if ($fid) {
 		[$fid, $offset, $tpp]);
 
 	$topbot = [
-		'title' => $forum['title']
+		'title' => $forum['title'],
+		'actions' => []
 	];
+	if ($log)
+		$topbot['actions'][] = ['href' => "index.php?action=markread&fid=$fid", 'title' => "Mark forum read"];
+
 	if ($loguser['powerlevel'] >= $forum['minthread'])
-		$topbot['actions'] = [['href' => "newthread.php?id=$fid", 'title' => 'New thread']];
+		$topbot['actions'][] = ['href' => "newthread.php?id=$fid", 'title' => 'New thread'];
 
 } elseif ($uid) {
 	$user = $sql->fetch("SELECT displayname, name FROM users WHERE id = ?", [$uid]);
