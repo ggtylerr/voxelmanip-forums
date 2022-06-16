@@ -65,7 +65,7 @@ pageheader('New reply', $thread['forum']);
 
 $pid = (int)($_GET['pid'] ?? 0);
 if ($pid) {
-	$post = $sql->fetch("SELECT u.name name, p.user, pt.text, f.id fid, p.thread, f.minread
+	$post = $sql->fetch("SELECT u.name name, p.user, pt.text, f.id fid, p.thread, f.minread, t.lastid
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id
@@ -79,7 +79,8 @@ if ($pid) {
 		$post['text'] = '';
 	}
 
-	$message = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", $post['text']));
+	if ($pid != $post['lastid'])
+		$message = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", $post['text']));
 }
 
 if ($action == 'Preview') {
