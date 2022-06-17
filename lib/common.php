@@ -69,24 +69,16 @@ if (str_replace($botlist, "x", strtolower($useragent)) != strtolower($useragent)
 	$bot = 1;
 
 $sql->query("DELETE FROM guests WHERE ip = ? OR date < ?", [$userip, (time() - 300)]);
-if ($log) {
+if ($log)
 	$sql->query("UPDATE users SET lastview = ?, ip = ?, url = ? WHERE id = ?",
 		[time(), $userip, $url, $loguser['id']]);
-} else {
+else
 	$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
-}
 
-if (!$bot)
+if (!$bot && !isset($rss))
 	$sql->query("UPDATE misc SET views = views + 1");
 
-$views = $sql->result("SELECT views FROM misc");
-
-$theme = $loguser['theme'];
-//Config definable theme override
-if ($override_theme)
-	$theme = $override_theme;
-elseif (isset($_GET['theme']))
-	$theme = $_GET['theme'];
+$theme = $override_theme ?: ($_GET['theme'] ?? $loguser['theme']);
 
 if (!is_file("theme/$theme/$theme.css"))
 	$theme = $defaulttheme;
