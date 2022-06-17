@@ -28,7 +28,7 @@ if ($thread) {
 $themes = themelist();
 $themename = $themes[(string)$user['theme'] ?: $defaulttheme];
 
-if ($user['birth'] != -1) {
+if ($user['birth'] && $user['birth'] != -1) {
 	//Crudely done code.
 	$monthnames = [1 => 'January', 'February', 'March', 'April',
 		'May', 'June', 'July', 'August',
