@@ -1,21 +1,19 @@
 <?php
 
-function userlink_by_name($name) {
-	global $sql;
-	$u = $sql->fetch("SELECT ".userfields()." FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)", [$name, $name]);
-	if ($u)
-		return userlink($u, null);
-	else
-		return 0;
-}
-
 function get_username_link($matches) {
-	$x = str_replace('"', '', $matches[1]);
-	$nl = userlink_by_name($x);
-	if ($nl)
-		return $nl;
-	else
-		return $matches[0];
+	global $sql;
+	$name = str_replace('"', '', $matches[1]);
+
+	static $cache;
+	if (!isset($cache[$name])) {
+		$u = $sql->fetch("SELECT ".userfields()." FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)", [$name, $name]);
+		$cache[$name] = $u;
+	} else $u = $cache[$name];
+
+	if ($u)
+		$ulink = userlink($u, null);
+
+	return $ulink ?? $matches[0];
 }
 
 function securityfilter($msg) {
