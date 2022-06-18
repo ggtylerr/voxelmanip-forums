@@ -28,26 +28,12 @@ if ($thread) {
 $themes = themelist();
 $themename = $themes[(string)$user['theme'] ?: $defaulttheme];
 
-if ($user['birth'] && $user['birth'] != -1) {
-	//Crudely done code.
-	$monthnames = [1 => 'January', 'February', 'March', 'April',
-		'May', 'June', 'July', 'August',
-		'September', 'October', 'November', 'December'];
-	$bdec = explode("-", $user['birth']);
-	$mn = intval($bdec[0]);
-	if ($bdec['0'] <= 0 && $bdec['0'] > -2)
-		$birthday = $monthnames[$mn] . " " . $bdec[1];
-	else
-		$birthday = date("F j, Y", strtotime($user['birth']));
-
+$birthday = '';
+if ($user['birth']) {
 	$bd1 = new DateTime($user['birth']);
 	$bd2 = new DateTime(date("Y-m-d"));
-	if (($bd2 < $bd1 && !$bdec['2'] <= 0) || ($bdec['2'] <= 0 && $bdec['2'] > -2))
-		$age = '';
-	else
-		$age = '('.intval($bd1->diff($bd2)->format("%Y")).' years old)';
-} else {
-	$birthday = $age = '';
+	$birthday = date("F j, Y", strtotime($user['birth']))
+		.' ('.intval($bd1->diff($bd2)->format("%Y")).' years old)';
 }
 
 $email = ($user['email'] && $user['showemail'] ? str_replace(".", "<b> (dot) </b>", str_replace("@", "<b> (at) </b>", esc($user['email']))) : '');
@@ -132,7 +118,7 @@ $profilefields = [
 		['title' => 'Bio', 'value' => ($user['bio'] ? postfilter($user['bio']) : '')],
 		['title' => 'Location', 'value' => ($user['location'] ? esc($user['location']) : '')],
 		['title' => 'Email', 'value' => $email],
-		['title' => 'Birthday', 'value' => "$birthday $age"],
+		['title' => 'Birthday', 'value' => $birthday],
 	],
 	"User settings" => [
 		['title' => 'Theme', 'value' => esc($themename)],

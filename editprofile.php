@@ -64,21 +64,12 @@ if ($act == 'Edit profile') {
 	$pass = (strlen($_POST['pass2']) ? $_POST['pass'] : '');
 
 	//Validate birthday values.
-	if (!$_POST['birthM'] || !$_POST['birthD']) //Reject if any are missing.
-		$birthday = -1;
-	else {
-		if (!is_numeric($_POST['birthM']) || !is_numeric($_POST['birthD'])) //Reject if not numeric.
-			$birthday = -1;
-	}
-	if ($_POST['birthM'] > 12 || $_POST['birthD'] > 31) // fixes a small bug where if the fields are above a certain value, the profile fails to load
-		$birthday = -1;
-	$year = $_POST['birthY'];
-	if (!$_POST['birthY'] || !is_numeric($_POST['birthY']))
-		$year = -1;
-	if ($birthday != -1 && $_POST['birthM'] != '' && $_POST['birthD'] != '')
-		$birthday = $year.'-'.str_pad($_POST['birthM'], 2, "0", STR_PAD_LEFT).'-'.str_pad($_POST['birthD'], 2, "0", STR_PAD_LEFT);
-	else
-		$birthday = -1;
+	$bday = (int)($_POST['birthD'] ?? null);
+	$bmonth = (int)($_POST['birthM'] ?? null);
+	$byear = (int)($_POST['birthY'] ?? null);
+
+	if ($bday > 0 && $bmonth > 0 && $byear > 0 && $bmonth <= 12 && $bday <= 31 && $byear <= 3000)
+		$birthday = $byear.'-'.str_pad($bmonth, 2, "0", STR_PAD_LEFT).'-'.str_pad($bday, 2, "0", STR_PAD_LEFT);
 
 	$dateformat = $_POST['dateformat'];
 	$timeformat = $_POST['timeformat'];
@@ -137,7 +128,7 @@ if ($act == 'Edit profile') {
 			'blocklayouts' => $_POST['blocklayouts'] ?: 0,
 			'showemail' => isset($_POST['showemail']) ? 1 : 0,
 			'timezone' => $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null,
-			'birth' => $birthday,
+			'birth' => $birthday ?? null,
 			'usepic' => $usepic,
 			'dateformat' => $dateformat,
 			'timeformat' => $timeformat
@@ -194,7 +185,7 @@ foreach (timezone_identifiers_list() as $tz) {
 }
 
 $birthM = $birthD = $birthY = '';
-if ($user['birth'] && $user['birth'] != -1) {
+if ($user['birth']) {
 	$birthday = explode('-', $user['birth']);
 	$birthY = $birthday[0]; $birthM = $birthday[1]; $birthD = $birthday[2];
 }

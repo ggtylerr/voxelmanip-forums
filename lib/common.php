@@ -213,26 +213,18 @@ HTML;
 
 		?><table class="c1"><tr class="n1"><td class="b n1 center"><?=$onuserlist ?></td></tr></table><br><?php
 	} else if (isset($fid) && $fid == 0) {
-		$birthdaylimit = 86400 * 30;
-		$rbirthdays = $sql->query("SELECT birth, ".userfields()." FROM users WHERE birth LIKE ? AND lastview > ? ORDER BY name",
-			[date('m-d').'%', (time() - $birthdaylimit)]);
+
+		$rbirthdays = $sql->query("SELECT birth, ".userfields()." FROM users WHERE birth LIKE ? ORDER BY name", ['%'.date('m-d')]);
+
 		$birthdays = [];
 		while ($user = $rbirthdays->fetch()) {
 			$b = explode('-', $user['birth']);
-			if ($b['0'] <= 0 && $b['0'] > -2) {
-				$y = '';
-			} else {
-				$y = "(" . (date("Y") - $b['2']) . ")";
-			}
-
-			$birthdays[] = userlink($user) . " " . $y;
+			$birthdays[] = userlink($user)." (".(date("Y") - $b['0']).")";
 		}
 
 		$birthdaybox = '';
-		if (count($birthdays)) {
-			$birthdaystoday = implode(", ", $birthdays);
-			$birthdaybox = "<tr class=\"n1 center\"><td class=\"b n2 center\">Birthdays today: $birthdaystoday</td></tr>";
-		}
+		if (count($birthdays))
+			$birthdaybox = '<tr class="n1 center"><td class="b n2 center">Birthdays today: '.implode(", ", $birthdays).'</td></tr>';
 
 		$count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
 
