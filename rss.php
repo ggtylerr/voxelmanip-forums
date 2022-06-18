@@ -25,7 +25,7 @@ $fullurl = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HO
 	<item>
 		<title><?=$t['title']?></title>
 		<description>
-			New post in thread "<?=$t['title']?>"
+			&lt;a href="<?=$fullurl?>/thread.php?pid=<?=$t['id']?>#<?=$t['id']?>"&gt;New post&lt;/a&gt; in thread "<?=$t['title']?>"
 			by &lt;a href="<?=$fullurl?>/profile.php?id=<?=$t['uid']?>"&gt;<?=$t['uname']?>&lt;/a&gt;
 			in forum &lt;a href="<?=$fullurl?>/forum.php?id=<?=$t['forum']?>"&gt;<?=$t['ftitle']?>&lt;/a&gt;
 		</description>
