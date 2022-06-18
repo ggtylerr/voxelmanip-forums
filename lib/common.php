@@ -99,7 +99,7 @@ if ($r) {
 }
 
 function pageheader($pagetitle = '', int $fid = null) {
-	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $meta, $rankset_names;
+	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc, $rankset_names;
 
 	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -128,7 +128,7 @@ HTML;
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 		<title><?=$pagetitle.$boardtitle?></title>
-		<?=$meta?>
+		<?php if (isset($boarddesc)) { ?><meta name="description" content="<?=$boarddesc?>"><?php } ?>
 		<link rel="stylesheet" href="theme/common.css">
 		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
 		<script src="js/tools.js"></script>
