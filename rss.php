@@ -4,12 +4,13 @@ require('lib/common.php');
 
 header('Content-Type: text/xml');
 
-$threads = $sql->query("SELECT u.id uid, u.name uname, t.*, f.id fid, f.title ftitle
-		FROM threads t
-		LEFT JOIN users u ON u.id = t.user
+$threads = $sql->query("SELECT u.id uid, u.name uname, p.*, t.title, t.forum, f.id fid, f.title ftitle
+		FROM posts p
+		LEFT JOIN threads t ON t.id = p.thread
+		LEFT JOIN users u ON u.id = p.user
 		LEFT JOIN forums f ON f.id = t.forum
 		WHERE ? >= f.minread
-		ORDER BY t.lastdate DESC LIMIT 20",
+		ORDER BY t.lastdate DESC LIMIT 30",
 	[$loguser['powerlevel']]);
 
 $fullurl = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'];
@@ -28,9 +29,9 @@ $fullurl = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HO
 			by &lt;a href="<?=$fullurl?>/profile.php?id=<?=$t['uid']?>"&gt;<?=$t['uname']?>&lt;/a&gt;
 			in forum &lt;a href="<?=$fullurl?>/forum.php?id=<?=$t['forum']?>"&gt;<?=$t['ftitle']?>&lt;/a&gt;
 		</description>
-		<pubDate><?=date("r",$t['lastdate'])?></pubDate>
+		<pubDate><?=date("r",$t['date'])?></pubDate>
 		<category><?=$t['ftitle']?></category>
-		<guid><?=$fullurl?>/thread.php?pid=<?=$t['lastid']?>#<?=$t['lastid']?></guid>
+		<guid><?=$fullurl?>/thread.php?pid=<?=$t['id']?>#<?=$t['id']?></guid>
 	</item>
 <?php } ?>
 </channel></rss>
