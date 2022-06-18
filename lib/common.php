@@ -1,7 +1,6 @@
 <?php
-if (!file_exists('conf/config.php')) {
-	die('Please install Acmlmboard.');
-}
+if (!file_exists('conf/config.php'))
+	die('Great job getting the files onto a web server. Now install it.');
 
 $start = microtime(true);
 
@@ -16,7 +15,6 @@ $useragent = $_SERVER['HTTP_USER_AGENT'];
 $url = $_SERVER['REQUEST_URI'];
 
 $log = false;
-$logpermset = [];
 
 if (isset($_COOKIE['token'])) {
 	if ($sql->result("SELECT id FROM users WHERE token = ?", [$_COOKIE['token']])) {
@@ -24,20 +22,6 @@ if (isset($_COOKIE['token'])) {
 		$loguser = $sql->fetch("SELECT * FROM users WHERE token = ?", [$_COOKIE['token']]);
 	} else {
 		setcookie('token', 0);
-	}
-}
-
-if ($lockdown) {
-	if ($loguser['powerlevel'] > 1)
-		echo '<span style="color:red"><center>LOCKDOWN!!</center></span>';
-	else {
-		echo <<<HTML
-<body style="background-color:#C02020;padding:5em;color:#ffffff;margin:auto;">
-	Access to the board has been restricted by the administration.
-	Please forgive any inconvenience caused and stand by until the underlying issues have been resolved.
-</body>
-HTML;
-		die();
 	}
 }
 
@@ -50,8 +34,22 @@ if (!$log) {
 	$loguser['ppp'] = $loguser['tpp'] = 20;
 }
 
+if ($lockdown) {
+	if ($loguser['powerlevel'] < 1) {
+		echo <<<HTML
+<body style="background-color:#B02020;max-width:500px;color:#ffffff;margin:40px auto;">
+	<p>The board is currently in maintenance mode.</p>
+	<p>Please forgive any inconvenience caused and stand by until the underlying issues have been resolved.</p>
+</body>
+HTML;
+		die();
+	}
+}
+
 if (!$log || !$loguser['timezone'])
-	$loguser['timezone'] = $defaulttimezone; // I'm a self-centered egomaniac! Time itself centers around me!
+	$loguser['timezone'] = $defaulttimezone;
+
+$dateformat = $loguser['dateformat'].' '.$loguser['timeformat'];
 
 date_default_timezone_set($loguser['timezone']);
 dobirthdays(); //Called here to account for timezone bugs.
@@ -59,10 +57,13 @@ dobirthdays(); //Called here to account for timezone bugs.
 if ($loguser['ppp'] < 1) $loguser['ppp'] = 20;
 if ($loguser['tpp'] < 1) $loguser['tpp'] = 20;
 
+$theme = $override_theme ?? ($_GET['theme'] ?? $loguser['theme']);
+
+if (!is_file("theme/$theme/$theme.css"))
+	$theme = $defaulttheme;
+
 //Unban users whose tempbans have expired.
 $sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE tempbanned < ? AND tempbanned > 0", [time()]);
-
-$dateformat = $loguser['dateformat'].' '.$loguser['timeformat'];
 
 $bot = 0;
 if (str_replace($botlist, "x", strtolower($useragent)) != strtolower($useragent))
@@ -77,11 +78,6 @@ else
 
 if (!$bot && !isset($rss))
 	$sql->query("UPDATE misc SET views = views + 1");
-
-$theme = $override_theme ?: ($_GET['theme'] ?? $loguser['theme']);
-
-if (!is_file("theme/$theme/$theme.css"))
-	$theme = $defaulttheme;
 
 $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
 
@@ -103,7 +99,7 @@ if ($r) {
 }
 
 function pageheader($pagetitle = '', int $fid = null) {
-	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $meta, $defaultlogo, $rankset_names;
+	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $meta, $rankset_names;
 
 	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -112,13 +108,11 @@ function pageheader($pagetitle = '', int $fid = null) {
 
 	if ($pagetitle) $pagetitle .= " - ";
 
-	$boardlogo = sprintf('<a href="./">'.$boardlogo.'</a>', $defaultlogo);
-
 	$attn = $sql->result("SELECT attention FROM misc");
 	if ($attn)
 		$boardlogo = <<<HTML
 <table width="100%"><tr>
-	<td>$boardlogo</td>
+	<td><a href="./"><img src="$boardlogo" style="max-width:100%"></a></td>
 	<td width="300">
 		<table class="c1 center">
 			<tr class="h"><td class="b h">News</td></tr>

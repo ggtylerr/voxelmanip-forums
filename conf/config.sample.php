@@ -1,5 +1,5 @@
 <?php
-// ** Acmlmboard Configuration **
+// ** Configuration File **
 // Please look through the file and fill in the appropriate information.
 
 $sqlhost = 'localhost';
@@ -11,22 +11,21 @@ $trashid = 2; // Designates the id for your trash forum.
 //$newsid = 3; // Designates the id for your announcements forum. (uncomment to enable)
 
 $boardtitle = "Insert title here"; // This is what will be displayed at the top of your browser window.
-$defaultlogo = "theme/abII.png"; // Replace with the logo of your choice.
-$boardlogo = '<img src="%s">'; // This defines the logo.
-$meta = '<meta name="description" content="Stuff goes here!">'; // This is used for search engine keywords.
+$boarddesc = "A very cool forum."; // This is used for description meta tag.
+$boardlogo = "theme/logo.png"; // The logo that is used for the header.
 
 $defaulttheme = "0"; // Select the default theme to be used.
 $defaulttimezone = "Europe/Stockholm"; // Default timezone if people do not select their own.
 
-// Registration Bot Protection
-$puzzle = true;
-$puzzleQuestion = "What forum software does this board run?";
-$puzzleAnswer = "Acmlmboard";
+// Simple security question for the registration page. Uncomment to disable.
+$puzzle = ["What is the square root of 144?", "12"];
 
 $override_theme = ''; // If you want to lock everyone to a specific theme.
-$lockdown = true; // Put board in lockdown mode.
 
-// List of bots (web crawlers)
+$lockdown = false; // Put board in lockdown mode.
+//$lockdownText = ""; // Custom text to be put in the lockdown mode page.
+
+// List of bots
 $botlist = ['ia_archiver','baidu','yahoo','bot','spider'];
 
 // List of smilies

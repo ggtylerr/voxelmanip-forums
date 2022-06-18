@@ -19,7 +19,7 @@ if ($act == 'Register') {
 		$err = 'Your password must be at least 4 characters long.';
 	elseif ($_POST['pass'] != $_POST['pass2'])
 		$err = "The two passwords you entered don't match.";
-	elseif ($puzzle && strtolower($_POST['puzzle']) != strtolower($puzzleAnswer))
+	elseif (isset($puzzle) && strtolower($_POST['puzzle']) != strtolower($puzzle[1]))
 		$err = "Wrong security question.";
 
 	if (empty($err)) {
@@ -44,7 +44,7 @@ if ($act == 'Register') {
 
 			redirect('./');
 		} else {
-			$err = "Registration failed: ";//.$sql->error()
+			$err = "Registration failed: ";
 		}
 	}
 }
@@ -74,9 +74,9 @@ if (!empty($err)) noticemsg($err);
 		</tr>
 		<?php
 		echo fieldrow('Timezone',fieldselect('timezone',$defaulttimezone,$timezones));
-		if ($puzzle) { ?>
+		if (isset($puzzle)) { ?>
 			<tr>
-				<td class="b n1 center"><?=$puzzleQuestion ?></td>
+				<td class="b n1 center"><?=$puzzle[0] ?></td>
 				<td class="b n2"><input type="text" name="puzzle" size="25" maxlength="20"></td>
 			</tr>
 		<?php } ?>

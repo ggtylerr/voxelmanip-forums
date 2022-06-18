@@ -82,8 +82,11 @@ function postfilter($msg) {
 	//Relocated here due to conflicts with specific smilies.
 	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 
-	$msg = preg_replace("'\[(b|i|u|s)\]'si", '<\\1>', $msg);
-	$msg = preg_replace("'\[/(b|i|u|s)\]'si", '</\\1>', $msg);
+	$msg = preg_replace("'\[b\](.*?)\[/b\]'si", '<b>\\1</b>', $msg);
+	$msg = preg_replace("'\[i\](.*?)\[/i\]'si", '<i>\\1</i>', $msg);
+	$msg = preg_replace("'\[u\](.*?)\[/u\]'si", '<u>\\1</u>', $msg);
+	$msg = preg_replace("'\[s\](.*?)\[/s\]'si", '<s>\\1</s>', $msg);
+
 	$msg = preg_replace("'\[spoiler\](.*?)\[/spoiler\]'si", '<span class="spoiler1" onclick=""><span class="spoiler2">\\1</span></span>', $msg);
 	$msg = preg_replace("'\[url\](.*?)\[/url\]'si", '<a href=\\1>\\1</a>', $msg);
 	$msg = preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si", '<a href=\\1>\\2</a>', $msg);
