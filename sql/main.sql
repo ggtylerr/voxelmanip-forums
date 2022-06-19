@@ -144,7 +144,6 @@ CREATE TABLE `threadsread` (
 CREATE TABLE `users` (
   `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
-  `displayname` varchar(32) NOT NULL DEFAULT '',
   `pass` varchar(64) NOT NULL,
   `token` varchar(64) DEFAULT NULL,
   `posts` mediumint(9) unsigned NOT NULL DEFAULT 0,

@@ -6,7 +6,7 @@ if ($act == 'Register') {
 	$name = trim($_POST['name']);
 
 	$cname = strtolower(str_replace([' ',"\xC2\xA0"],'',$name));
-	$dupe = $sql->result("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", [$cname,$cname]);
+	$dupe = $sql->result("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=?", [$cname]);
 
 	$timezone = $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null;
 

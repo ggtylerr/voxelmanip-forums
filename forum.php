@@ -57,11 +57,11 @@ if ($fid) {
 		$topbot['actions'][] = ['href' => "newthread.php?id=$fid", 'title' => 'New thread'];
 
 } elseif ($uid) {
-	$user = $sql->fetch("SELECT displayname, name FROM users WHERE id = ?", [$uid]);
+	$user = $sql->fetch("SELECT name FROM users WHERE id = ?", [$uid]);
 
 	if (!$user) error("User does not exist.");
 
-	pageheader("Threads by " . ($user['displayname'] ?: $user['name']));
+	pageheader("Threads by ".$user['name']);
 
 	$threads = $sql->query("SELECT $ufields t.*, f.id fid $isread, f.title ftitle FROM threads t
 			LEFT JOIN users u1 ON u1.id = t.user
@@ -79,7 +79,7 @@ if ($fid) {
 		[$uid, $loguser['powerlevel']]);
 
 	$topbot = [
-		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
+		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => $user['name']]],
 		'title' => 'Threads'
 	];
 } elseif ($time) {

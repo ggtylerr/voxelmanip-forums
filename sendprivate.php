@@ -18,7 +18,7 @@ $message = $_POST['message'] ?? '';
 $error = '';
 
 if ($action == 'Submit') {
-	$userto = $sql->result("SELECT id FROM users WHERE name LIKE ? OR displayname LIKE ?", [$userto, $userto]);
+	$userto = $sql->result("SELECT id FROM users WHERE name LIKE ?", [$userto]);
 
 	if ($userto && $message) {
 		$recentpms = $sql->fetch("SELECT date FROM pmsgs WHERE date >= (UNIX_TIMESTAMP()-15) AND userfrom = ?", [$loguser['id']]);
@@ -38,7 +38,7 @@ if ($action == 'Submit') {
 }
 
 if (isset($_GET['pid']) && $pid = $_GET['pid']) {
-	$post = $sql->fetch("SELECT IF(u.displayname = '',u.name,u.displayname) name, p.title, p.text "
+	$post = $sql->fetch("SELECT u.name name, p.title, p.text "
 		."FROM pmsgs p LEFT JOIN users u ON p.userfrom = u.id "
 		."WHERE p.id = ?" . ($loguser['powerlevel'] < 4 ? " AND (p.userfrom=".$loguser['id']." OR p.userto=".$loguser['id'].")" : ''), [$pid]);
 	if ($post) {
@@ -49,7 +49,7 @@ if (isset($_GET['pid']) && $pid = $_GET['pid']) {
 }
 
 if (isset($_GET['uid']) && $uid = $_GET['uid']) {
-	$userto = $sql->result("SELECT IF(displayname = '',name,displayname) name FROM users WHERE id = ?", [$uid]);
+	$userto = $sql->result("SELECT name FROM users WHERE id = ?", [$uid]);
 }
 
 pageheader('Send private message');

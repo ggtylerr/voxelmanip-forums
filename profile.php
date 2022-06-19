@@ -7,7 +7,7 @@ if ($uid < 0) error("You must specify a user ID!");
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?", [$uid]);
 if (!$user) error("This user does not exist!");
 
-pageheader("Profile for ".($user['displayname'] ?: $user['name']));
+pageheader("Profile for ".$user['name']);
 
 $days = (time() - $user['regdate']) / 86400;
 
@@ -102,7 +102,6 @@ $logtzoff = $logtz->getOffset($now);
 
 $profilefields = [
 	"General information" => [
-		['title' => 'Real handle', 'value' => '<span style="color:#'.powIdToColour($user['powerlevel']).';"><b>'.esc($user['name']).'</b></span>'],
 		['title' => 'Group', 'value' => powIdToName($user['powerlevel'])],
 		['title' => 'Total posts', 'value' => sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days)],
 		['title' => 'Total threads', 'value' => sprintf('%s (%1.02f per day)' ,$user['threads'], $user['threads'] / $days)],
@@ -128,7 +127,7 @@ $profilefields = [
 ];
 
 $topbot = [
-	'title' => ($user['displayname'] ?: $user['name'])
+	'title' => $user['name']
 ];
 
 RenderPageBar($topbot);
@@ -136,7 +135,6 @@ RenderPageBar($topbot);
 foreach ($profilefields as $k => $v) {
 	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">'.$k.'</td></tr>';
 	foreach ($v as $pf) {
-		if ($pf['title'] == 'Real handle' && !$user['displayname']) continue;
 		echo '<tr><td class="b n1" width="130"><b>'.$pf['title'].'</b></td><td class="b n2">'.$pf['value'].'</td>';
 	}
 	echo '</table>';

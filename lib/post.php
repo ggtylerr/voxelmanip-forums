@@ -6,7 +6,7 @@ function get_username_link($matches) {
 
 	static $cache;
 	if (!isset($cache[$name])) {
-		$u = $sql->fetch("SELECT ".userfields()." FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)", [$name, $name]);
+		$u = $sql->fetch("SELECT ".userfields()." FROM users WHERE UPPER(name)=UPPER(?)", [$name]);
 		$cache[$name] = $u;
 	} else $u = $cache[$name];
 

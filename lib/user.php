@@ -36,18 +36,6 @@ function checkcusercolor($uid) {
 	return false;
 }
 
-function checkcdisplayname($uid) {
-	global $loguser;
-
-	if (!$loguser['id']) return false;
-
-	// TODO: allow for users to set their own displayname
-
-	if ($loguser['powerlevel'] > 2) return true;
-
-	return false;
-}
-
 function getrank($set, $posts) {
 	global $rankset_data, $rankset_names;
 
@@ -97,7 +85,7 @@ function randnickcolor() {
 }
 
 function userfields($tbl = '', $pf = '') {
-	$fields = ['id', 'name', 'displayname', 'powerlevel', 'nick_color'];
+	$fields = ['id', 'name', 'powerlevel', 'nick_color'];
 
 	$ret = '';
 	foreach ($fields as $f) {
@@ -145,7 +133,7 @@ function userdisp($user, $u = '') {
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
 
-	$n = ($user[$u.'displayname'] ?: $user[$u.'name']);
+	$n = $user[$u.'name'];
 
 	$userdisname = "<span style='color:#$nc;'>".str_replace(" ", "&nbsp;", esc($n)).'</span>';
 

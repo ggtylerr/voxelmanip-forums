@@ -83,18 +83,8 @@ if ($act == 'Edit profile') {
 
 		$targetname = $_POST['name'];
 
-		if ($sql->result("SELECT COUNT(name) FROM users WHERE (name = ? OR displayname = ?) AND id != ?", [$targetname, $targetname, $user['id']])) {
+		if ($sql->result("SELECT COUNT(name) FROM users WHERE name = ? AND id != ?", [$targetname, $targetname, $user['id']])) {
 			$error .= "- Name already in use.<br>";
-		}
-	}
-	if (checkcdisplayname($targetuserid)) {
-		//Checks Displayname to name and other displaynames
-		$targetdname = $_POST['displayname'];
-
-		if (checkcdisplayname($targetuserid) && $targetdname != '') {
-			if ($sql->result("SELECT COUNT(name) FROM users WHERE (name = ? OR displayname = ?) AND id != ?", [$targetdname, $targetdname, $user['id']])) {
-				$error .= "- Displayname already in use.<br>";
-			}
 		}
 	}
 
@@ -138,9 +128,6 @@ if ($act == 'Edit profile') {
 			$fields['pass'] = password_hash($pass, PASSWORD_DEFAULT);
 			$fields['token'] = $newtoken;
 		}
-
-		if (checkcdisplayname($targetuserid))
-			$fields['displayname'] = $_POST['displayname'];
 
 		if (checkcusercolor($targetuserid))
 			$fields['nick_color'] = $_POST['nick_color'];
@@ -204,7 +191,6 @@ $user['nick_color']);
 echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype="multipart/form-data"><table class="c1">' .
 	catheader('Login information')
 .($canedituser ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name']))
-.(checkcdisplayname($targetuserid) ? fieldrow('Display name', fieldinput(40, 255, 'displayname')) : '')
 .fieldrow('Password', $passinput);
 
 if ($canedituser)

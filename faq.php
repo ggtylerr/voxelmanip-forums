@@ -144,7 +144,7 @@ HTML
 	'content' => <<<HTML
 <p>No. Most uses for a secondary account tend to be to bypass bans, sockpuppet or in other ways cause havoc. All is expressly forbidden and you will be punished when found out (you most likely will).</p>
 
-<p>Another use is to have a different name, and we have a displayname system to allow this cleanly. Feel free to ask an admin to set a custom displayname for you if that is the case.</p>
+<p>Another use is to change your username. If you feel that you want to change your username then please message a staff member. Keep in mind that too frequent name changes are not allowed.</p>
 HTML
 ], [
 	'id' => 'css',
