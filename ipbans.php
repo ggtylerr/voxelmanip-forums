@@ -25,8 +25,8 @@ if ($action == "del") {
 	if ($_POST['ipmask']) {
 		$hard = $_POST['hard'] ?? 0;
 		$expires = ($_POST['expires'] > 0 ? ($_POST['expires'] + time()) : 0);
-		$sql->query("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES (?,?,?,?,?)",
-			[$_POST['ipmask'], $hard, $expires, $loguser['name'], $_POST['reason']]);
+		$sql->query("INSERT INTO ipbans (ipmask,expires,banner,reason) VALUES (?,?,?,?)",
+			[$_POST['ipmask'], $expires, $loguser['name'], $_POST['reason']]);
 	} else {
 		$err = "You must enter an IP mask";
 	}
@@ -39,9 +39,6 @@ if (isset($err)) noticemsg($err);
 		<tr>
 			<td class="b n1" width=150>IP mask</td>
 			<td class="b n2"><input type="text" name="ipmask"></td>
-		</tr><tr>
-			<td class="b n1">Hard?</td>
-			<td class="b n2"><input type="checkbox" name="hard" value="1"></td>
 		</tr><tr>
 			<td class="b n1">Expires?</td>
 			<td class="b n2"><?=bantimeselect("expires") ?></td>
@@ -58,7 +55,6 @@ if (isset($err)) noticemsg($err);
 	<tr class="h"><td class="b h" colspan="6">IP bans</td></tr>
 	<tr class="c">
 		<td class="b">IP mask</td>
-		<td class="b">Hard</td>
 		<td class="b">Expires</td>
 		<td class="b">Banner</td>
 		<td class="b" width="100%">Comment</td>
@@ -67,7 +63,6 @@ if (isset($err)) noticemsg($err);
 <?php while ($i = $ipbans->fetch()) { ?>
 	<tr>
 		<td class="b n1"><span style="font-family:monospace"><?=ipfmt($i['ipmask']) ?></span></td>
-		<td class="b n2 center"><?=($i['hard'] ? "Yes" : "No") ?></td>
 		<td class="b n2 center"><?=($i['expires'] ? dateformat($i['expires']) : "never") ?></td>
 		<td class="b n2 center"><?=$i['banner'] ?></td>
 		<td class="b n2"><?=$i['reason'] ?></td>

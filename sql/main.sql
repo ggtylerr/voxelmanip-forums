@@ -65,7 +65,6 @@ CREATE TABLE `guests` (
 
 CREATE TABLE `ipbans` (
   `ipmask` varchar(15) NOT NULL,
-  `hard` tinyint(1) NOT NULL DEFAULT 0,
   `expires` int(12) NOT NULL,
   `banner` varchar(25) NOT NULL,
   `reason` varchar(255) NOT NULL

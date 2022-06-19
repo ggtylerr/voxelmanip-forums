@@ -83,19 +83,10 @@ $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
 
 $r = $sql->fetch("SELECT * FROM ipbans WHERE ? LIKE ipmask", [$userip]);
 if ($r) {
-	if ($r['hard']) {
-		pageheader('IP banned');
-		echo '<table class="c1"><tr class="n2"><td class="b n1 center">Sorry, but your IP address has been banned.</td></tr></table>';
-		pagefooter();
-		die();
-	} else if (!$r['hard'] && (!$log || $loguser['powerlevel'] == -1)) {
-		if (!strstr($_SERVER['PHP_SELF'], "login.php")) {
-			pageheader('IP restricted');
-			echo '<table class="c1"><tr class="n2"><td class="b n1 center">Access from your IP address has been limited.<br><a href=login.php>Login</a></table>';
-			pagefooter();
-			die();
-		}
-	}
+	pageheader('IP banned');
+	echo '<table class="c1"><tr class="n2"><td class="b n1 center">Sorry, but your IP address has been banned.</td></tr></table>';
+	pagefooter();
+	die();
 }
 
 function pageheader($pagetitle = '', int $fid = null) {
