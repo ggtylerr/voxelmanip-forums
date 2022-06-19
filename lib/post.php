@@ -209,7 +209,7 @@ HTML;
 		$postlinks = "<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>"; // headlinks for posts
 
 	if (isset($post['revision']) && $post['revision'] >= 2)
-		$revisionstr = " (rev. {$post['revision']} of " . dateformat($post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
+		$revisionstr = " (rev. {$post['revision']} of ".dateformat($post['ptdate'])." by ".userlink_by_id($post['ptuser']).")";
 
 	if (isset($post['thread']) && $log) {
 		if (isset($post['thread']) && $post['id'])
@@ -220,7 +220,7 @@ HTML;
 			$postlinks .= " | <a href=\"editpost.php?pid=$post[id]\">Edit</a>";
 
 		if ($loguser['powerlevel'] > 1)
-			$postlinks .= " | <a href=\"editpost.php?pid=" . urlencode($post['id']) . "&act=delete\">Delete</a>";
+			$postlinks .= ' | <a href="editpost.php?pid='.urlencode($post['id']).'&act=delete">Delete</a>';
 
 		if ($loguser['powerlevel'] > 2)
 			$postlinks .= ' | IP: <span class="sensitive">'.$post['ip'].'</span>';
@@ -253,9 +253,9 @@ HTML;
 		$signsep = $post['usignsep'] ? '' : '____________________<br>';
 
 		if (!$post['uhead'])
-			$post['usign'] = '<br><br><small>' . $signsep . $post['usign'] . '</small>';
+			$post['usign'] = '<br><br><small>'.$signsep.$post['usign'].'</small>';
 		else
-			$post['usign'] = '<br><br>' . $signsep . $post['usign'];
+			$post['usign'] = '<br><br>'.$signsep.$post['usign'];
 	}
 
 	$usertitle = postfilter($post['utitle']);
@@ -268,7 +268,7 @@ HTML;
 		<td class="b n1 topbar_1 $tbar1" height="17">$ulink</td>
 		<td class="b n1 topbar_2 $tbar2">
 			<table style="width:100%">
-				<tr><td class="nb sfont">Posted on $pdate$threadlink $revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
+				<tr><td class="nb sfont">Posted on $pdate$threadlink$revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
 			</table>
 		</td>
 	</tr><tr valign="top">

@@ -113,7 +113,7 @@ if ($viewmode == "thread") {
 
 	if ($user == null) error("User doesn't exist.");
 
-	pageheader("Posts by " . ($user['displayname'] ?: $user['name']));
+	pageheader("Posts by ".$user['name']);
 
 	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p
@@ -171,7 +171,7 @@ if ($viewmode == "thread") {
 	}
 } elseif ($viewmode == "user") {
 	$topbot = [
-		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => ($user['displayname'] ?: $user['name'])]],
+		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => $user['name']]],
 		'title' => 'Posts'
 	];
 } elseif ($viewmode == "time") {

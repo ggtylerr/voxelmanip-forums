@@ -33,9 +33,3 @@ function movethread($id, $forum) {
 		$sql->query("UPDATE forums SET posts = posts + (? + 1), threads = threads + 1, lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
 		[$thread['replies'], $last2['lastdate'], $last2['lastuser'], $last2['lastid'], $forum]);
 }
-
-function getforumbythread($tid) {
-	global $sql;
-	static $cache;
-	return isset($cache[$tid]) ? $cache[$tid] : $cache[$tid] = $sql->result("SELECT forum FROM threads WHERE id = ?", [$tid]);
-}

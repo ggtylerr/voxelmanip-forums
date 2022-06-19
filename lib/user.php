@@ -124,11 +124,11 @@ function userlink($user, $u = '') {
 function userdisp($user, $u = '') {
 	global $userbirthdays;
 
-	if ($user[$u.'nick_color'] != '000000') { //Over-ride for custom colours
+	if ($user[$u.'nick_color'] != '000000') //Over-ride for custom colours
 		$nc = $user[$u.'nick_color'];
-	} else {
+	else
 		$nc = powIdToColour($user[$u.'powerlevel']);
-	}
+
 	//Random Nick Color on Birthday
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();

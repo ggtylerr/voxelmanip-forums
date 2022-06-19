@@ -101,11 +101,13 @@ function pageheader($pagetitle = '', int $fid = null) {
 
 	if ($pagetitle) $pagetitle .= " - ";
 
+	$boardlogo = '<a href="./"><img src="'.$boardlogo.'" style="max-width:100%"></a>';
+
 	$attn = $sql->result("SELECT attention FROM misc");
 	if ($attn)
 		$boardlogo = <<<HTML
 <table width="100%"><tr>
-	<td><a href="./"><img src="$boardlogo" style="max-width:100%"></a></td>
+	<td>$boardlogo</td>
 	<td width="300">
 		<table class="c1 center">
 			<tr class="h"><td class="b h">News</td></tr>
