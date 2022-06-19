@@ -69,15 +69,17 @@ $bot = 0;
 if (str_replace($botlist, "x", strtolower($useragent)) != strtolower($useragent))
 	$bot = 1;
 
-$sql->query("DELETE FROM guests WHERE ip = ? OR date < ?", [$userip, (time() - 300)]);
-if ($log)
-	$sql->query("UPDATE users SET lastview = ?, ip = ?, url = ? WHERE id = ?",
-		[time(), $userip, $url, $loguser['id']]);
-else
-	$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
+if (!isset($rss)) {
+	$sql->query("DELETE FROM guests WHERE ip = ? OR date < ?", [$userip, (time() - 300)]);
+	if ($log)
+		$sql->query("UPDATE users SET lastview = ?, ip = ?, url = ? WHERE id = ?",
+			[time(), $userip, $url, $loguser['id']]);
+	else
+		$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
 
-if (!$bot && !isset($rss))
-	$sql->query("UPDATE misc SET views = views + 1");
+	if (!$bot)
+		$sql->query("UPDATE misc SET views = views + 1");
+}
 
 $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
 
@@ -122,6 +124,7 @@ HTML;
 		<?php if (isset($boarddesc)) { ?><meta name="description" content="<?=$boarddesc?>"><?php } ?>
 		<link rel="stylesheet" href="theme/common.css">
 		<link rel="stylesheet" href="theme/<?=$theme?>/<?=$theme?>.css">
+		<link href="rss.php" type="application/atom+xml" rel="alternate">
 		<script src="js/tools.js"></script>
 	</head>
 	<body>
