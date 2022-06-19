@@ -5,15 +5,10 @@ $act = $_POST['action'] ?? null;
 if ($act == 'Register') {
 	$name = trim($_POST['name']);
 
-	$cname = strtolower(str_replace([' ',"\xC2\xA0"],'',$name));
-	$dupe = $sql->result("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=?", [$cname]);
-
 	$timezone = $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null;
 
 	$err = '';
-	if ($dupe)
-		$err = 'This username is already taken, please choose another.';
-	elseif ($name == '' || $cname == '')
+	if ($name == '')
 		$err = 'The username must not be empty, please choose one.';
 	elseif (strlen($_POST['pass']) < 4)
 		$err = 'Your password must be at least 4 characters long.';
@@ -21,31 +16,32 @@ if ($act == 'Register') {
 		$err = "The two passwords you entered don't match.";
 	elseif (isset($puzzle) && strtolower($_POST['puzzle']) != strtolower($puzzle[1]))
 		$err = "Wrong security question.";
+	elseif ($sql->result("SELECT COUNT(*) FROM users WHERE LOWER(name) = ?", [strtolower($name)]))
+		$err = 'This username is already taken, please choose another.';
+	elseif (!preg_match('/^[a-zA-Z0-9\-_]+$/', $name))
+		$err = 'Username contains invalid characters (Only alphanumeric and underscore allowed).';
 
 	if (empty($err)) {
 		$token = bin2hex(random_bytes(32));
 		$res = $sql->query("INSERT INTO users (`name`,pass,token,regdate,lastview,ip,timezone) VALUES (?,?,?,?,?,?,?);",
 			[$name, password_hash($_POST['pass'], PASSWORD_DEFAULT), $token, time(), time(), $userip, $timezone]);
-		if ($res) {
-			$id = $sql->insertid();
 
-			$sql->query("UPDATE users SET powerlevel = ? WHERE id = ?",[($id == 1 ? 4 : 1),$id]);
+		$id = $sql->insertid();
 
-			// mark existing threads and forums as read
-			$sql->query("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", [$id, time()]);
-			$sql->query("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", [$id, time()]);
+		$sql->query("UPDATE users SET powerlevel = ? WHERE id = ?",[($id == 1 ? 4 : 1),$id]);
 
-			if (function_exists('sendWelcomePM')) {
-				$sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,title,text) VALUES (?,'127.0.0.1',?,1,'Welcome!',?)",
-					[time(),$id,sendWelcomePM($name)]);
-			}
+		// mark existing threads and forums as read
+		$sql->query("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", [$id, time()]);
+		$sql->query("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", [$id, time()]);
 
-			setcookie('token', $token, 2147483647);
-
-			redirect('./');
-		} else {
-			$err = "Registration failed: ";
+		if (function_exists('sendWelcomePM')) {
+			$sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,title,text) VALUES (?,'127.0.0.1',?,1,'Welcome!',?)",
+				[time(),$id,sendWelcomePM($name)]);
 		}
+
+		setcookie('token', $token, 2147483647);
+
+		redirect('./');
 	}
 }
 
