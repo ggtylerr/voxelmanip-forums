@@ -16,16 +16,23 @@ function get_username_link($matches) {
 	return $ulink ?? $matches[0];
 }
 
+// Function that does lots of voodoo magic to make sure the post data is (reasonably) safe
 function securityfilter($msg) {
-	$tags = ':applet|b(?:ase|gsound)|embed|frame(?:set)?|i(?:frame|layer)|layer|meta|noscript|object|plaintext|script|title|textarea|xml|xmp';
+	$msg = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $msg);
+	$msg = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $msg);
+	$msg = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $msg);
+	$msg = html_entity_decode($msg, ENT_COMPAT, 'UTF-8');
+
+	$tags = ':a(?:pplet|udio)|b(?:ase|gsound|ody|button)|canvas|embed|frame(?:set)?|form|h(?:ead|tml)|i(?:frame|layer|nput)|l(?:ayer|ink)|m(?:ath|eta|eth)|noscript|object|plaintext|s(?:cript|vg|ource)|title|textarea|video|x(?:ml|mp)';
 	$msg = preg_replace("'<(/?)({$tags})'si", "&lt;$1$2", $msg);
 
-	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
+	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1_$2&#x3D;', $msg);
 
-	$msg = preg_replace("'-moz-binding'si", ' -mo<z>z-binding', $msg);
-	$msg = str_ireplace("expression", "ex<z>pression", $msg);
+	$msg = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2jujscript!', $msg);
+
+	$msg = preg_replace("'-moz-binding'si", ' -mo<b></b>z-binding', $msg);
+	$msg = str_ireplace("expression", "ex<b></b>pression", $msg);
 	$msg = preg_replace("'filter:'si", 'filter&#58;>', $msg);
-	$msg = preg_replace("'javascript:'si", 'javascript&#58;>', $msg);
 	$msg = preg_replace("'transform:'si", 'transform&#58;>', $msg);
 
 	$msg = str_replace("<!--", "&lt;!--", $msg);
@@ -54,7 +61,9 @@ function filterstyle($match) {
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
 
-	return $match[1] . $style . $match[3];
+	$style = preg_replace("'@(?:keyframes|-webkit-keyframe)'si",'(no animations pls)',$style);
+
+	return $match[1].$style.$match[3];
 }
 
 function postfilter($msg) {
