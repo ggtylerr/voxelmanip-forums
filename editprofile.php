@@ -83,7 +83,7 @@ if ($act == 'Edit profile') {
 
 		$targetname = $_POST['name'];
 
-		if ($sql->result("SELECT COUNT(name) FROM users WHERE name = ? AND id != ?", [$targetname, $targetname, $user['id']])) {
+		if ($sql->result("SELECT COUNT(name) FROM users WHERE name = ? AND id != ?", [$targetname, $user['id']])) {
 			$error .= "- Name already in use.<br>";
 		}
 	}
