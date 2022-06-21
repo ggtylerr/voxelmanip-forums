@@ -133,7 +133,7 @@ HTML;
 		<table class="c1">
 			<tr class="nt n2 center"><td class="b n1 center" colspan="3"><?=$boardlogo?></td></tr>
 			<tr class="n2">
-				<td class="b headermenu">
+				<td class="nb headermenu">
 					<a href="./">Main</a>
 					<a href="faq.php">FAQ</a>
 					<a href="memberlist.php">Memberlist</a>
@@ -143,7 +143,7 @@ HTML;
 					<a href="online.php">Online users</a>
 					<a href="search.php">Search</a>
 				</td>
-				<td class="b headermenu_right"><?php
+				<td class="nb headermenu_right"><?php
 	if ($log) {
 		$unreadpms = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE userto = ? AND unread = 1 AND del_to = 0", [$loguser['id']]);
 
