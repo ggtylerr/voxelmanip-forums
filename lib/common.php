@@ -267,10 +267,8 @@ function pagefooter() {
 				<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
 			</span>
 
-			<a href="https://voxelmanip.se/">
-				<img src="img/poweredbyvoxelmanip.png" class="poweredby"
-					title="like a warm hug from someone you love">
-			</a>
+			<img src="img/poweredbyvoxelmanip.png" class="poweredby"
+				title="like a warm hug from someone you love">
 
 			Voxelmanip Forums (commit <?=gitCommit(true)?>)<br>
 			&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
