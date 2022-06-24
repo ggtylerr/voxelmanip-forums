@@ -212,3 +212,7 @@ function if_empty_query($result, $message, $colspan = 0, $table = false) {
 		if ($table) echo '</table>';
 	}
 }
+
+function plural($value) {
+	return ($value != 1 ? 's' : '');
+}

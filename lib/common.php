@@ -175,35 +175,36 @@ HTML;
 		<input type="hidden" name="action" value="logout">
 	</form><br><?php
 
-	if ($fid || $fid == 0) {
-		$onusers = $sql->query("SELECT ".userfields().",lastpost,lastview FROM users WHERE lastview > ? ".($fid != 0 ? " AND lastforum =".$fid : '')." ORDER BY name",
-			[(time()-300)]);
+	if ($fid || !$pagetitle) {
+		$andlastforum = ($fid != 0 ? " AND lastforum =".$fid : '');
+
+		$onusers = $sql->query("SELECT ".userfields().",lastpost,lastview FROM users WHERE lastview > ? $andlastforum ORDER BY name",
+			[(time() - 900)]);
 		$onuserlist = '';
 		$onusercount = 0;
 		while ($user = $onusers->fetch()) {
-			$onuserlist.=($onusercount ? ', ' : '') . userlink($user);
+			$onuserlist .= ($onusercount ? ', ' : '').userlink($user);
 			$onusercount++;
 		}
 
-		$result = $sql->query("SELECT COUNT(*) guest_count, SUM(bot) bot_count FROM guests WHERE date > ?".($fid != 0 ? " AND lastforum =".$fid : ''),
-			[(time()-300)]);
+		$result = $sql->query("SELECT COUNT(*) guest_count, SUM(bot) bot_count FROM guests WHERE date > ? $andlastforum",
+			[(time() - 900)]);
 
 		while ($data = $result->fetch()) {
 			$numbots = $data['bot_count'];
 			$numguests = $data['guest_count'] - $numbots;
 
-			if ($numguests)	$onuserlist .= " | $numguests guest" . ($numguests != 1 ? "s" : '');
-			if ($numbots)	$onuserlist .= " | $numbots bot" . ($numbots != 1 ? "s" : '');
+			if ($numguests)	$onuserlist .= " | $numguests guest".plural($numguests);
+			if ($numbots)	$onuserlist .= " | $numbots bot".plural($numbots);
 		}
 	}
 
 	if ($fid) {
 		$fname = $sql->result("SELECT title FROM forums WHERE id = ?", [$fid]);
-		$onuserlist = "$onusercount user" . ($onusercount != 1 ? "s" : '') . " currently in $fname" . ($onusercount > 0 ? ": " : '') . $onuserlist;
+		$onuserlist = "$onusercount user".plural($onusercount)." currently in $fname" . ($onusercount > 0 ? ": " : '') . $onuserlist;
 
 		?><table class="c1"><tr class="n1"><td class="b n1 center"><?=$onuserlist ?></td></tr></table><br><?php
-	} else if (isset($fid) && $fid == 0) {
-
+	} else if (!$pagetitle) {
 		$rbirthdays = $sql->query("SELECT birth, ".userfields()." FROM users WHERE birth LIKE ? ORDER BY name", ['%'.date('m-d')]);
 
 		$birthdays = [];
@@ -216,13 +217,13 @@ HTML;
 		if (count($birthdays))
 			$birthdaybox = '<tr class="n1 center"><td class="b n2 center">Birthdays today: '.implode(", ", $birthdays).'</td></tr>';
 
-		$count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
+		$count = $sql->fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p,
+				(SELECT COUNT(*) FROM posts WHERE date > ?) d, (SELECT COUNT(*) FROM posts WHERE date > ?) h",
+			[(time() - 86400), (time() - 3600)]);
 
-		$count['d'] = $sql->result("SELECT COUNT(*) FROM posts WHERE date > ?", [(time() - 86400)]);
-		$count['h'] = $sql->result("SELECT COUNT(*) FROM posts WHERE date > ?", [(time() - 3600)]);
 		$lastuser = $sql->fetch("SELECT ".userfields()." FROM users ORDER BY id DESC LIMIT 1");
 
-		$onuserlist = "$onusercount user" . ($onusercount != 1 ? 's' : '') . ' online' . ($onusercount > 0 ? ': ' : '') . $onuserlist;
+		$onuserlist = "$onusercount user".plural($onusercount).' online'.($onusercount > 0 ? ': ' : '').$onuserlist;
 
 		?><table class="c1">
 			<?=$birthdaybox ?>
@@ -234,7 +235,7 @@ HTML;
 						today, <?=$count['h'] ?> last hour.<br>
 					</span></td>
 					<td class="nb right" width="200">
-						<?=$count['u'] ?> registered users<br> Newest: <?=userlink($lastuser) ?>
+						<?=$count['u'] ?> registered users<br> Newest: <?=($lastuser ? userlink($lastuser) : 'none') ?>
 					</td>
 				</tr></table>
 			</td></tr>

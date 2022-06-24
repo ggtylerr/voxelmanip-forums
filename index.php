@@ -24,7 +24,7 @@ if ($log && $action == 'markread') {
 	}
 }
 
-pageheader(null,0);
+pageheader();
 
 $categs = $sql->query("SELECT * FROM categories ORDER BY ord,id");
 while ($c = $categs->fetch()) {
