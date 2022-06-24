@@ -246,7 +246,7 @@ if (isset($time)) {
 	?><table class="c1 autowidth">
 		<tr class="h"><td class="b">Latest Posts</td></tr>
 		<tr><td class="b n1 center">
-			<a href="forum.php?time=<?=$time ?>">By Threads</a> | By Posts</a><br><br>
+			<a href="forum.php?time=<?=$time ?>">By Threads</a> | By Posts (<a href="rss.php">RSS</a>)<br><br>
 			<?=timelink(900,'thread').' | '.timelink(3600,'thread').' | '.timelink(86400,'thread').' | '.timelink(604800,'thread') ?>
 		</td></tr>
 	</table><?php

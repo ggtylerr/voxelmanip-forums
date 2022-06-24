@@ -18,7 +18,7 @@ $fullurl = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HO
 ?><?xml version="1.0"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
 	<title><?=$boardtitle?></title>
-	<description>The latest active threads of <?=$boardtitle?></description>
+	<description>The latest posts of <?=$boardtitle?></description>
 	<link><?=$fullurl?></link>
 	<atom:link href="<?=$fullurl?>/rss.php" rel="self" type="application/rss+xml"/>
 <?php while ($t = $threads->fetch()) { ?>

@@ -123,7 +123,7 @@ if ($time) {
 	?><table class="c1 autowidth">
 		<tr class="h"><td class="b">Latest Threads</td></tr>
 		<tr><td class="b n1 center">
-			By Threads | <a href="thread.php?time=<?=$time ?>">By Posts</a></a><br><br>
+			By Threads | <a href="thread.php?time=<?=$time ?>">By Posts</a> (<a href="rss.php">RSS</a>)<br><br>
 			<?=timelink(900,'forum').' | '.timelink(3600,'forum').' | '.timelink(86400,'forum').' | '.timelink(604800,'forum') ?>
 		</td></tr>
 	</table><?php
