@@ -198,7 +198,7 @@ HTML;
 	if ($isBlocked)
 		$post['usign'] = $post['uhead'] = '';
 
-	$postheaderrow = $threadlink = $postlinks = $revisionstr = '';
+	$threadlink = $postlinks = $revisionstr = '';
 
 	$post['id'] = $post['id'] ?? null;
 
@@ -263,22 +263,18 @@ HTML;
 
 	return <<<HTML
 <table class="c1" id="{$post['id']}">
-	$postheaderrow
 	<tr>
-		<td class="b n1 topbar_1 $tbar1" height="17">$ulink</td>
-		<td class="b n1 topbar_2 $tbar2">
-			<table style="width:100%">
-				<tr><td class="nb sfont">Posted on $pdate$threadlink$revisionstr</td><td class="nb sfont right">$postlinks</td></tr>
-			</table>
+		<td class="b n1 topbar_1 $tbar1 nom">$ulink</td>
+		<td class="b n1 topbar_1 $tbar1 blkm nod clearfix">
+			<span style="float:left;margin-right:10px">$picture</span>
+			$ulink <div class="sfont" style="margin-top:0.5em">$usertitle</div>
 		</td>
+		<td class="b n1 topbar_2 $tbar2 sfont blkm">Posted on $pdate$threadlink$revisionstr <span class="f-right">$postlinks</span></td>
 	</tr><tr valign="top">
-		<td class="b n1 sfont sidebar $sbar">
-			$usertitle
-			$picture
-			<br>Posts: {$post['uposts']}
-			<br>
-			<br>Since: $regdate
-			<br>
+		<td class="b n1 sfont sidebar nom $sbar">
+			$usertitle$picture
+			<br>Posts: {$post['uposts']}<br>
+			<br>Since: $regdate<br>
 			<br>Last post: $lastpost
 			<br>Last view: $lastview
 		</td>

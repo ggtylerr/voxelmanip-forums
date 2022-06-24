@@ -56,8 +56,8 @@ while ($forum = $forums->fetch()) {
 		<tr class="h">
 			<td class="b h" width="32">&nbsp;</td>
 			<td class="b h"><?=$categ[$cat]['title'] ?></td>
-			<td class="b h" width="50">Threads</td>
-			<td class="b h" width="50">Posts</td>
+			<td class="b h nom" width="50">Threads</td>
+			<td class="b h nom" width="50">Posts</td>
 			<td class="b h" width="150">Last post</td>
 		</tr><?php
 	}
@@ -76,8 +76,8 @@ while ($forum = $forums->fetch()) {
 			<?=($forum['minread'] > 0 ? '(' : '') ?><a href="forum.php?id=<?=$forum['id'] ?>"><?=$forum['title'] ?></a><?=($forum['minread'] > 0 ? ')' : '') ?>
 			<br><span class="sfont"><?=str_replace("%%%RANDOM%%%", $randdesc[array_rand($randdesc)], $forum['descr']) ?></span>
 		</td>
-		<td class="b n1"><?=$forum['threads'] ?></td>
-		<td class="b n1"><?=$forum['posts'] ?></td>
+		<td class="b n1 nom"><?=$forum['threads'] ?></td>
+		<td class="b n1 nom"><?=$forum['posts'] ?></td>
 		<td class="b n2"><?=$lastpost ?></td>
 	</tr><?php
 }

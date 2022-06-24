@@ -228,7 +228,7 @@ HTML;
 			<?=$birthdaybox ?>
 			<tr><td class="b n1">
 				<table style="width:100%"><tr>
-					<td class="nb" width="200"></td>
+					<td class="nb nom" width="200"></td>
 					<td class="nb center" style="min-width:100px"><span class="white-space:nowrap">
 						<?=$count['t'] ?> threads and <?=$count['p'] ?> posts total.<br><?=$count['d'] ?> new posts
 						today, <?=$count['h'] ?> last hour.<br>
@@ -263,7 +263,7 @@ function pagefooter() {
 	?><br>
 	<table class="c1">
 		<tr><td class="b n2 sfont footer">
-			<span class="stats">
+			<span class="stats nom">
 				<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
 			</span>
 

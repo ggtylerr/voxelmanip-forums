@@ -137,9 +137,9 @@ if ($fid) announcement_row();
 		<td class="b h" width=32>&nbsp;</td>
 		<?=($showforum ? '<td class="b h">Forum</td>' : '') ?>
 		<td class="b h">Title</td>
-		<td class="b h" width=130>Started by</td>
-		<td class="b h" width=50>Replies</td>
-		<td class="b h" width=50>Views</td>
+		<td class="b h nom" width=130>Started by</td>
+		<td class="b h nom" width=50>Replies</td>
+		<td class="b h nom" width=50>Views</td>
 		<td class="b h" width=130>Last post</td>
 	</tr><?php
 $lsticky = 0;
@@ -170,9 +170,9 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 		<td class="b n1"><?=$status ?></td>
 		<?=($showforum ? sprintf('<td class="b"><a href="forum.php?id=%s">%s</a></td>', $thread['fid'], $thread['ftitle']) : '')?>
 		<td class="b left" style="word-break:break-word"><a href="thread.php?id=<?=$thread['id'] ?>"><?=esc($thread['title']) ?></a><?=$pagelist ?></td>
-		<td class="b"><?=userlink($thread, 'u1') ?></td>
-		<td class="b"><?=$thread['replies'] ?></td>
-		<td class="b"><?=$thread['views'] ?></td>
+		<td class="b nom"><?=userlink($thread, 'u1') ?></td>
+		<td class="b nom"><?=$thread['replies'] ?></td>
+		<td class="b nom"><?=$thread['views'] ?></td>
 		<td class="b">
 			<nobr><?=dateformat($thread['lastdate']) ?></nobr><br>
 			<span class="sfont">by <?=userlink($thread, 'u2') ?> <a href="thread.php?pid=<?=$thread['lastid'] ?>#<?=$thread['lastid'] ?>">&raquo;</a></span>

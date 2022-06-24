@@ -85,13 +85,13 @@ table.postformatting {
 .topbar_1 {
 	border-bottom: 0 !important;
 	border-right: 0 !important;
-	min-width: 180px;
+	width: 180px;
 	text-align: center;
-	height: 24px;
+	min-height: 24px;
 }
 .topbar_2 {
-	width: 100%;
 	border-left: 0 !important;
+	padding: 7px 10px;
 }
 
 .sidebar {
@@ -156,4 +156,33 @@ table.postformatting {
 	margin-right: 20px;
 	display: inline-block;
 	padding: 7px 0px;
+}
+
+/* Mobile hacks haha :^) */
+@media (min-width: 640px) {
+	.nod { display: none; }
+}
+
+@media only screen and (max-width: 640px) {
+	/* 'no mobile' */
+	.nom { display: none; }
+
+	/* 'no desktop' */
+	.nod { display: unset; }
+
+	.nod img { max-height: 64px; }
+
+	/* display block on mobile */
+	.blkm { display: block; }
+
+	.topbar_1 {
+		width: unset;
+		text-align: left;
+	}
+}
+
+.clearfix:after {
+    content:"";
+    display:table;
+    clear:both;
 }
