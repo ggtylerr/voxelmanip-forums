@@ -65,11 +65,15 @@ ul.menulisting {
 }
 ul.menulisting li {
 	display: inline-block;
-	border-left: 1.75px solid white;
-	padding: 0px 7px;
+	border-left: 1.1px solid white;
+	padding: 0px 8px;
 }
 ul.menulisting li:first-child {
 	border-left-width: 0;
+	padding-left: 0;
+}
+ul.menulisting li:last-child {
+	padding-right: 0;
 }
 
 /* post formatting toolbar */

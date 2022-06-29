@@ -213,7 +213,7 @@ if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['us
 <form action="thread.php?id=$tid" method="post" name="mod" id="mod">
 <table class="c1"><tr class="n2">
 	<td class="b n2">
-		<span id="moptions">Thread options: <ul class="menulisting">$stick$close$trash$edit</ul></span>
+		<span id="moptions">Thread options: <ul class="menulisting" style="margin-left:10px">$stick$close$trash$edit</ul></span>
 		<span id="mappend"></span>
 		<script>
 mappend = document.getElementById('mappend');

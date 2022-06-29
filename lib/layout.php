@@ -24,16 +24,15 @@ function rendernewstatus($type) {
 
 function RenderActions($actions) {
 	$out = '';
-	$i = 0;
 	foreach ($actions as $action) {
-		if ($i++) $out .= ' | ';
-
+		$out .= '<li>';
 		if (isset($action['href']))
 			$out .= sprintf('<a href="%s">%s</a>', esc($action['href']), $action['title']);
 		else
 			$out .= $action['title'];
+		$out .= '</li>';
 	}
-	echo $out;
+	echo '<ul class="menulisting">'.$out.'</ul>';
 }
 
 function RenderPageBar($pagebar) {

@@ -57,9 +57,9 @@ foreach ($user as $field => $val) {
 	$post['u'.$field] = $val;
 }
 
-$links = [];
-$links[] = ['url' => "forum.php?user=$uid", 'title' => 'View threads'];
-$links[] = ['url' => "thread.php?user=$uid", 'title' => 'Show posts'];
+$links = [
+	['href' => "forum.php?user=$uid", 'title' => 'View threads'],
+	['href' => "thread.php?user=$uid", 'title' => 'Show posts']];
 
 $isblocked = $sql->result("SELECT COUNT(*) FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
 if ($log) {
@@ -73,22 +73,22 @@ if ($log) {
 		}
 	}
 
-	$links[] = ['url' => "profile.php?id=$uid&toggleblock", 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
+	$links[] = ['href' => "profile.php?id=$uid&toggleblock", 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
 
 	if ($loguser['powerlevel'] > 0)
-		$links[] = ['url' => "sendprivate.php?uid=$uid", 'title' => 'Send private message'];
+		$links[] = ['href' => "sendprivate.php?uid=$uid", 'title' => 'Send PM'];
 }
 
 if ($loguser['powerlevel'] > 3)
-	$links[] = ['url' => "private.php?id=$uid", 'title' => 'View private messages'];
+	$links[] = ['href' => "private.php?id=$uid", 'title' => 'Show PMs'];
 if ($loguser['powerlevel'] > 2 && $loguser['powerlevel'] > $user['powerlevel'])
-	$links[] = ['url' => "editprofile.php?id=$uid", 'title' => 'Edit user'];
+	$links[] = ['href' => "editprofile.php?id=$uid", 'title' => 'Edit user'];
 
 if ($loguser['powerlevel'] > 1) {
 	if ($user['powerlevel'] != -1)
-		$links[] = ['url' => "banmanager.php?id=$uid", 'title' => 'Ban user'];
+		$links[] = ['href' => "banmanager.php?id=$uid", 'title' => 'Ban user'];
 	else
-		$links[] = ['url' => "banmanager.php?unban&id=$uid", 'title' => 'Unban user'];
+		$links[] = ['href' => "banmanager.php?unban&id=$uid", 'title' => 'Unban user'];
 }
 
 //timezone calculations
@@ -127,7 +127,8 @@ $profilefields = [
 ];
 
 $topbot = [
-	'title' => $user['name']
+	'title' => $user['name'],
+	'actions' => $links
 ];
 
 RenderPageBar($topbot);
@@ -140,15 +141,6 @@ foreach ($profilefields as $k => $v) {
 	echo '</table>';
 }
 
-?><br>
-<table class="c1"><tr class="h"><td class="b h">Sample post</td><tr></table>
-<?=threadpost($post)?>
-<br>
-<table class="c1">
-	<tr><td class="b n3 center"><ul class="menulisting">
-		<?php foreach ($links as $link) { printf('<li><a href="%s">%s</a></li>', $link['url'], $link['title']); } ?>
-	</ul></td></tr>
-</table><br>
-<?php
+echo '<br><table class="c1"><tr class="h"><td class="b h">Sample post</td><tr></table>'.threadpost($post).'<br>';
 RenderPageBar($topbot);
 pagefooter();
