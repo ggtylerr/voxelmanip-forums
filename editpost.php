@@ -94,7 +94,7 @@ if ($action == 'Preview') {
 			<td class="b n2"><?=posttoolbar() ?></td>
 		</tr><tr>
 			<td class="b n1 center" width=120>Post:</td>
-			<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows=20 cols=80><?=esc($message) ?></textarea></td>
+			<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows="15" cols="80"><?=esc($message) ?></textarea></td>
 		</tr><tr>
 			<td class="b n1"></td>
 			<td class="b n1">

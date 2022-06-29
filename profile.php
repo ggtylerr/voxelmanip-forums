@@ -145,12 +145,8 @@ foreach ($profilefields as $k => $v) {
 <?=threadpost($post)?>
 <br>
 <table class="c1">
-	<tr class="c"><td class="b n3"><ul class="menulisting">
-		<?php
-		foreach ($links as $link) {
-			printf('<li><a href="%s">%s</a></li>', $link['url'], $link['title']);
-		}
-		?>
+	<tr><td class="b n3 center"><ul class="menulisting">
+		<?php foreach ($links as $link) { printf('<li><a href="%s">%s</a></li>', $link['url'], $link['title']); } ?>
 	</ul></td></tr>
 </table><br>
 <?php

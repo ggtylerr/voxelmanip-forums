@@ -12,25 +12,19 @@ function dobirthdays() { //Function for calling after we get the timezone for th
 	return;
 }
 
-function checkctitle($uid) {
+function checkctitle() {
 	global $loguser;
 
-	if (!$loguser['id']) return false;
-
 	// TODO: allow for users to set their own custom title
-
-	if ($loguser['powerlevel'] > 2) return true;
+	if ($loguser['powerlevel'] > 1) return true;
 
 	return false;
 }
 
-function checkcusercolor($uid) {
+function checkcusercolor() {
 	global $loguser;
 
-	if (!$loguser['id']) return false;
-
 	// TODO: allow for users to set their own custom colour
-
 	if ($loguser['powerlevel'] > 2) return true;
 
 	return false;
@@ -116,9 +110,7 @@ function userlink_by_id($uid) {
 }
 
 function userlink($user, $u = '') {
-	if (!$user[$u.'name']) $user[$u.'name'] = 'null';
-
-	return '<a href="profile.php?id='.$user[$u.'id'] . '">'.userdisp($user, $u).'</a>';
+	return '<a href="profile.php?id='.$user[$u.'id'].'">'.userdisp($user, $u).'</a>';
 }
 
 function userdisp($user, $u = '') {
@@ -133,9 +125,9 @@ function userdisp($user, $u = '') {
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
 
-	$n = $user[$u.'name'];
+	$n = $user[$u.'name'] ?: 'null';
 
-	$userdisname = "<span style='color:#$nc;'>".str_replace(" ", "&nbsp;", esc($n)).'</span>';
+	$userdisname = "<span style='color:#$nc;'>".esc($n).'</span>';
 
 	return $userdisname;
 }
