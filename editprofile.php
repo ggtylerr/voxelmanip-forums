@@ -105,23 +105,23 @@ if ($act == 'Edit profile') {
 		$placeholders = [];
 
 		$fields = [
-			'ppp' => $_POST['ppp'],
-			'tpp' => $_POST['tpp'],
-			'signsep' => $_POST['signsep'],
 			'rankset' => $_POST['rankset'],
+			'usepic' => $usepic,
 			'location' => $_POST['location'] ?: null,
+			'birth' => $birthday ?? null,
+			'bio' => $_POST['bio'] ?: null,
 			'email' => $_POST['email'] ?: null,
+			'showemail' => isset($_POST['showemail']) ? 1 : 0,
 			'head' => $_POST['head'] ?: null,
 			'sign' => $_POST['sign'] ?: null,
-			'bio' => $_POST['bio'] ?: null,
+			'signsep' => isset($_POST['signsep']) ? 1 : 0,
 			'theme' => $_POST['theme'] != $defaulttheme ? $_POST['theme'] : null,
-			'blocklayouts' => $_POST['blocklayouts'] ?: 0,
-			'showemail' => isset($_POST['showemail']) ? 1 : 0,
 			'timezone' => $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null,
-			'birth' => $birthday ?? null,
-			'usepic' => $usepic,
+			'ppp' => $_POST['ppp'],
+			'tpp' => $_POST['tpp'],
 			'dateformat' => $dateformat,
-			'timeformat' => $timeformat
+			'timeformat' => $timeformat,
+			'blocklayouts' => isset($_POST['blocklayouts']) ? 1 : 0,
 		];
 
 		if ($pass) {
@@ -213,9 +213,9 @@ echo
 .fieldrow('Email address', fieldinput(40, 60, 'email')
 				.'<br>'.fieldcheckbox('showemail', $user['showemail'], 'Show email on profile page'))
 .	catheader('Post layout')
-.fieldrow('Header', fieldtext(5, 80, 'head'))
-.fieldrow('Signature', fieldtext(5, 80, 'sign'))
-.fieldrow('Signature line', fieldoption('signsep', $user['signsep'], ['Display', 'Hide']))
+.fieldrow('Header', fieldtext(7, 80, 'head'))
+.fieldrow('Signature', fieldtext(7, 80, 'sign'))
+.fieldrow('Signature line', fieldcheckbox('signsep', $user['signsep'], 'Show signature separator'))
 .	catheader('Options')
 .fieldrow('Theme', fieldselect('theme', $user['theme'] ?: $defaulttheme, themelist(), "themePreview(this.value)"))
 .fieldrow('Timezone', fieldselect('timezone', $user['timezone'], $listtimezones))
@@ -223,7 +223,7 @@ echo
 .fieldrow('Threads per page', fieldinput(3, 3, 'tpp'))
 .fieldrow('Date format', fieldinput(15, 15, 'dateformat'))
 .fieldrow('Time format', fieldinput(15, 15, 'timeformat'))
-.fieldrow('Post layouts', fieldoption('blocklayouts', $user['blocklayouts'], ['Show everything in general', 'Block everything']))
+.fieldrow('Post layouts', fieldcheckbox('blocklayouts', $user['blocklayouts'], 'Block all post layouts'))
 .	catheader('&nbsp;'); ?>
 <tr class="n1"><td class="b"></td><td class="b"><input type="submit" name="action" value="Edit profile"></td>
 </table></form><?php

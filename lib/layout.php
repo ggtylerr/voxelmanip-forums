@@ -69,13 +69,6 @@ function fieldtext($rows, $cols, $field) {
 	return sprintf('<textarea wrap="virtual" name="%s" rows=%s cols=%s>%s</textarea>', $field, $rows, $cols, esc($user[$field]));
 }
 
-function fieldoption($field, $checked, $choices) {
-	$text = '';
-	foreach ($choices as $k => $v)
-		$text .= sprintf('<label><input type="radio" name="%s" value="%s" %s>%s </label>', $field, $k, ($k == $checked ? ' checked' : ''), $v);
-	return $text;
-}
-
 function fieldcheckbox($field, $checked, $label) {
 	return sprintf('<label><input type="checkbox" name="%s" value="1" %s>%s </label>', $field, ($checked ? ' checked' : ''), $label);
 }

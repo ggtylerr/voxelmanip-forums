@@ -171,13 +171,8 @@ function threadpost($post, $pthread = '') {
 		$ulink = userlink($post, 'u');
 		return <<<HTML
 <table class="c1"><tr>
-	<td class="b n1" style="border-right:0;width:180px">$ulink</td>
-	<td class="b n1" style="border-left:0">
-		<table width="100%">
-			<td class="nb sfont">(post deleted)</td>
-			<td class="nb sfont right">$postlinks</td>
-		</table>
-	</td>
+	<td class="b n1 topbar_1">$ulink</td>
+	<td class="b n1 topbar_2">(post deleted)<span class="f-right">$postlinks</span></td>
 </tr></table>
 HTML;
 	}
@@ -248,14 +243,13 @@ HTML;
 
 	$picture = ($post['uusepic'] ? "<img src=\"userpic/{$post['uid']}\">" : '');
 
-	// TODO: be able to restrict custom layouts
 	if ($post['usign']) {
-		$signsep = $post['usignsep'] ? '' : '____________________<br>';
+		$signsep = $post['usignsep'] ? '<hr>' : '';
 
 		if (!$post['uhead'])
 			$post['usign'] = '<br><br><small>'.$signsep.$post['usign'].'</small>';
 		else
-			$post['usign'] = '<br><br>'.$signsep.$post['usign'];
+			$post['usign'] = $signsep.$post['usign'];
 	}
 
 	$usertitle = postfilter($post['utitle']);
