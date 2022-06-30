@@ -145,7 +145,7 @@ if ($fid) announcement_row();
 $lsticky = 0;
 
 for ($i = 1; $thread = $threads->fetch(); $i++) {
-	$pagelist = ' '.pagelist($thread['replies'], $loguser['ppp'], 'thread.php?id='.$thread['id'], 0, false, true);
+	$pagelist = ' '.pagelist($thread['replies']+1, $loguser['ppp'], 'thread.php?id='.$thread['id'], 0, false, true);
 
 	$status = ($thread['closed'] ? 'o' : '');
 
