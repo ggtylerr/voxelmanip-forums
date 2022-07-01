@@ -88,7 +88,7 @@ if ($act == 'Edit profile') {
 		}
 	}
 
-	if (checkcusercolor($targetuserid)) {
+	if (checkcusercolor()) {
 		//Validate Custom username color is a 6 digit hex RGB color
 		$_POST['nick_color'] = ltrim($_POST['nick_color'], '#');
 
@@ -129,16 +129,16 @@ if ($act == 'Edit profile') {
 			$fields['token'] = $newtoken;
 		}
 
-		if (checkcusercolor($targetuserid))
+		if (checkcusercolor())
 			$fields['nick_color'] = $_POST['nick_color'];
 
-		if (checkctitle($targetuserid))
+		if (checkctitle())
 			$fields['title'] = $_POST['title'];
 
 		if (isset($targetname))
 			$fields['name'] = $targetname;
 
-		if ($targetgroup != 0)
+		if (isset($targetgroup) && $targetgroup != 0)
 			$fields['powerlevel'] = $targetgroup;
 
 		// Construct a query containing all fields.
@@ -179,9 +179,9 @@ if ($user['birth']) {
 
 $passinput = '<input type="password" name="pass" size="13" maxlength="32"> Retype: <input type="password" name="pass2" size="13" maxlength="32">';
 $birthinput = sprintf(
-	'Day: <input type="text" name="birthD" size="2" maxlength="2" value="%s">
-	Month: <input type="text" name="birthM" size="2" maxlength="2" value="%s">
-	Year: <input type="text" name="birthY" size="4" maxlength="4" value="%s">',
+	'<input type="text" name="birthD" size="5" maxlength="2" value="%s" placeholder="Day">
+	<input type="text" name="birthM" size="5" maxlength="2" value="%s" placeholder="Month">
+	<input type="text" name="birthY" size="5" maxlength="4" value="%s" placeholder="Year">',
 $birthD, $birthM, $birthY);
 
 $colorinput = sprintf(
@@ -199,19 +199,21 @@ if ($canedituser)
 .fieldrow('Group', fieldselect('powerlevel', $user['powerlevel'], $powerlevels))
 .(($user['tempbanned'] > 0) ? fieldrow('Ban Information', '<input type=checkbox name=permaban value=1 id=permaban><label for=permaban>Make ban permanent</label>') : '');
 
+$erasepfp = ($user['usepic'] ? ' or <input type="checkbox" name="picturedel" value="1" id="picturedel"><label for="picturedel">Erase existing avatar</label>' : '');
+
 echo
 	catheader('Appearance')
 .fieldrow('Rankset', fieldselect('rankset', $user['rankset'], ranklist()))
-.((checkctitle($targetuserid)) ? fieldrow('Title', fieldinput(40, 255, 'title')) : '')
-.fieldrow('Picture', '<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label>
-	<br><span class=sfont>Must be PNG, JPG or GIF, within 80KB, within 180x180.</span>')
-.(checkcusercolor($targetuserid) ? fieldrow('Custom username color', $colorinput) : '')
+.((checkctitle()) ? fieldrow('Title', fieldinput(40, 255, 'title')) : '')
+.fieldrow('Avatar', '<input type="file" name="picture" size="40">'.$erasepfp
+		.'<br><span class="sfont">Must be PNG, JPG or GIF, within 80KB and 180x180.</span>')
+.(checkcusercolor() ? fieldrow('Custom colour', $colorinput) : '')
 .	catheader('User information')
 .fieldrow('Location', fieldinput(40, 60, 'location'))
 .fieldrow('Birthday', $birthinput)
 .fieldrow('Bio', fieldtext(5, 80, 'bio'))
 .fieldrow('Email address', fieldinput(40, 60, 'email')
-				.'<br>'.fieldcheckbox('showemail', $user['showemail'], 'Show email on profile page'))
+		.'<br>'.fieldcheckbox('showemail', $user['showemail'], 'Show email on profile page'))
 .	catheader('Post layout')
 .fieldrow('Header', fieldtext(7, 80, 'head'))
 .fieldrow('Signature', fieldtext(7, 80, 'sign'))
