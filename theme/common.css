@@ -113,8 +113,8 @@ table.postformatting {
 
 /* FAQ styling */
 .faq p {
-	margin-bottom: 0.5em;
-	margin-top: 0.5em;
+	margin-bottom: 0.7em;
+	margin-top: 0.7em;
 }
 .faq > tbody > tr > .n1 {
 	padding: 5px 15px;
@@ -123,7 +123,7 @@ table.postformatting {
 	margin-bottom: 1em;
 }
 .faq .toc li {
-	margin-bottom: 0.5em;
+	margin-bottom: 0.6em;
 }
 .faq .title {
 	font-weight: bold;

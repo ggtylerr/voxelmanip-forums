@@ -14,9 +14,8 @@ foreach ($smilies as $smily) {
 
 // Rank colours
 $nctable = '';
-foreach ($powerlevels as $id => $title) {
+foreach ($powerlevels as $id => $title)
 	$nctable .= sprintf('<td class="b n1" width="140"><b><span style="color:#%s">%s</span></b></td>', powIdToColour($id), $title);
-}
 
 $faq = [[
 	'id' => 'disclaimer',
@@ -109,13 +108,13 @@ HTML
 		<td class="b n2"><span style="color:#BCDE9A">Custom color Text</span></td>
 	</tr><tr>
 		<td class="b n1">
-			[url]<i>URL of site or page to link to</i>[/url]<br>
+			[url]<i>URL</i>[/url]<br>
 			[url=<i>URL</i>]<i>Link title</i>[/url]
 		</td>
 		<td class="b n2">Creates a link with or without a title.</td>
 	</tr><tr>
 		<td class="b n1">[spoiler]<i>text</i>[/spoiler]</td>
-		<td class="b n2">Used for hiding spoiler text.</td>
+		<td class="b n2">Used for hiding spoilers.</td>
 	</tr><tr>
 		<td class="b n1">[quote]<i>text</i>[/quote]</td>
 		<td class="b n2">Displays a blockquote with the text</td>
@@ -136,30 +135,31 @@ HTML
 		<td class="b n2">Simple link reference to a particular post for replying to it.</td>
 	</tr>
 </table>
-<p>Also, most HTML tags are able to be used in your posts.</p>
+<p>Also, most HTML tags are able to be used in your posts, but with great power comes great responsibility.</p>
 HTML
 ], [
 	'id' => 'reg',
 	'title' => 'Can I register more than one account?',
 	'content' => <<<HTML
-<p>No. Most uses for a secondary account tend to be to bypass bans, sockpuppet or in other ways cause havoc. All is expressly forbidden and you will be punished when found out (you most likely will).</p>
+<p><strong>No.</strong> Most uses for a secondary account tend to be to bypass bans, sockpuppet or in other ways cause havoc. All is expressly forbidden and you will be punished when found out (you most likely will).</p>
 
-<p>Another use is to change your username. If you feel that you want to change your username then please message a staff member. Keep in mind that too frequent name changes are not allowed.</p>
+<p>Another use is to change your username. If you feel that you want to change your username then please message a staff member instead. Keep in mind that too frequent name changes are not allowed.</p>
 HTML
 ], [
-	'id' => 'css',
-	'title' => 'What are we not allowed to do in our custom CSS layouts?',
+	'id' => 'postlayouts',
+	'title' => 'What are these post layout thingies?',
 	'content' => <<<HTML
-<p>While we allow very open and customizable layouts and side bars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a staff member. Staff has discretion in deciding violations.</p>
+<p>Basically, you are able to style and customise your post layout using CSS. You can set up whatever kind of HTML inside the header and signature fields and style them with CSS, and also style the side and top of your post table using special classes suffixed with your user ID.</p>
 
-<p>The following are not allowed:</p>
+<p>While we allow very open and customizable layouts and sidebars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a staff member.</p>
 <ul>
-	<li>Modification of anyone else's post layout <b>for any reason</b>.</li>
-	<li>Modification of any tables, images, themes, etc outside of your personal layout.</li>
-	<li>Altering your Nick color in any way. Nick color is an indicator of staff, and it will be considered impersonation of staff.</li>
+	<li>The styling the post layout applies should only apply to your particular post table. Please use your user-specific table classes and prefix any custom classes to prevent collisions.</li>
+	<li>Post layouts should generally have a dark theme to match with the general darkness of the board.</li>
+	<li>Keep a good colour contrast and make the post text readable (no bad colour combinations or obnoxious fonts)</li>
+	<li>Images and other assets should be as small in filesize as possible.</li>
+	<li>Things like CSS filters and animations are not allowed due to reduce the potential lag caused by them.</li>
 </ul>
-
-<p>Obnoxious, bandwidth- or resource-intensive or plain bad layouts are not allowed either, which is up to interpretation by staff when reviewing post layouts.</p>
+<p>Post layouts which are blatantly inappropriate or plain bad in any other regard will be removed by the discretion of the staff.</p>
 HTML
 ], [
 	'id' => 'usercols',
@@ -173,18 +173,16 @@ HTML
 
 pageheader("FAQ");
 
-?>
-<table class="c1 faq">
+?><table class="c1 faq">
 	<tr class="h"><td class="b h">FAQ</td></tr>
 	<tr><td class="b n1"><ol class="toc">
-<?php foreach ($faq as $faqitem) printf('<li><a href="#%s">%s</a></li>', $faqitem['id'], $faqitem['title']); ?>
+		<?php foreach ($faq as $faqitem) printf('<li><a href="#%s">%s</a></li>', $faqitem['id'], $faqitem['title']); ?>
 	</ol></td></tr>
-
 <?php
 foreach ($faq as $faqitem) {
 	printf('<tr class="h"><td class="b h" id="%s">%s</td></tr><tr><td class="b n1">%s</td></tr>',
 		$faqitem['id'], $faqitem['title'], $faqitem['content']);
 }
-?>
-</table>
-<?php pagefooter();
+echo '</table>';
+
+pagefooter();
