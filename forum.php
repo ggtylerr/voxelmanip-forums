@@ -145,7 +145,7 @@ if ($fid) announcement_row();
 $lsticky = 0;
 
 for ($i = 1; $thread = $threads->fetch(); $i++) {
-	$pagelist = ' '.pagelist($thread['replies']+1, $loguser['ppp'], 'thread.php?id='.$thread['id'], 0, false, true);
+	$pagelist = ' '.pagelist($thread['posts'], $loguser['ppp'], 'thread.php?id='.$thread['id'], 0, false, true);
 
 	$status = ($thread['closed'] ? 'o' : '');
 
@@ -171,7 +171,7 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 		<?=($showforum ? sprintf('<td class="b"><a href="forum.php?id=%s">%s</a></td>', $thread['fid'], $thread['ftitle']) : '')?>
 		<td class="b left" style="word-break:break-word"><a href="thread.php?id=<?=$thread['id'] ?>"><?=esc($thread['title']) ?></a><?=$pagelist ?></td>
 		<td class="b nom"><?=userlink($thread, 'u1') ?></td>
-		<td class="b nom"><?=$thread['replies'] ?></td>
+		<td class="b nom"><?=$thread['posts']-1 ?></td>
 		<td class="b nom"><?=$thread['views'] ?></td>
 		<td class="b">
 			<nobr><?=dateformat($thread['lastdate']) ?></nobr><br>

@@ -41,21 +41,13 @@ $act = $_POST['action'] ?? '';
 if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 2 ||
 		($loguser['id'] == $threadcreator && $act == "rename" && $loguser['powerlevel'] > 0))) {
 
-	if ($act == 'stick') {
-		$action = ',sticky=1';
-	} elseif ($act == 'unstick') {
-		$action = ',sticky=0';
-	} elseif ($act == 'close') {
-		$action = ',closed=1';
-	} elseif ($act == 'open') {
-		$action = ',closed=0';
-	} elseif ($act == 'trash') {
-		editthread($tid, '', $trashid, 1);
-	} elseif ($act == 'rename' && $_POST['title']) {
-		$action = ",title=?";
-	} elseif ($act == 'move') {
-		editthread($tid, '', $_POST['arg']);
-	}
+	if ($act == 'stick')	$action = ',sticky=1';
+	if ($act == 'unstick')	$action = ',sticky=0';
+	if ($act == 'close')	$action = ',closed=1';
+	if ($act == 'open')		$action = ',closed=0';
+	if ($act == 'trash')	movethread($tid, $trashid, 1);
+	if ($act == 'rename')	$action = ",title=?";
+	if ($act == 'move')		movethread($tid, $_POST['arg']);
 }
 
 //determine string for revision pinning
@@ -125,7 +117,7 @@ if ($viewmode == "thread") {
 			ORDER BY p.id LIMIT ?,?",
 		[$uid, $loguser['powerlevel'], $offset, $ppp]);
 
-	$thread['replies'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]) - 1;
+	$thread['posts'] = $sql->result("SELECT count(*) FROM posts p WHERE user = ?", [$uid]);
 } elseif ($viewmode == "time") {
 	$mintime = ($time > 0 && $time <= 2592000 ? time() - $time : 86400);
 
@@ -142,16 +134,16 @@ if ($viewmode == "thread") {
 			LIMIT ?,?",
 		[$mintime, $loguser['powerlevel'], $offset, $ppp]);
 
-	$thread['replies'] = $sql->result("SELECT count(*) FROM posts WHERE date > ?", [$mintime]) - 1;
+	$thread['posts'] = $sql->result("SELECT count(*) FROM posts WHERE date > ?", [$mintime]);
 } else
 	pageheader();
 
 $pagelist = '';
-if ($thread['replies']+1 > $ppp) {
+if ($thread['posts'] > $ppp) {
 	if ($viewmode == "thread")		$furl = "thread.php?id=$tid";
 	elseif ($viewmode == "user")	$furl = "thread.php?user=$uid";
 	elseif ($viewmode == "time")	$furl = "thread.php?time=$time";
-	$pagelist = '<br>'.pagelist($thread['replies']+1, $ppp, $furl, $page, true);
+	$pagelist = '<br>'.pagelist($thread['posts'], $ppp, $furl, $page, true);
 }
 
 if ($viewmode == "thread") {

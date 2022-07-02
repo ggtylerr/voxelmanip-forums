@@ -120,7 +120,7 @@ CREATE TABLE `poststext` (
 CREATE TABLE `threads` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
-  `replies` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `posts` mediumint(8) unsigned NOT NULL DEFAULT 1,
   `views` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `forum` int(5) unsigned NOT NULL DEFAULT 0,
   `user` mediumint(8) unsigned NOT NULL DEFAULT 0,

@@ -179,9 +179,9 @@ HTML;
 
 	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
 	$post['utitle'] = $post['ranktext']
-			. ((strlen($post['ranktext']) >= 1) ? '<br>' : '')
+			. ($post['ranktext'] ? '<br>' : '')
 			. $post['utitle']
-			. ((strlen((string)$post['utitle']) >= 1) ? '<br>' : '');
+			. ($post['utitle'] ? '<br>' : '');
 
 	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
