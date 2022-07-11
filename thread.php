@@ -244,7 +244,7 @@ if (isset($time)) {
 	</table><?php
 }
 
-echo "$modlinks $pagelist";
+echo "$modlinks$pagelist";
 
 for ($i = 1; $post = $posts->fetch(); $i++) {
 	$pthread = [];
@@ -266,7 +266,7 @@ for ($i = 1; $post = $posts->fetch(); $i++) {
 
 if_empty_query($i, "No posts were found.", 0, true);
 
-echo "$pagelist" . (!isset($time) ? '<br>' : '');
+echo "$pagelist".(!isset($time) ? '<br>' : '');
 
 if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$thread['closed']) {
 	?><form action="newreply.php?id=<?=$tid?>" method="post">

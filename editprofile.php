@@ -30,36 +30,26 @@ if ($act == 'Edit profile') {
 	if ($_POST['pass'] && $_POST['pass2'] && $_POST['pass'] != $_POST['pass2'])
 		$error = "- The passwords you entered don't match.<br>";
 
-	$usepic = $user['usepic'];
 	$fname = $_FILES['picture'];
 	if ($fname['size'] > 0) {
 		$ftypes = ['png','jpeg','jpg','gif'];
-		$img_data = getimagesize($fname['tmp_name']);
-		$err = '';
-		if ($img_data[0] > 180 || $img_data[1] > 180)
-			$err .= "<br>The image is too big.";
-		if ($fname['size'] > 81920)
-			$err .= "<br>The image filesize too big.";
-		if (!in_array(str_replace('image/','',$img_data['mime']),$ftypes))
-			$err = "Invalid file type.";
+		$res = getimagesize($fname['tmp_name']);
 
-		if ($err != '')
-			$ava_out = $err;
+		if (!in_array(str_replace('image/','',$img_data['mime']),$ftypes))
+			$error .= "- Invalid file type.<br>";
+		elseif ($res[0] > 180 || $res[1] > 180)
+			$error .= "- The image is too big.<br>";
+		elseif ($fname['size'] > 81920)
+			$error .= "- The image filesize too big.<br>";
 		else {
-			if (move_uploaded_file($fname['tmp_name'], "userpic/$user[id]")) {
-				$ava_out = "OK!";
-			} else {
-				$ava_out = "<br>Error creating file.";
+			if (!move_uploaded_file($fname['tmp_name'], "userpic/$user[id]")) {
+				$error .= "- Error creating avatar file.<br>";
 			}
 		}
 
-		if ($ava_out != "OK!")
-			$error .= $ava_out;
-		else
-			$usepic = 1;
+		if (!$error) $usepic = 1;
 	}
-	if (isset($_POST['picturedel']))
-		$usepic = 0;
+	if (isset($_POST['picturedel'])) $usepic = 0;
 
 	$pass = (strlen($_POST['pass2']) ? $_POST['pass'] : '');
 
@@ -102,8 +92,6 @@ if ($act == 'Edit profile') {
 		$placeholders = [];
 
 		$fields = [
-			'rankset' => $_POST['rankset'],
-			'usepic' => $usepic,
 			'location' => $_POST['location'] ?: null,
 			'birth' => $birthday ?? null,
 			'bio' => $_POST['bio'] ?: null,
@@ -118,6 +106,12 @@ if ($act == 'Edit profile') {
 			'tpp' => $_POST['tpp'],
 			'blocklayouts' => isset($_POST['blocklayouts']) ? 1 : 0,
 		];
+
+		if (isset($usepic))
+			$fields['usepic'] = $usepic;
+
+		if (isset($_POST['rankset']))
+			$fields['rankset'] = $_POST['rankset'];
 
 		if ($pass) {
 			$fields['pass'] = password_hash($pass, PASSWORD_DEFAULT);
@@ -152,7 +146,6 @@ if ($act == 'Edit profile') {
 	} else {
 		noticemsg("Couldn't save the profile changes. The following errors occured:<br><br>" . $error);
 
-		$act = '';
 		foreach ($_POST as $k => $v)
 			$user[$k] = $v;
 		$user['birth'] = $birthday;
@@ -162,9 +155,8 @@ if ($act == 'Edit profile') {
 pageheader('Edit profile');
 
 $listtimezones = [];
-foreach (timezone_identifiers_list() as $tz) {
+foreach (timezone_identifiers_list() as $tz)
 	$listtimezones[$tz] = $tz;
-}
 
 $birthM = $birthD = $birthY = '';
 if ($user['birth']) {
@@ -179,30 +171,20 @@ $birthinput = sprintf(
 	<input type="text" name="birthY" size="5" maxlength="4" value="%s" placeholder="Year">',
 $birthD, $birthM, $birthY);
 
-$colorinput = sprintf(
-	'<input type="color" name="nick_color" value="#%s">',
-$user['nick_color']);
-
-echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype="multipart/form-data"><table class="c1">' .
-	catheader('Login information')
-.($canedituser ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name']))
-.fieldrow('Password', $passinput);
-
-if ($canedituser)
-	echo
-	catheader('Administrative bells and whistles')
-.fieldrow('Group', fieldselect('powerlevel', $user['powerlevel'], $powerlevels))
-.(($user['tempbanned'] > 0) ? fieldrow('Ban Information', '<input type=checkbox name=permaban value=1 id=permaban><label for=permaban>Make ban permanent</label>') : '');
-
 $erasepfp = ($user['usepic'] ? ' or <input type="checkbox" name="picturedel" value="1" id="picturedel"><label for="picturedel">Erase existing avatar</label>' : '');
 
-echo
-	catheader('Appearance')
-.fieldrow('Rankset', fieldselect('rankset', $user['rankset'], ranklist()))
+echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype="multipart/form-data"><table class="c1">'
+.	catheader('Edit profile')
+.	catheader('Login information')
+.($canedituser ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name']))
+.fieldrow('Password', $passinput)
+.	catheader('Appearance')
+.($canedituser ? fieldrow('Rank', fieldselect('powerlevel', $user['powerlevel'], $powerlevels)) : '')
+.(count($rankset_names) > 1 ? fieldrow('Rankset', fieldselect('rankset', $user['rankset'], ranklist())) : '')
 .((checkctitle()) ? fieldrow('Title', fieldinput(40, 255, 'title')) : '')
 .fieldrow('Avatar', '<input type="file" name="picture" size="40">'.$erasepfp
 		.'<br><span class="sfont">Must be PNG, JPG or GIF, within 80KB and 180x180.</span>')
-.(checkcusercolor() ? fieldrow('Custom colour', $colorinput) : '')
+.(checkcusercolor() ? fieldrow('Custom colour', sprintf('<input type="color" name="nick_color" value="#%s">', $user['nick_color'])) : '')
 .	catheader('User information')
 .fieldrow('Location', fieldinput(40, 60, 'location'))
 .fieldrow('Birthday', $birthinput)

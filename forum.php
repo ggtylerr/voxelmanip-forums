@@ -20,7 +20,7 @@ if ($log) {
 		."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) " : '');
 }
 
-$ufields = userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ",";
+$ufields = userfields('u1', 'u1').",".userfields('u2', 'u2').",";
 if ($fid) {
 	if ($log) {
 		$forum = $sql->fetch("SELECT f.*, r.time rtime FROM forums f LEFT JOIN forumsread r ON (r.fid = f.id AND r.uid = ?) "

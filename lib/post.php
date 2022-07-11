@@ -177,11 +177,9 @@ function threadpost($post, $pthread = '') {
 HTML;
 	}
 
-	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
-	$post['utitle'] = $post['ranktext']
-			. ($post['ranktext'] ? '<br>' : '')
-			. $post['utitle']
-			. ($post['utitle'] ? '<br>' : '');
+	$ranktext = getrank($post['urankset'], $post['uposts']);
+	if ($ranktext) $ranktext .= '<br><br>';
+	$usertitle = ($post['utitle'] ? $post['utitle'].'<br>' : '');
 
 	// Blocklayouts, supports user/user ($blocklayouts) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
@@ -230,12 +228,9 @@ HTML;
 	if (isset($post['thread']))
 		$postlinks .= " | ID: $post[id]";
 
-	$tbar1 = "topbar".$post['uid']."_1";
-	$tbar2 = "topbar".$post['uid']."_2";
-	$sbar = "sidebar".$post['uid'];
-	$mbar = "mainbar".$post['uid'];
 	$ulink = userlink($post, 'u');
 	$pdate = dateformat($post['date']);
+	$uid = $post['uid'];
 
 	$regdate = date('Y-m-d', $post['uregdate']);
 	$lastpost = ($post['ulastpost'] ? timeunits(time() - $post['ulastpost']) : 'none');
@@ -252,27 +247,26 @@ HTML;
 			$post['usign'] = $signsep.$post['usign'];
 	}
 
-	$usertitle = postfilter($post['utitle']);
 	$posttext = postfilter($post['uhead'].$post['text'].$post['usign']);
 
 	return <<<HTML
 <table class="c1" id="{$post['id']}">
 	<tr>
-		<td class="b n1 topbar_1 $tbar1 nom">$ulink</td>
-		<td class="b n1 topbar_1 $tbar1 blkm nod clearfix">
+		<td class="b n1 topbar_1 topbar{$uid}_1 nom">$ulink</td>
+		<td class="b n1 topbar_1 topbar{$uid}_2 blkm nod clearfix">
 			<span style="float:left;margin-right:10px">$picture</span>
 			$ulink <div class="sfont" style="margin-top:0.5em">$usertitle</div>
 		</td>
-		<td class="b n1 topbar_2 $tbar2 sfont blkm">Posted on $pdate$threadlink$revisionstr <span class="f-right">$postlinks</span></td>
+		<td class="b n1 topbar_2 topbar{$uid}_2 sfont blkm">Posted on $pdate$threadlink$revisionstr <span class="f-right">$postlinks</span></td>
 	</tr><tr valign="top">
-		<td class="b n1 sfont sidebar nom $sbar">
-			$usertitle$picture
+		<td class="b n1 sfont sidebar sidebar{$uid} nom">
+			$ranktext$usertitle$picture
 			<br>Posts: {$post['uposts']}<br>
 			<br>Since: $regdate<br>
 			<br>Last post: $lastpost
 			<br>Last view: $lastview
 		</td>
-		<td class="b n2 mainbar $mbar" id="post_{$post['id']}">$posttext</td>
+		<td class="b n2 mainbar mainbar{$uid}" id="post_{$post['id']}">$posttext</td>
 	</tr>
 </table>
 HTML;

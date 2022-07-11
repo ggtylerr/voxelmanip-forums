@@ -43,14 +43,15 @@ if ($id && $loguser['powerlevel'] > 3) {
 	$title = $ptitle;
 }
 
+$tpp = $loguser['tpp'];
+$ufields = userfields('u', 'u');
 $pmsgc = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE user$fieldn2 = ? AND del_$fieldn2 = ?", [$id, $showdel]);
-$pmsgs = $sql->query("SELECT ".userfields('u', 'u').", p.* FROM pmsgs p "
-					."LEFT JOIN users u ON u.id = p.user$fieldn "
-					."WHERE p.user$fieldn2 = ? "
-				."AND del_$fieldn2 = ? "
-					."ORDER BY p.unread DESC, p.date DESC "
-					."LIMIT " . (($page - 1) * $loguser['tpp']) . ", " . $loguser['tpp'],
-				[$id, $showdel]);
+$pmsgs = $sql->query("SELECT $ufields, p.* FROM pmsgs p
+					LEFT JOIN users u ON u.id = p.user$fieldn
+					WHERE p.user$fieldn2 = ? AND del_$fieldn2 = ?
+					ORDER BY p.unread DESC, p.date DESC
+					LIMIT ?,?",
+				[$id, $showdel, (($page - 1) * $tpp), $tpp]);
 
 $topbot = [
 	'title' => $title

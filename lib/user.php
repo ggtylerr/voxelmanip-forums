@@ -33,7 +33,7 @@ function checkcusercolor() {
 function getrank($set, $posts) {
 	global $rankset_data, $rankset_names;
 
-	if ($set == 0) return '';
+	if ($set == 0 || !isset($rankset_data[$set])) return '';
 
 	$rankset = &$rankset_data[$rankset_names[$set]];
 	for (end($rankset); key($rankset) !== null; prev($rankset)) {

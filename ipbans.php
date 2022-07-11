@@ -28,11 +28,11 @@ if ($action == "del") {
 		$sql->query("INSERT INTO ipbans (ipmask,expires,banner,reason) VALUES (?,?,?,?)",
 			[$_POST['ipmask'], $expires, $loguser['name'], $_POST['reason']]);
 	} else {
-		$err = "You must enter an IP mask";
+		noticemsg("You must enter an IP mask");
 	}
 }
 $ipbans = $sql->query("SELECT * FROM ipbans");
-if (isset($err)) noticemsg($err);
+
 ?><form action="ipbans.php?action=add" method="post">
 	<table class="c1">
 		<tr class="h"><td class="b h" colspan="2">New IP ban</td></tr>

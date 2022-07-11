@@ -10,9 +10,9 @@ require('conf/config.php');
 foreach (glob("lib/*.php") as $filename)
 	require_once($filename);
 
-$userip = $_SERVER['REMOTE_ADDR'];
-$useragent = $_SERVER['HTTP_USER_AGENT'];
-$url = $_SERVER['REQUEST_URI'];
+$userip = $_SERVER['REMOTE_ADDR'] ?? '';
+$useragent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$url = $_SERVER['REQUEST_URI'] ?? '';
 
 $log = false;
 
@@ -177,7 +177,7 @@ HTML;
 		$andlastforum = ($fid != 0 ? " AND lastforum =".$fid : '');
 
 		$onusers = $sql->query("SELECT ".userfields().",lastpost,lastview FROM users WHERE lastview > ? $andlastforum ORDER BY name",
-			[(time() - 900)]);
+			[(time() - 300)]);
 		$onuserlist = '';
 		$onusercount = 0;
 		while ($user = $onusers->fetch()) {

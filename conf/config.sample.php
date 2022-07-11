@@ -66,8 +66,6 @@ $smilies = [
 // Define this function to send a welcome PM to all newly registered users.
 // function sendWelcomePM($username) { }
 
-// Ranksets
-//require('img/ranks/rankset.php'); // Default (Mario) rankset
 
 // Random forum descriptions.
 // It will be replacing the value %%%RANDOM%%% in the forum description.

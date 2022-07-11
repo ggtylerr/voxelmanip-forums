@@ -1,4 +1,4 @@
--- Adminer 4.8.1 MySQL 10.7.3-MariaDB dump
+-- Adminer 4.8.1 MySQL 10.8.3-MariaDB dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -154,19 +154,19 @@ CREATE TABLE `users` (
   `lastforum` int(10) unsigned NOT NULL DEFAULT 0,
   `ip` varchar(15) NOT NULL DEFAULT '0.0.0.0',
   `url` varchar(255) NOT NULL DEFAULT '',
-  `tempbanned` tinyint(1) NOT NULL DEFAULT 0,
+  `tempbanned` int(10) unsigned NOT NULL DEFAULT 0,
   `powerlevel` tinyint(4) NOT NULL DEFAULT 1,
   `ppp` smallint(3) unsigned NOT NULL DEFAULT 20,
   `tpp` smallint(3) unsigned NOT NULL DEFAULT 20,
   `theme` varchar(32) DEFAULT NULL,
   `birth` varchar(10) DEFAULT NULL,
-  `rankset` int(10) NOT NULL DEFAULT 0,
+  `rankset` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `showemail` tinyint(1) unsigned DEFAULT NULL,
   `usepic` tinyint(1) unsigned DEFAULT NULL,
   `blocklayouts` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `nick_color` varchar(6) NOT NULL DEFAULT '000000',
-  `signsep` tinyint(1) unsigned NOT NULL DEFAULT 1,
-  `timezone` varchar(128) DEFAULT NULL,
+  `nick_color` char(6) NOT NULL DEFAULT '000000',
+  `timezone` varchar(32) DEFAULT NULL,
+  `signsep` tinyint(1) unsigned DEFAULT NULL,
   `head` text DEFAULT NULL,
   `sign` text DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
@@ -178,4 +178,4 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- 2022-05-14 19:07:17
+-- 2022-07-11 14:55:57

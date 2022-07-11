@@ -4,7 +4,7 @@ require('lib/common.php');
 $id = (int)$_GET['id'];
 
 $tuser = $sql->result("SELECT powerlevel FROM users WHERE id = ?",[$id]);
-if ($loguser['powerlevel'] < 2 || $loguser['powerlevel'] <= $tuser['powerlevel'])
+if ($loguser['powerlevel'] < 2 || $loguser['powerlevel'] <= $tuser)
 	error("You have no permissions to do this!");
 
 if ($uid = $_GET['id']) {
@@ -14,12 +14,9 @@ if ($uid = $_GET['id']) {
 
 $user = $sql->fetch("SELECT * FROM users WHERE id = ?",[$uid]);
 
-if (isset($_POST['banuser']) && $_POST['banuser'] == "Ban User") {
-	if ($_POST['tempbanned'] > 0) {
-		$banreason = "Banned until ".date("Y-m-d H:i",time() + ($_POST['tempbanned']));
-	} else {
-		$banreason = "Banned permanently";
-	}
+if (isset($_POST['banuser'])) {
+	$banreason = ($_POST['tempbanned'] ? "Banned until ".date("Y-m-d H:i",time() + ($_POST['tempbanned'])) : 'Banned');
+
 	if ($_POST['title']) {
 		$banreason .= ': '.esc($_POST['title']);
 	}
@@ -28,7 +25,7 @@ if (isset($_POST['banuser']) && $_POST['banuser'] == "Ban User") {
 		[$banreason, ($_POST['tempbanned'] > 0 ? ($_POST['tempbanned'] + time()) : 0), $user['id']]);
 
 	redirect("profile.php?id=$user[id]");
-} elseif (isset($_POST['unbanuser']) && $_POST['unbanuser'] == "Unban User") {
+} elseif (isset($_POST['unbanuser'])) {
 	if ($user['powerlevel'] != -1) error("This user is not a banned user.");
 
 	$sql->query("UPDATE users SET powerlevel = 1, title = '', tempbanned = 0 WHERE id = ?", [$user['id']]);
