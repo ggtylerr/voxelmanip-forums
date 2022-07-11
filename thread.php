@@ -90,7 +90,7 @@ if ($viewmode == "thread") {
 			$sql->query("REPLACE INTO forumsread VALUES (?,?,?)", [$loguser['id'], $thread['fid'], time()]);
 	}
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.forum tforum
 			FROM posts p
 			LEFT JOIN threads t ON t.id = p.thread
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
@@ -107,7 +107,7 @@ if ($viewmode == "thread") {
 
 	pageheader("Posts by ".$user['name']);
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id
@@ -123,7 +123,7 @@ if ($viewmode == "thread") {
 
 	pageheader('Latest posts');
 
-	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id

@@ -112,7 +112,6 @@ CREATE TABLE `poststext` (
   `text` text NOT NULL,
   `revision` smallint(5) unsigned NOT NULL DEFAULT 1,
   `date` int(11) unsigned NOT NULL DEFAULT 0,
-  `user` mediumint(9) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`revision`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

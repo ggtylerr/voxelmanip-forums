@@ -43,8 +43,8 @@ if ($action == 'Submit') {
 
 		$sql->query("UPDATE posts SET revision = ? WHERE id = ?", [$newrev, $pid]);
 
-		$sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES (?,?,?,?,?)",
-			[$pid, $message, $newrev, $loguser['id'], time()]);
+		$sql->query("INSERT INTO poststext (id,text,revision,date) VALUES (?,?,?,?)",
+			[$pid, $message, $newrev, time()]);
 
 		redirect("thread.php?pid=$pid#edit");
 	}

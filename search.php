@@ -39,7 +39,7 @@ $ufields = userfields('u','u');
 if ($where == 1) {
 	echo '</table>';
 	$fieldlist = userfields_post();
-	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, pt.user ptuser, t.id tid, t.title ttitle, t.forum tforum
+	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum
 			FROM posts p
 			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
 			LEFT JOIN users u ON p.user = u.id

@@ -202,7 +202,7 @@ HTML;
 		$postlinks = "<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>"; // headlinks for posts
 
 	if (isset($post['revision']) && $post['revision'] >= 2)
-		$revisionstr = " (rev. {$post['revision']} of ".dateformat($post['ptdate'])." by ".userlink_by_id($post['ptuser']).")";
+		$revisionstr = " (rev. {$post['revision']} on ".dateformat($post['ptdate']).")";
 
 	if (isset($post['thread']) && $log) {
 		if (isset($post['thread']) && $post['id'])
