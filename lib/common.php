@@ -28,8 +28,6 @@ if (isset($_COOKIE['token'])) {
 if (!$log) {
 	$loguser = [];
 	$loguser['id'] = $loguser['powerlevel'] = 0;
-	$loguser['dateformat'] = "Y-m-d";
-	$loguser['timeformat'] = "H:i";
 	$loguser['theme'] = $defaulttheme;
 	$loguser['ppp'] = $loguser['tpp'] = 20;
 }
@@ -49,7 +47,7 @@ HTML;
 if (!$log || !$loguser['timezone'])
 	$loguser['timezone'] = $defaulttimezone;
 
-$dateformat = $loguser['dateformat'].' '.$loguser['timeformat'];
+$dateformat = 'Y-m-d H:i';
 
 date_default_timezone_set($loguser['timezone']);
 dobirthdays(); //Called here to account for timezone bugs.

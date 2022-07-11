@@ -71,9 +71,6 @@ if ($act == 'Edit profile') {
 	if ($bday > 0 && $bmonth > 0 && $byear > 0 && $bmonth <= 12 && $bday <= 31 && $byear <= 3000)
 		$birthday = $byear.'-'.str_pad($bmonth, 2, "0", STR_PAD_LEFT).'-'.str_pad($bday, 2, "0", STR_PAD_LEFT);
 
-	$dateformat = $_POST['dateformat'];
-	$timeformat = $_POST['timeformat'];
-
 	if ($canedituser) {
 		$targetgroup = $_POST['powerlevel'];
 
@@ -119,8 +116,6 @@ if ($act == 'Edit profile') {
 			'timezone' => $_POST['timezone'] != $defaulttimezone ? $_POST['timezone'] : null,
 			'ppp' => $_POST['ppp'],
 			'tpp' => $_POST['tpp'],
-			'dateformat' => $dateformat,
-			'timeformat' => $timeformat,
 			'blocklayouts' => isset($_POST['blocklayouts']) ? 1 : 0,
 		];
 
@@ -223,8 +218,6 @@ echo
 .fieldrow('Timezone', fieldselect('timezone', $user['timezone'], $listtimezones))
 .fieldrow('Posts per page', fieldinput(3, 3, 'ppp'))
 .fieldrow('Threads per page', fieldinput(3, 3, 'tpp'))
-.fieldrow('Date format', fieldinput(15, 15, 'dateformat'))
-.fieldrow('Time format', fieldinput(15, 15, 'timeformat'))
 .fieldrow('Post layouts', fieldcheckbox('blocklayouts', $user['blocklayouts'], 'Block all post layouts'))
 .	catheader('&nbsp;'); ?>
 <tr class="n1"><td class="b"></td><td class="b"><input type="submit" name="action" value="Edit profile"></td>

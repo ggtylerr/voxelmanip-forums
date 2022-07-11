@@ -156,8 +156,6 @@ CREATE TABLE `users` (
   `url` varchar(255) NOT NULL DEFAULT '',
   `tempbanned` tinyint(1) NOT NULL DEFAULT 0,
   `powerlevel` tinyint(4) NOT NULL DEFAULT 1,
-  `dateformat` varchar(15) NOT NULL DEFAULT 'Y-m-d',
-  `timeformat` varchar(15) NOT NULL DEFAULT 'H:i',
   `ppp` smallint(3) unsigned NOT NULL DEFAULT 20,
   `tpp` smallint(3) unsigned NOT NULL DEFAULT 20,
   `theme` varchar(32) DEFAULT NULL,

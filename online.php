@@ -31,7 +31,7 @@ for ($i = 1; $user = $users->fetch(); $i++) {
 	<tr class="<?=$tr ?> center">
 		<td class="b"><?=$i ?>.</td>
 		<td class="b left"><?=userlink($user) ?></td>
-		<td class="b"><?=date($loguser['timeformat'], $user['lastview']) ?></td>
+		<td class="b"><span title="<?=date('Y-m-d', $user['lastview'])?>"><?=date('H:i', $user['lastview']) ?></span></td>
 		<td class="b left"><?=($user['url'] ? "<a href=$user[url]>" . str_replace(['%20','_'], ' ', $user['url']) . '</a>' : '-') ?></td>
 		<?=($showips ? '<td class="b"><span class="sensitive">'.$user['ip'].'</span></td>':'') ?>
 	</tr>
