@@ -6,7 +6,7 @@ $smilietext = '';
 $x = 0;
 foreach ($smilies as $smily) {
 	if ($x == 0) $smilietext .= "<tr>";
-	$smilietext .= sprintf('<td class="b n1"><img src="%s"> %s</td>', $smily['url'], esc($smily['text']));
+	$smilietext .= sprintf('<td class="b n1"><img class="smiley" src="%s"> %s</td>', $smily['url'], esc($smily['text']));
 	$x++;
 	$x %= ceil(sqrt(sizeof($smilies)));
 	if ($x == 0) $smilietext .= "</tr>";

@@ -84,7 +84,7 @@ function postfilter($msg) {
 	$msg = str_replace("\n", '<br>', $msg);
 
 	foreach ($smilies as $smiley)
-		$msg = str_replace($smiley['text'], sprintf('<img src="%s" align=absmiddle alt="%s" title="%s">', $smiley['url'], $smiley['text'], $smiley['text']), $msg);
+		$msg = str_replace($smiley['text'], sprintf('<img class="smiley" src="%s" align=absmiddle alt="%s" title="%s">', $smiley['url'], $smiley['text'], $smiley['text']), $msg);
 
 	//Relocated here due to conflicts with specific smilies.
 	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);

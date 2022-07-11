@@ -99,7 +99,7 @@ function pageheader($pagetitle = '', int $fid = null) {
 
 	if ($pagetitle) $pagetitle .= " - ";
 
-	$boardlogo = '<a href="./"><img src="'.$boardlogo.'" style="max-width:100%"></a>';
+	$boardlogo = '<a href="./"><img class="boardlogo" src="'.$boardlogo.'" style="max-width:100%"></a>';
 
 	$attn = $sql->result("SELECT attention FROM misc");
 	if ($attn)

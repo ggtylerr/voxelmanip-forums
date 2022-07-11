@@ -57,6 +57,11 @@ a:active, a:hover	{ color: #FFFFFF }
 	white-space: pre;
 }
 
+.boardlogo, .smiley {
+	-ms-interpolation-mode: nearest-neighbor;
+	image-rendering: pixelated;
+}
+
 ul.menulisting {
 	display: inline;
 	list-style-type: none;
