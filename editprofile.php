@@ -35,7 +35,7 @@ if ($act == 'Edit profile') {
 		$ftypes = ['png','jpeg','jpg','gif'];
 		$res = getimagesize($fname['tmp_name']);
 
-		if (!in_array(str_replace('image/','',$img_data['mime']),$ftypes))
+		if (!in_array(str_replace('image/','',$res['mime']),$ftypes))
 			$error .= "- Invalid file type.<br>";
 		elseif ($res[0] > 180 || $res[1] > 180)
 			$error .= "- The image is too big.<br>";
