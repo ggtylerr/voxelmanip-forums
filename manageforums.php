@@ -110,13 +110,12 @@ if (isset($_GET['cid']) && $cid = $_GET['cid']) {
 			'minread' => -1, 'minthread' => 1, 'minreply' => 1];
 	} else {
 		$fid = (int)$fid;
-		$forum = $sql->fetch("SELECT * FROM forums WHERE id=?",[$fid]);
+		$forum = $sql->fetch("SELECT * FROM forums WHERE id = ?", [$fid]);
 	}
 	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
-	$cats = [];
+	$cats = [0 => 'None (Hidden)'];
 	while ($cat = $qcats->fetch())
 		$cats[$cat['id']] = $cat['title'];
-	$catlist = fieldselect('cat', $forum['cat'], $cats);
 
 	?><form action="" method="POST">
 		<table class="c1">
@@ -129,7 +128,7 @@ if (isset($_GET['cid']) && $cid = $_GET['cid']) {
 				<td class="b n2"><textarea wrap="virtual" name="descr" rows="3" cols="50"><?=esc($forum['descr']) ?></textarea></td>
 			</tr><tr>
 				<td class="b n1 center">Category:</td>
-				<td class="b n2"><?=$catlist ?></td>
+				<td class="b n2"><?=fieldselect('cat', $forum['cat'], $cats) ?></td>
 			</tr><tr>
 				<td class="b n1 center">Display order:</td>
 				<td class="b n2"><input type="text" name="ord" value="<?=$forum['ord'] ?>" size="4" maxlength="10"></td>
@@ -162,24 +161,25 @@ if (isset($_GET['cid']) && $cid = $_GET['cid']) {
 	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
 	$cats = [];
 	while ($cat = $qcats->fetch())
-		$cats[$cat['id']] = $cat;
+		$cats[$cat['id']] = $cat['title'];
 
-	$qforums = $sql->query("SELECT f.id,f.title,f.cat FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord, c.id, f.ord, f.id");
+	$qforums = $sql->query("SELECT f.id,f.title,f.cat FROM forums f LEFT JOIN categories c ON c.id = f.cat ORDER BY c.ord, c.id, f.ord, f.id");
 	$forums = [];
 	while ($forum = $qforums->fetch())
 		$forums[$forum['id']] = $forum;
 
 	$catlist = ''; $c = 1;
-	foreach ($cats as $cat) {
-		$catlist .= sprintf('<tr><td class="b n%s"><a href="manageforums.php?cid=%s">%s</a></td></tr>', $c, $cat['id'], $cat['title']);
+	foreach ($cats as $cid => $cat) {
+		$catlist .= sprintf('<tr><td class="b n%s"><a href="manageforums.php?cid=%s">%s</a></td></tr>', $c, $cid, $cat);
 		$c = ($c == 1) ? 2 : 1;
 	}
 
+	$cats[0] = 'None (Hidden)';
 	$forumlist = ''; $c = 1; $lc = -1;
 	foreach ($forums as $forum) {
 		if ($forum['cat'] != $lc) {
 			$lc = $forum['cat'];
-			$forumlist .= sprintf('<tr class="c"><td class="b c">%s</td></tr>', $cats[$forum['cat']]['title']);
+			$forumlist .= sprintf('<tr class="c"><td class="b c">%s</td></tr>', $cats[$forum['cat']]);
 		}
 		$forumlist .= sprintf('<tr><td class="b n%s"><a href="manageforums.php?fid=%s">%s</a></td></tr>', $c, $forum['id'], $forum['title']);
 		$c = ($c == 1) ? 2 : 1;

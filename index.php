@@ -1,8 +1,4 @@
 <?php
-if (isset($_GET['p'])) redirect("thread.php?pid={$_GET['p']}#{$_GET['p']}");
-if (isset($_GET['t'])) redirect("thread.php?id={$_GET['t']}");
-if (isset($_GET['u'])) redirect("profile.php?id={$_GET['u']}");
-
 require('lib/common.php');
 
 $action = $_GET['action'] ?? null;
@@ -26,17 +22,16 @@ if ($log && $action == 'markread') {
 
 pageheader();
 
-$categs = $sql->query("SELECT * FROM categories ORDER BY ord,id");
-while ($c = $categs->fetch()) {
-	$categ[$c['id']] = $c;
-}
+$categs = $sql->query("SELECT id,title FROM categories ORDER BY ord,id");
+while ($c = $categs->fetch())
+	$categ[$c['id']] = $c['title'];
 
 $forums = $sql->query("SELECT f.*, ".($log ? "r.time rtime, " : '').userfields('u', 'u')." "
 		. "FROM forums f "
 		. "LEFT JOIN users u ON u.id=f.lastuser "
 		. "LEFT JOIN categories c ON c.id=f.cat "
 		. ($log ? "LEFT JOIN forumsread r ON r.fid = f.id AND r.uid = ".$loguser['id'] : '')
-		. " WHERE ? >= f.minread "
+		. " WHERE ? >= f.minread AND f.cat != 0 "
 		. " ORDER BY c.ord,c.id,f.ord,f.id ",
 		[$loguser['powerlevel']]);
 $cat = -1;
@@ -55,7 +50,7 @@ while ($forum = $forums->fetch()) {
 		?><table class="c1">
 		<tr class="h">
 			<td class="b h" width="32">&nbsp;</td>
-			<td class="b h"><?=$categ[$cat]['title'] ?></td>
+			<td class="b h"><?=$categ[$cat] ?></td>
 			<td class="b h nom" width="50">Threads</td>
 			<td class="b h nom" width="50">Posts</td>
 			<td class="b h" width="150">Last post</td>
