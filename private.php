@@ -77,8 +77,8 @@ RenderPageBar($topbot);
 ?><br>
 <table class="c1">
 	<tr class="h">
-		<td class="b" width="17">&nbsp;</td>
-		<td class="b" width="17">&nbsp;</td>
+		<td class="b" width="17"></td>
+		<td class="b" width="24">&nbsp;</td>
 		<td class="b">Title</td>
 		<td class="b" width="130"><?=ucfirst($fieldn) ?></td>
 		<td class="b" width="130">Sent on</td>
@@ -89,9 +89,9 @@ RenderPageBar($topbot);
 		if (!$pmsg['title'])
 			$pmsg['title'] = '(untitled)';
 
-		$tr = ($i % 2 ? 'n2' : 'n3');
+		$tr = ($i % 2 ? 2 : 3);
 		?>
-		<tr class="<?=$tr ?> center">
+		<tr class="n<?=$tr ?> center">
 			<td class="b n2">
 				<a href="private.php?action=del&id=<?=$pmsg['id'] ?>&view=<?=$view ?>"><img src="img/smilies/no.png" align="absmiddle"></a>
 			</td>

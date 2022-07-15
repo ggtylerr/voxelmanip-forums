@@ -158,15 +158,15 @@ for ($i = 1; $thread = $threads->fetch(); $i++) {
 	$status = rendernewstatus($status);
 
 	if ($thread['sticky'] && !$showforum)
-		$tr = 'n1';
+		$tr = 1;
 	else
-		$tr = ($i % 2 ? 'n2' : 'n3');
+		$tr = ($i % 2 ? 2 : 3);
 
 	if (!$thread['sticky'] && $lsticky && !$showforum)
 		echo '<tr class="c"><td class="b" colspan="7" style="font-size:1px">&nbsp;</td>';
 	$lsticky = $thread['sticky'];
 
-	?><tr class="<?=$tr ?> center">
+	?><tr class="n<?=$tr ?> center">
 		<td class="b n1"><?=$status ?></td>
 		<?=($showforum ? sprintf('<td class="b"><a href="forum.php?id=%s">%s</a></td>', $thread['fid'], $thread['ftitle']) : '')?>
 		<td class="b left" style="word-break:break-word"><a href="thread.php?id=<?=$thread['id'] ?>"><?=esc($thread['title']) ?></a><?=$pagelist ?></td>

@@ -53,9 +53,8 @@ $post['text'] = <<<HTML
 [url=]Test Link. Ooh![/url]
 HTML;
 
-foreach ($user as $field => $val) {
+foreach ($user as $field => $val)
 	$post['u'.$field] = $val;
-}
 
 $links = [
 	['href' => "forum.php?user=$uid", 'title' => 'View threads'],
@@ -92,37 +91,35 @@ if ($loguser['powerlevel'] > 1) {
 }
 
 //timezone calculations
-$now = new DateTime("now");
 $usertz = new DateTimeZone($user['timezone'] ?: $defaulttimezone);
-$userdate = new DateTime("now", $usertz);
-$userct = date_format($userdate, $dateformat);
+$userct = date_format(new DateTime("now", $usertz), $dateformat);
 $logtz = new DateTimeZone($loguser['timezone']);
-$usertzoff = $usertz->getOffset($now);
-$logtzoff = $logtz->getOffset($now);
+$usertzoff = $usertz->getOffset(new DateTime("now"));
+$logtzoff = $logtz->getOffset(new DateTime("now"));
 
 $profilefields = [
 	"General information" => [
-		['title' => 'Group', 'value' => powIdToName($user['powerlevel'])],
-		['title' => 'Total posts', 'value' => sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days)],
-		['title' => 'Total threads', 'value' => sprintf('%s (%1.02f per day)' ,$user['threads'], $user['threads'] / $days)],
-		['title' => 'Registered on', 'value' => dateformat($user['regdate']).' ('.timeunits($days * 86400).' ago)'],
-		['title' => 'Last post', 'value'=>($user['lastpost'] ? dateformat($user['lastpost'])." (".timeunits(time()-$user['lastpost'])." ago)" : "None").$lastpostlink],
-		['title' => 'Last view', 'value' => sprintf(
+		'Group'		=> powIdToName($user['powerlevel']),
+		'Total posts'	=> sprintf('%s (%1.02f per day)', $user['posts'], $user['posts'] / $days),
+		'Total threads'=> sprintf('%s (%1.02f per day)' ,$user['threads'], $user['threads'] / $days),
+		'Registered on'=> dateformat($user['regdate']).' ('.timeunits($days * 86400).' ago)',
+		'Last post'	=>($user['lastpost'] ? dateformat($user['lastpost'])." (".timeunits(time()-$user['lastpost'])." ago)" : "None").$lastpostlink,
+		'Last view'	=> sprintf(
 				'%s (%s ago) %s %s',
 			dateformat($user['lastview']), timeunits(time() - $user['lastview']),
 			($user['url'] ? sprintf('<br>at <a href="%s">%s</a>', esc($user['url']), esc($user['url'])) : ''),
-			($loguser['powerlevel'] > 2 ? '<br>from IP: <span class="sensitive">'.$user['ip'].'</span>' : ''))]
+			($loguser['powerlevel'] > 2 ? '<br>from IP: <span class="sensitive">'.$user['ip'].'</span>' : ''))
 	],
 	"User information" => [
-		['title' => 'Bio', 'value' => ($user['bio'] ? postfilter($user['bio']) : '')],
-		['title' => 'Location', 'value' => ($user['location'] ? esc($user['location']) : '')],
-		['title' => 'Email', 'value' => $email],
-		['title' => 'Birthday', 'value' => $birthday],
+		'Bio'		=> ($user['bio'] ? postfilter($user['bio']) : ''),
+		'Location'	=> ($user['location'] ? esc($user['location']) : ''),
+		'Email'	=> $email,
+		'Birthday'	=> $birthday,
 	],
 	"User settings" => [
-		['title' => 'Theme', 'value' => esc($themename)],
-		['title' => 'Time offset', 'value' => sprintf("%d:%02d from you (Current time: %s)", ($usertzoff - $logtzoff) / 3600, abs(($usertzoff - $logtzoff) / 60) % 60, $userct)],
-		['title' => 'Items per page', 'value' => $user['ppp']." posts, ".$user['tpp']." threads"]
+		'Theme' => esc($themename),
+		'Time offset' => sprintf("%d:%02d from you (Current time: %s)", ($usertzoff - $logtzoff) / 3600, abs(($usertzoff - $logtzoff) / 60) % 60, $userct),
+		'Items per page' => sprintf('%d posts, %d threads', $user['ppp'], $user['tpp'])
 	]
 ];
 
@@ -135,8 +132,8 @@ RenderPageBar($topbot);
 
 foreach ($profilefields as $k => $v) {
 	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">'.$k.'</td></tr>';
-	foreach ($v as $pf) {
-		echo '<tr><td class="b n1" width="130"><b>'.$pf['title'].'</b></td><td class="b n2">'.$pf['value'].'</td>';
+	foreach ($v as $title => $value) {
+		echo '<tr><td class="b n1" width="130"><b>'.$title.'</b></td><td class="b n2">'.$value.'</td>';
 	}
 	echo '</table>';
 }

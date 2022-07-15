@@ -26,9 +26,9 @@ $users = $sql->query("SELECT * FROM users WHERE lastview > ?", [(time()-$time)])
 <?php
 
 for ($i = 1; $user = $users->fetch(); $i++) {
-	$tr = ($i % 2 ? 'n1' : 'n2');
+	$tr = ($i % 2 ? 1 : 2);
 	?>
-	<tr class="<?=$tr ?> center">
+	<tr class="n<?=$tr ?> center">
 		<td class="b"><?=$i ?>.</td>
 		<td class="b left"><?=userlink($user) ?></td>
 		<td class="b"><span title="<?=date('Y-m-d', $user['lastview'])?>"><?=date('H:i', $user['lastview']) ?></span></td>

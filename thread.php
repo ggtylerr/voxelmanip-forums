@@ -176,19 +176,13 @@ if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['us
 	$link = "<a href=javascript:submitmod";
 	if ($loguser['powerlevel'] > 2) {
 		$stick = '<li>'.$link.($thread['sticky'] ? "('unstick')>Unstick" : "('stick')>Stick").'</a></li>';
-		$stick2 = addcslashes($stick, "'");
-
 		$close = '<li>'.$link.($thread['closed'] ? "('open')>Open" : "('close')>Close").'</a></li>';
-		$close2 = addcslashes($close, "'");
-
 		$trash = ($thread['forum'] != $trashid ? '<li><a href=javascript:submitmod(\'trash\') onclick="trashConfirm(event)">Trash</a></li>' : '');
-		$trash2 = addcslashes($trash, "'");
 
 		$edit = '<li><a href="javascript:showrbox()">Rename</a></li><li><a href="javascript:showmove()">Move</a></li>';
 
 		$fmovelinks = addslashes(forumlist($thread['forum']))
-		.	'<input type="submit" id="move" value="Submit" name="movethread" onclick="submitmove(movetid())">'
-		.	'<input type="button" value="Cancel" onclick="hidethreadedit(); return false;">';
+		.	'<input type="submit" id="move" value="Submit" name="movethread" onclick="submitmove(movetid())">';
 	} else {
 		$fmovelinks = $stick = $stick2 = $close = $close2 = $trash = $trash2 = '';
 		$edit = '<a href=javascript:showrbox()>Rename</a>';
@@ -196,7 +190,6 @@ if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['us
 
 	$renamefield = '<input type="text" name="title" id="title" size=60 maxlength=255 value="'.esc($thread['title']).'">';
 	$renamefield.= '<input type="submit" name="submit" value="Rename" onclick="submitmod(\'rename\')">';
-	$renamefield.= '<input type="button" value="Cancel" onclick="hidethreadedit(); return false">';
 	$renamefield = addcslashes($renamefield, "'"); //because of javascript, single quotes will gum up the works
 
 	$threadtitle = addcslashes(htmlentities($thread['title'], ENT_COMPAT | ENT_HTML401, 'UTF-8'), "'");
@@ -206,26 +199,13 @@ if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['us
 <table class="c1"><tr class="n2">
 	<td class="b n2">
 		<span id="moptions">Thread options: <ul class="menulisting" style="margin-left:10px">$stick$close$trash$edit</ul></span>
-		<span id="mappend"></span>
 		<script>
-mappend = document.getElementById('mappend');
 moptions = document.getElementById('moptions');
-function showrbox() {
-	moptions.innerHTML='Rename thread: ';
-	mappend.innerHTML='$renamefield';
-	mappend.style.display = '';
-}
-function showmove() {
-	moptions.innerHTML='Move to: ';
-	mappend.innerHTML='$fmovelinks';
-	mappend.style.display = '';
-}
-function hidethreadedit() {
-	moptions.innerHTML = 'Thread options: <ul class="menulisting">$stick2$close2$trash2$edit</ul>';
-	mappend.innerHTML = '';
-}		</script>
-		<input type=hidden id="arg" name="arg" value="">
-		<input type=hidden id="action" name="action" value="">
+function showrbox() { moptions.innerHTML = 'Rename thread: $renamefield'; }
+function showmove() { moptions.innerHTML = 'Move to: $fmovelinks'; }
+		</script>
+		<input type="hidden" id="arg" name="arg" value="">
+		<input type="hidden" id="action" name="action" value="">
 	</td>
 </table>
 </form>

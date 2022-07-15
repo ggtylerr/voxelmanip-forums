@@ -16,19 +16,12 @@ function movetid() {
 }
 
 function trashConfirm(e) {
-	if (confirm('Are you sure you want to trash this thread?'));
-	else {
-		e.preventDefault();
-	}
+	if (!confirm('Are you sure you want to trash this thread?')) e.preventDefault();
 }
 
 function submitmod(act) {
 	document.getElementById('action').value = act;
 	document.getElementById('mod').submit();
-}
-function submitrename(name) {
-	document.mod.arg.value=name;
-	submitmod('rename')
 }
 function submitmove(fid) {
 	document.mod.arg.value = fid;

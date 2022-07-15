@@ -80,9 +80,9 @@ if ($where == 1) {
 	</tr><?php
 
 	for ($i = 1; $thread = $threads->fetch(); $i++) {
-		$tr = ($i % 2 ? 'n2' :'n3');
+		$tr = ($i % 2 ? 2 : 3);
 
-		?><tr class="<?=$tr ?> center">
+		?><tr class="n<?=$tr ?> center">
 			<td class="b left" style="word-break:break-word">
 				<a href="thread.php?id=<?=$thread['id'] ?>"><?=esc($thread['title']) ?></a> <?=($thread['sticky'] ? ' (Sticky)' : '')?>
 			</td>

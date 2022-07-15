@@ -16,7 +16,7 @@ pageheader("Edit news");
 		<tr class="h"><td class="b h">Edit news box</td></tr>
 		<tr class="n1">
 			<td class="b center">
-				<textarea name="attn" rows="8" cols="120"><?=$attndata ?></textarea>
+				<textarea name="attn" rows="8" cols="80"><?=$attndata ?></textarea>
 				<br><input type="submit" name="action" value="Submit">
 			</td>
 		</tr>
