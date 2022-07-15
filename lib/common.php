@@ -90,7 +90,7 @@ if ($r) {
 }
 
 function pageheader($pagetitle = '', int $fid = null) {
-	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc, $rankset_names;
+	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc;
 
 	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
@@ -115,6 +115,36 @@ function pageheader($pagetitle = '', int $fid = null) {
 </tr></table>
 HTML;
 
+	$links = [
+		'./' => 'Main',
+		'faq.php' => 'FAQ',
+		'memberlist.php' => 'Memberlist',
+		'activeusers.php' => 'Active users',
+		'thread.php?time=86400' => 'Latest posts',
+		'online.php' => 'Online users',
+		'search.php' => 'Search'];
+
+	if ($log) {
+		if ($loguser['powerlevel'] > 0)
+			$userlinks['editprofile.php'] = 'Edit profile';
+		if ($loguser['powerlevel'] > 2)
+			$userlinks['management.php'] = 'Admin';
+	}
+
+	if (!$log) {
+		$userlinks['register.php'] = 'Register';
+		$userlinks['login.php'] = 'Login';
+	} else
+		$userlinks['javascript:document.logout.submit()'] = 'Logout';
+
+	if ($log) {
+		$unreadpms = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE userto = ? AND unread = 1 AND del_to = 0", [$loguser['id']]);
+
+		$userlink = sprintf(
+			'<span class="menulink">%s <a href="private.php"><img src="img/pm%s.png" width="20" alt="PMs" align="abscenter"></a>%s</span>',
+		userlink($loguser), (!$unreadpms ? '-off' : ''), ($unreadpms ? " ($unreadpms)" : ''));
+	}
+
 	?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -129,49 +159,19 @@ HTML;
 	</head>
 	<body>
 		<table class="c1">
-			<tr class="nt n2 center"><td class="b n1 center" colspan="3"><?=$boardlogo?></td></tr>
+			<tr class="nt n2 center"><td class="b n1 center" colspan="2"><?=$boardlogo?></td></tr>
 			<tr class="n2">
 				<td class="nb headermenu">
-					<a href="./">Main</a>
-					<a href="faq.php">FAQ</a>
-					<a href="memberlist.php">Memberlist</a>
-					<a href="activeusers.php">Active users</a>
-					<a href="thread.php?time=86400">Latest posts</a>
-					<?php if (count($rankset_names) > 1) { ?><a href="ranks.php">Ranks</a><?php } ?>
-					<a href="online.php">Online users</a>
-					<a href="search.php">Search</a>
+					<?php foreach ($links as $url => $title) echo "<a class=\"menulink\" href=\"$url\">$title</a>"; ?>
 				</td>
-				<td class="nb headermenu_right"><?php
-	if ($log) {
-		$unreadpms = $sql->result("SELECT COUNT(*) FROM pmsgs WHERE userto = ? AND unread = 1 AND del_to = 0", [$loguser['id']]);
-
-		printf(
-			'<span class="menulink">'.userlink($loguser).' <a href="private.php"><img src="img/pm%s.png" width="20" alt="Private messages"></a> %s</span>  ',
-		(!$unreadpms ? '-off' : ''), ($unreadpms ? "($unreadpms new)" : ''));
-	}
-
-	$userlinks = [];
-
-	if ($log) {
-		if ($loguser['powerlevel'] > 0)
-			$userlinks[] = ['url' => "editprofile.php", 'title' => 'Edit profile'];
-		if ($loguser['powerlevel'] > 2)
-			$userlinks[] = ['url' => 'management.php', 'title' => 'Admin'];
-	}
-
-	if (!$log) {
-		$userlinks[] = ['url' => "register.php", 'title' => 'Register'];
-		$userlinks[] = ['url' => "login.php", 'title' => 'Login'];
-	} else
-		$userlinks[] = ['url' => "javascript:document.logout.submit()", 'title' => 'Logout'];
-
-	foreach ($userlinks as $v)
-		echo "<a class=\"menulink\" href=\"{$v['url']}\">{$v['title']}</a> ";
-
-	?></td></table>
-	<form action="login.php" method="post" name="logout">
-		<input type="hidden" name="action" value="logout">
-	</form><br><?php
+				<td class="nb headermenu_right">
+					<?php echo $userlink??''; foreach ($userlinks as $url => $title) echo "<a class=\"menulink\" href=\"$url\">$title</a>"; ?>
+				</td>
+			</tr>
+		</table>
+		<form action="login.php" method="post" name="logout">
+			<input type="hidden" name="action" value="logout">
+		</form><br><?php
 
 	if ($fid || !$pagetitle) {
 		$andlastforum = ($fid != 0 ? " AND lastforum =".$fid : '');
@@ -259,6 +259,9 @@ function error($msg) {
 function pagefooter() {
 	global $start;
 	$time = microtime(true) - $start;
+
+	$commit = file_get_contents('.git/refs/heads/master');
+	$commitmsg = ($commit !== false ? '(commit '.substr($commit, 0, 7).')' : '(unknown commit)');
 	?><br>
 	<table class="c1">
 		<tr><td class="b n2 sfont footer">
@@ -269,17 +272,8 @@ function pagefooter() {
 			<img src="img/poweredbyvoxelmanip.png" class="poweredby"
 				title="like a warm hug from someone you love">
 
-			Voxelmanip Forums (commit <?=gitCommit(true)?>)<br>
+			Voxelmanip Forums <?=$commitmsg?><br>
 			&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
 		</td></tr>
 	</table><?php
-}
-
-function gitCommit($trim = true) {
-	$commit = file_get_contents('.git/refs/heads/master');
-
-	if ($trim)
-		return substr($commit, 0, 7);
-	else
-		return rtrim($commit);
 }
