@@ -101,7 +101,7 @@ table.postformatting {
 }
 .topbar_2 {
 	border-left: 0 !important;
-	padding: 7px 10px;
+	padding: 7px 10px !important;
 }
 
 .sidebar {
