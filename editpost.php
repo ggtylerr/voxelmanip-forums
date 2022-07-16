@@ -77,10 +77,11 @@ if ($action == 'Preview') {
 	$post['text'] = $message;
 	foreach ($euser as $field => $val)
 		$post['u'.$field] = $val;
+	$post['headerbar'] = 'Post preview';
 
 	$topbot['title'] .= ' (Preview)';
 	RenderPageBar($topbot);
-	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">Post preview</table>'.threadpost($post);
+	echo '<br>'.threadpost($post);
 } else {
 	RenderPageBar($topbot);
 }

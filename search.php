@@ -37,7 +37,6 @@ echo '<br><table class="c1"><tr class="h"><td class="b h" style="border-bottom:0
 
 $ufields = userfields('u','u');
 if ($where == 1) {
-	echo '</table>';
 	$fieldlist = userfields_post();
 	$posts = $sql->query("SELECT $ufields, $fieldlist p.*, pt.text, pt.date ptdate, pt.revision cur_revision, t.id tid, t.title ttitle, t.forum tforum
 			FROM posts p
@@ -50,12 +49,14 @@ if ($where == 1) {
 		[$query, $loguser['powerlevel']]);
 
 	for ($i = 1; $post = $posts->fetch(); $i++) {
+		if ($i == 1) echo '</table>';
 		$pthread['id'] = $post['tid'];
 		$pthread['title'] = $post['ttitle'];
 		echo '<br>' . threadpost($post,$pthread);
 	}
 
-	if_empty_query($i, 'No posts found.', 1, true);
+	if_empty_query($i, 'No posts found.', 1, false);
+	if ($i == 1) echo '</table>';
 } else {
 	$page = $_GET['page'] ?? 1;
 	if ($page < 1) $page = 1;

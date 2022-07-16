@@ -191,7 +191,11 @@ HTML;
 	if ($isBlocked)
 		$post['usign'] = $post['uhead'] = '';
 
-	$threadlink = $postlinks = $revisionstr = '';
+	$headerbar = $threadlink = $postlinks = $revisionstr = '';
+
+	if (isset($post['headerbar'])) {
+		$headerbar = sprintf('<tr class="h"><td class="b h" colspan="2">%s</td></tr>', $post['headerbar']);
+	}
 
 	$post['id'] = $post['id'] ?? null;
 
@@ -251,6 +255,7 @@ HTML;
 
 	return <<<HTML
 <table class="c1" id="{$post['id']}">
+	$headerbar
 	<tr>
 		<td class="b n1 topbar_1 topbar{$uid}_1 nom">$ulink</td>
 		<td class="b n1 topbar_1 topbar{$uid}_2 blkm nod clearfix">

@@ -38,20 +38,9 @@ if ($user['birth']) {
 
 $email = ($user['email'] && $user['showemail'] ? str_replace(".", "<b> (dot) </b>", str_replace("@", "<b> (at) </b>", esc($user['email']))) : '');
 
-$post['date'] = time();
-
-$post['text'] = <<<HTML
-[b]This[/b] is a [i]sample message.[/i] It shows how [u]your posts[/u] will look on the board.
-[quote=Anonymous][spoiler]Hello![/spoiler][/quote]
-[code]if (true) {\r
-	print "The world isn't broken.";\r
-} else {\r
-	print "Something is very wrong.";\r
-}[/code]
-[irc]This is like code tags but without formatting.
-<Anonymous> I said something![/irc]
-[url=]Test Link. Ooh![/url]
-HTML;
+$post = [
+	'date' => time(), 'text' => $samplepost,
+	'headerbar' => 'Sample post'];
 
 foreach ($user as $field => $val)
 	$post['u'.$field] = $val;
@@ -129,15 +118,16 @@ $topbot = [
 ];
 
 RenderPageBar($topbot);
+echo '<br>';
 
 foreach ($profilefields as $k => $v) {
-	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">'.$k.'</td></tr>';
+	echo '<table class="c1"><tr class="h"><td class="b h" colspan="2">'.$k.'</td></tr>';
 	foreach ($v as $title => $value) {
 		echo '<tr><td class="b n1" width="130"><b>'.$title.'</b></td><td class="b n2">'.$value.'</td>';
 	}
-	echo '</table>';
+	echo '</table><br>';
 }
 
-echo '<br><table class="c1"><tr class="h"><td class="b h">Sample post</td><tr></table>'.threadpost($post).'<br>';
+echo threadpost($post).'<br>';
 RenderPageBar($topbot);
 pagefooter();

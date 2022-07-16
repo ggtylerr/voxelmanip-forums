@@ -59,11 +59,12 @@ if ($action == 'Preview') {
 	$post['text'] = $message;
 	foreach ($loguser as $field => $val)
 		$post['u'.$field] = $val;
+	$post['headerbar'] = 'Message preview';
 
 	$topbot['title'] .= ' (Preview)';
 	RenderPageBar($topbot);
 
-	echo '<br><table class="c1"><tr class="h"><td class="b h" colspan="2">Post preview</table>'.threadpost($post);
+	echo '<br>'.threadpost($post);
 } else {
 	RenderPageBar($topbot);
 }
@@ -75,7 +76,7 @@ if ($action == 'Preview') {
 			<td class="b n1 center" width="120">Send to:</td>
 			<td class="b n2"><input type="text" name="userto" size="25" maxlength=25 value="<?=esc($userto) ?>"></td>
 		</tr><tr>
-			<td class="b n1 center">Title:</td>
+			<td class="b n1 center">Subject:</td>
 			<td class="b n2"><input type="text" name="title" size="80" maxlength="255" value="<?=esc($title) ?>"></td>
 		</tr><tr>
 			<td class="b n1 center" width="120">Format:</td>

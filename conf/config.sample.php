@@ -28,6 +28,20 @@ $lockdown = false; // Put board in lockdown mode.
 // List of bots
 $botlist = ['ia_archiver','baidu','yahoo','bot','spider'];
 
+// Sample post that is shown on profile pages.
+$samplepost = <<<HTML
+[b]This[/b] is a [i]sample message.[/i] It shows how [u]your posts[/u] will look on the board.
+[quote=Anonymous][spoiler]Hello![/spoiler][/quote]
+[code]if (true) {\r
+	print "The world isn't broken.";\r
+} else {\r
+	print "Something is very wrong.";\r
+}[/code]
+[irc]This is like code tags but without formatting.
+<Anonymous> I said something![/irc]
+[url=]Test Link. Ooh![/url]
+HTML;
+
 // List of smilies
 $smilies = [
 	['text' => '-_-', 'url' => 'img/smilies/annoyed.png'],
