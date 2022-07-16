@@ -119,8 +119,8 @@ table.postformatting {
 
 /* FAQ styling */
 .faq p {
-	margin-bottom: 0.7em;
-	margin-top: 0.7em;
+	margin-bottom: 1em;
+	margin-top: 1em;
 }
 .faq > tbody > tr > .n1 {
 	padding: 5px 15px;
@@ -135,6 +135,9 @@ table.postformatting {
 	font-weight: bold;
 	text-decoration: underline;
 	margin-bottom: 0em;
+}
+.faq .smileytbl {
+	border-collapse: collapse;
 }
 .faq .smileytbl td {
 	padding: 5px;
@@ -192,7 +195,7 @@ table.postformatting {
 }
 
 .clearfix:after {
-    content:"";
-    display:table;
-    clear:both;
+	content:"";
+	display:table;
+	clear:both;
 }

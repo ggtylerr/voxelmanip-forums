@@ -5,11 +5,10 @@ require('lib/common.php');
 $smilietext = '';
 $x = 0;
 foreach ($smilies as $smily) {
-	if ($x == 0) $smilietext .= "<tr>";
+	if ($x % 6 == 0) $smilietext .= "<tr>";
 	$smilietext .= sprintf('<td class="b n1"><img class="smiley" src="%s"> %s</td>', $smily['url'], esc($smily['text']));
 	$x++;
-	$x %= ceil(sqrt(sizeof($smilies)));
-	if ($x == 0) $smilietext .= "</tr>";
+	if ($x % 6 == 0) $smilietext .= "</tr>";
 }
 
 // Rank colours
@@ -19,14 +18,17 @@ foreach ($powerlevels as $id => $title)
 
 $faq = [[
 	'id' => 'disclaimer',
-	'title' => 'General Disclaimer',
+	'title' => 'General Disclaimer / Privacy Policy',
 	'content' => <<<HTML
-<p>The site does not own and cannot be held responsible for statements made by members on the forum. This site is offered as-is to the user. Any statements made on the board may be altered or removed at the discretion of the staff. Furthermore, all users are expected to have read, understood, and agreed to The Rules before posting.
-</p>
+<p>The site does not own and cannot be held responsible for statements made by other members on the forum. This site is offered as-is to the user. Any statements made on the board may be altered or removed at the discretion of the staff. Furthermore, all users are expected to have read, understood, and agreed to the General Posting Guidelines before posting.</p>
 
-<p><strong>We do <em>not</em> sell, distribute or otherwise disclose member information like IP addresses or e-mail addresses to any third party.</strong> If you have questions about any information contained in this FAQ, please send a private message with your question to an administrator <em>before</em> posting.</p>
+<p>Your password is stored as an one-way hash in the database and cannot be read back by any staff members, please keep track of it in a safe space such as a password manager. Your current IP address will be recorded for each post you make and your latest IP address is stored, but will be kept strictly private unless severe abuse occurs. Any additional, optional information inputted to your account (e.g. bio, location, birthday) are publicly available on your profile both to members and guests but will not be indexed or searchable by search engines.</p>
 
-<p>We only use a token cookie to keep you logged in, no cookies is placed on your device when not logged in. We do not use tracking cookies, you can verify this by looking at the cookie storage for this site in your respective web browser.</p>
+<p>By making posts and threads you agree that their contents will be publicly available and searchable on the internet. Exception being "private" forums, denoted by the forum name being in brackets, in which it is available to any member on the forum but not accessible and searchable by outsiders without an account. Private messages may be reviewed by administrators at their discretion or if alerted (but will be kept private to the parties involved) and should not be used to send sensitive information.</p>
+
+<p><strong>We do <em>not</em> sell or otherwise harvest and distribute member information.</strong> If you have any further questions, please send a private message with your question to an administrator <em>before</em> posting.</p>
+
+<p><strong>Cookies:</strong> We only use a token cookie to keep you logged in, no cookies is placed on your device when not logged in. We do not use any additional cookies, tracking or otherwise. You can verify this by looking at the cookie storage for this site in your respective web browser.</p>
 HTML
 ], [
 	'id' => 'gpg',
@@ -54,6 +56,9 @@ HTML
 
 	<li><b>Please proofread your posts and use proper grammar and punctuation.</b><br>
 		To a certain extent of course, you are not required to write like you are writing a formal academic paper and have full perfect grammars or speeling, but please read through whatever you are writing so that it looks sane and reasonably readable.</li>
+
+	<li><b>Follow the post layout rules.</b><br>
+		They can be found further down this FAQ. Please read them to avoid having your post layout removed or even your post layout privileges revoked.</li>
 
 	<li><b>In general, use common sense...</b><br>
 		Really goes a long way.</li>
@@ -122,6 +127,9 @@ HTML
 		<td class="b n1">[code]<i>code text</i>[/code]</td>
 		<td class="b n2">Displays code in a formatted box.</td>
 	</tr><tr>
+		<td class="b n1">[pre]<i>text</i>[/pre]</td>
+		<td class="b n2">Inline preformatted text, displayed in monospace.</td>
+	</tr><tr>
 		<td class="b n1">[img]<i>URL of image to display</i>[/img]</td>
 		<td class="b n2">Displays an image.</td>
 	</tr><tr>
@@ -135,7 +143,7 @@ HTML
 		<td class="b n2">Simple link reference to a particular post for replying to it.</td>
 	</tr>
 </table>
-<p>Also, most HTML tags are able to be used in your posts, but with great power comes great responsibility.</p>
+<p>Most HTML tags are also able to be used in your posts. But with great power comes great responsibility.</p>
 HTML
 ], [
 	'id' => 'reg',
@@ -151,12 +159,14 @@ HTML
 	'content' => <<<HTML
 <p>Basically, you are able to style and customise your post layout using CSS. You can set up whatever kind of HTML inside the header and signature fields and style them with CSS, and also style the side and top of your post table using special classes suffixed with your user ID.</p>
 
-<p>While we allow very open and customizable layouts and sidebars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a staff member.</p>
+<p>While we allow very open and creative layouts and sidebars, we have a few rules that will be strictly enforced.</p>
+
+<p><b>The post layout rules</b></p>
 <ul>
 	<li>The styling the post layout applies should only apply to your particular post table. Please use your user-specific table classes and prefix any custom classes to prevent collisions.</li>
 	<li>Post layouts should generally have a dark theme to match with the general darkness of the board.</li>
-	<li>Keep a good colour contrast and make the post text readable (no bad colour combinations or obnoxious fonts)</li>
-	<li>Images and other assets should be as small in filesize as possible.</li>
+	<li>Keep a good colour contrast and make the post text readable, no bad colour combinations or obnoxious fonts.</li>
+	<li>Images and other assets should be as small in filesize as possible to keep page load times down.</li>
 	<li>Things like CSS filters and animations are not allowed due to reduce the potential lag caused by them.</li>
 </ul>
 <p>Post layouts which are blatantly inappropriate or plain bad in any other regard will be removed by the discretion of the staff.</p>
@@ -168,6 +178,12 @@ HTML
 <p>They reflect the rank of the user, which are:</p>
 <table class="center"><tr>$nctable</tr></table>
 <p>Keep in mind that some users might have a custom colour assigned to them, usually if they are staff or friends with one.</p>
+HTML
+], [
+	'id' => 'cosy',
+	'title' => 'Why is this place so cosy?',
+	'content' => <<<HTML
+<p>Nobody knows~</p>
 HTML
 ]];
 
