@@ -48,13 +48,14 @@ a:active, a:hover	{ color: #FFFFFF }
 	float: right;
 }
 
-.microlight {
-	background-color: #2f3640;
-	color: #ffd66f;
-	display: block;
-	font-family: Monaco, Consolas, monospace;
-	padding: 5px;
-	white-space: pre;
+.codeblock {
+	background-color: #151515;
+	color: #50fc5e;
+	border: 1px solid #6c6;
+	padding: 10px;
+	margin: 10px;
+	white-space: pre-wrap;
+	font-family: 'Fira Code', Monaco, Consolas, monospace;
 }
 
 .boardlogo, .smiley {

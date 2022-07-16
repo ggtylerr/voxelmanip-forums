@@ -18,11 +18,6 @@ function get_username_link($matches) {
 
 // Function that does lots of voodoo magic to make sure the post data is (reasonably) safe
 function securityfilter($msg) {
-	$msg = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $msg);
-	$msg = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $msg);
-	$msg = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $msg);
-	$msg = html_entity_decode($msg, ENT_COMPAT, 'UTF-8');
-
 	$tags = ':a(?:pplet|udio)|b(?:ase|gsound|ody|button)|canvas|embed|frame(?:set)?|form|h(?:ead|tml)|i(?:frame|layer|nput)|l(?:ayer|ink)|m(?:ath|eta|eth)|noscript|object|plaintext|s(?:cript|vg|ource)|title|textarea|video|x(?:ml|mp)';
 	$msg = preg_replace("'<(/?)({$tags})'si", "&lt;$1$2", $msg);
 
@@ -42,16 +37,9 @@ function securityfilter($msg) {
 
 function makecode($match) {
 	$code = esc($match[1]);
-	$list = ["[", ":", ")", "_", "@", "-"];
-	$list2 = ["&#91;", "&#58;", "&#41;", "&#95;", "&#64;", "&#45;"];
-	return '<code class="microlight">' . str_replace($list, $list2, $code) . '</code>';
-}
-
-function makeirc($match) {
-	$code = esc($match[1]);
 	$list = ["\r\n", "[", ":", ")", "_", "@", "-"];
 	$list2 = ["<br>", "&#91;", "&#58;", "&#41;", "&#95;", "&#64;", "&#45;"];
-	return '<table style="width:90%;min-width:90%;"><tr><td class="b n3"><code>' . str_replace($list, $list2, $code) . '</code></table>';
+	return '<div class="codeblock">'.str_replace($list, $list2, $code).'</div>';
 }
 
 function filterstyle($match) {
@@ -73,9 +61,6 @@ function postfilter($msg) {
 
 	//[code] tag
 	$msg = preg_replace_callback("'\[code\](.*?)\[/code\]'si", 'makecode', $msg);
-
-	//[irc] variant of [code]
-	$msg = preg_replace_callback("'\[irc\](.*?)\[/irc\]'si", 'makeirc', $msg);
 
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 
