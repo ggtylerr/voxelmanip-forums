@@ -196,7 +196,7 @@ echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype=
 .fieldrow('Signature', fieldtext(7, 80, 'sign'))
 .fieldrow('Signature line', fieldcheckbox('signsep', $user['signsep'], 'Show signature separator'))
 .	catheader('Options')
-.fieldrow('Theme', fieldselect('theme', $user['theme'] ?: $defaulttheme, themelist(), "themePreview(this.value)"))
+.fieldrow('Theme', fieldselect('theme', $user['theme'] ?? $defaulttheme, themelist(), "themePreview(this.value)"))
 .fieldrow('Timezone', fieldselect('timezone', $user['timezone'], $listtimezones))
 .fieldrow('Posts per page', fieldinput(3, 3, 'ppp'))
 .fieldrow('Threads per page', fieldinput(3, 3, 'tpp'))
