@@ -46,8 +46,8 @@ foreach ($user as $field => $val)
 	$post['u'.$field] = $val;
 
 $links = [
-	['href' => "forum.php?user=$uid", 'title' => 'View threads'],
-	['href' => "thread.php?user=$uid", 'title' => 'Show posts']];
+	"forum.php?user=$uid" => 'View threads',
+	"thread.php?user=$uid" => 'Show posts'];
 
 $isblocked = $sql->result("SELECT COUNT(*) FROM blockedlayouts WHERE user = ? AND blockee = ?", [$uid, $loguser['id']]);
 if ($log) {
@@ -61,22 +61,22 @@ if ($log) {
 		}
 	}
 
-	$links[] = ['href' => "profile.php?id=$uid&toggleblock", 'title' => ($isblocked ? 'Unblock' : 'Block').' layout'];
+	$links["profile.php?id=$uid&toggleblock"] = ($isblocked ? 'Unblock' : 'Block').' layout';
 
 	if ($loguser['powerlevel'] > 0)
-		$links[] = ['href' => "sendprivate.php?uid=$uid", 'title' => 'Send PM'];
+		$links["sendprivate.php?uid=$uid"] = 'Send PM';
 }
 
 if ($loguser['powerlevel'] > 3)
-	$links[] = ['href' => "private.php?id=$uid", 'title' => 'Show PMs'];
+	$links["private.php?id=$uid"] = 'Show PMs';
 if ($loguser['powerlevel'] > 2 && $loguser['powerlevel'] > $user['powerlevel'])
-	$links[] = ['href' => "editprofile.php?id=$uid", 'title' => 'Edit user'];
+	$links["editprofile.php?id=$uid"] = 'Edit user';
 
 if ($loguser['powerlevel'] > 1) {
 	if ($user['powerlevel'] != -1)
-		$links[] = ['href' => "banmanager.php?id=$uid", 'title' => 'Ban user'];
+		$links["banmanager.php?id=$uid"] = 'Ban user';
 	else
-		$links[] = ['href' => "banmanager.php?unban&id=$uid", 'title' => 'Unban user'];
+		$links["banmanager.php?unban&id=$uid"] = 'Unban user';
 }
 
 //timezone calculations

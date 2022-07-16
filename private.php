@@ -58,11 +58,11 @@ $topbot = [
 ];
 
 if ($sent)
-	$topbot['actions'] = [['href' => 'private.php'.($id != $loguser['id'] ? "?id=$id&" : ''), 'title' => "View received"]];
+	$topbot['actions'] = ['private.php'.($id != $loguser['id'] ? "?id=$id&" : '') => "View received"];
 else
-	$topbot['actions'] = [['href' => 'private.php?'.($id != $loguser['id'] ? "id=$id&" : '').'view=sent', 'title' => "View sent"]];
+	$topbot['actions'] = ['private.php?'.($id != $loguser['id'] ? "id=$id&" : '').'view=sent' => "View sent"];
 
-$topbot['actions'][] = ['href' => 'sendprivate.php', 'title' => 'Send new'];
+$topbot['actions']['sendprivate.php'] = 'Send new';
 
 $fpagelist = '<br>';
 if ($pmsgc > $loguser['tpp']) {

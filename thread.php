@@ -155,11 +155,11 @@ if ($viewmode == "thread") {
 	$faccess = $sql->fetch("SELECT id,minreply FROM forums WHERE id = ?",[$thread['forum']]);
 	if ($faccess['minreply'] <= $loguser['powerlevel']) {
 		if ($loguser['powerlevel'] > 1 && $thread['closed'])
-			$topbot['actions'] = [['title' => 'Thread closed'],['href' => "newreply.php?id=$tid", 'title' => 'New reply']];
+			$topbot['actions'] = ['none' => 'Thread closed', "newreply.php?id=$tid" => 'New reply'];
 		else if ($thread['closed'])
-			$topbot['actions'] = [['title' => 'Thread closed']];
+			$topbot['actions'] = ['none' => 'Thread closed'];
 		else
-			$topbot['actions'] = [['href' => "newreply.php?id=$tid", 'title' => 'New reply']];
+			$topbot['actions'] = ["newreply.php?id=$tid" => 'New reply'];
 	}
 } elseif ($viewmode == "user") {
 	$topbot = [

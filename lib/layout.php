@@ -24,12 +24,12 @@ function rendernewstatus($type) {
 
 function RenderActions($actions) {
 	$out = '';
-	foreach ($actions as $action) {
+	foreach ($actions as $url => $title) {
 		$out .= '<li>';
-		if (isset($action['href']))
-			$out .= sprintf('<a href="%s">%s</a>', esc($action['href']), $action['title']);
+		if ($url != 'none')
+			$out .= sprintf('<a href="%s">%s</a>', esc($url), $title);
 		else
-			$out .= $action['title'];
+			$out .= $title;
 		$out .= '</li>';
 	}
 	echo '<ul class="menulisting">'.$out.'</ul>';

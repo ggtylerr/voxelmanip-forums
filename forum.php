@@ -51,10 +51,10 @@ if ($fid) {
 		'actions' => []
 	];
 	if ($log)
-		$topbot['actions'][] = ['href' => "index.php?action=markread&fid=$fid", 'title' => "Mark forum read"];
+		$topbot['actions']["index.php?action=markread&fid=$fid"] = "Mark forum read";
 
 	if ($loguser['powerlevel'] >= $forum['minthread'])
-		$topbot['actions'][] = ['href' => "newthread.php?id=$fid", 'title' => 'New thread'];
+		$topbot['actions']["newthread.php?id=$fid"] = 'New thread';
 
 } elseif ($uid) {
 	$user = $sql->fetch("SELECT name FROM users WHERE id = ?", [$uid]);
