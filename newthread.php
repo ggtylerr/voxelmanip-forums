@@ -18,7 +18,7 @@ $message = $_POST['message'] ?? '';
 $error = '';
 
 if ($action == 'Submit') {
-	if (strlen(trim($title)) < 25)
+	if (strlen(trim($title)) < 15)
 	$error = "You need to enter a longer title.";
 	if (strlen(trim($message)) == 0)
 		$error = "You need to enter a message to your thread.";
@@ -50,9 +50,7 @@ if ($action == 'Submit') {
 }
 
 $topbot = [
-	'breadcrumb' => [
-		['href' => "forum.php?id=$fid", 'title' => $forum['title']]
-	],
+	'breadcrumb' => ["forum.php?id=$fid" => $forum['title']],
 	'title' => "New thread"
 ];
 

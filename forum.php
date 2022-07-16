@@ -79,7 +79,7 @@ if ($fid) {
 		[$uid, $loguser['powerlevel']]);
 
 	$topbot = [
-		'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => $user['name']]],
+		'breadcrumb' => ["profile.php?id=$uid" => $user['name']],
 		'title' => 'Threads'
 	];
 } elseif ($time) {

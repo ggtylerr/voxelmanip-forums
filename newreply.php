@@ -55,9 +55,8 @@ if ($action == 'Submit') {
 
 $topbot = [
 	'breadcrumb' => [
-		['href' => "forum.php?id={$thread['forum']}", 'title' => $thread['ftitle']],
-		['href' => "thread.php?id={$thread['id']}", 'title' => esc($thread['title'])]
-	],
+		"forum.php?id={$thread['forum']}" => $thread['ftitle'],
+		"thread.php?id={$thread['id']}" => esc($thread['title'])],
 	'title' => "New reply"
 ];
 

@@ -34,7 +34,7 @@ if (isset($_POST['banuser'])) {
 }
 
 $pagebar = [
-	'breadcrumb' => [['href' => "profile.php?id=$uid", 'title' => $user['name']]]
+	'breadcrumb' => ["profile.php?id=$uid" => $user['name']]
 ];
 
 $pagebar['title'] = (isset($_GET['unban']) ? 'Unban User' : 'Ban User');

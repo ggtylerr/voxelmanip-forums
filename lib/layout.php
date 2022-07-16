@@ -40,8 +40,8 @@ function RenderPageBar($pagebar) {
 
 	echo '<div class="breadcrumb"><a href="./">Main</a> &raquo; ';
 	if (!empty($pagebar['breadcrumb'])) {
-		foreach ($pagebar['breadcrumb'] as $action)
-			printf('<a href=%s>%s</a> &raquo; ', '"'.esc($action['href']).'"', $action['title']);
+		foreach ($pagebar['breadcrumb'] as $url => $title)
+			printf('<a href="%s">%s</a> &raquo; ', esc($url), $title);
 	}
 	echo $pagebar['title'].'<div class="actions">';
 	if (!empty($pagebar['actions']))

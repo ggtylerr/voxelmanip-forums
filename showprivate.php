@@ -20,9 +20,7 @@ elseif ($tologuser && $pmsg['unread'])
 pageheader($pmsg['title']);
 
 $pagebar = [
-	'breadcrumb' => [
-		['href' => "private.php".(!$tologuser ? '?id='.$pmsg['userto'] : ''), 'title' => 'Private messages']
-	],
+	'breadcrumb' => ["private.php".(!$tologuser ? '?id='.$pmsg['userto'] : '') => 'Private messages'],
 	'title' => ($pmsg['title'] ? esc($pmsg['title']) : '(untitled)'),
 	'actions' => [['href' => "sendprivate.php?pid=$pid", 'title' => 'Reply']]
 ];
