@@ -32,16 +32,14 @@ if (!$log) {
 	$loguser['ppp'] = $loguser['tpp'] = 20;
 }
 
-if ($lockdown) {
-	if ($loguser['powerlevel'] < 1) {
-		echo <<<HTML
+if ($lockdown && $loguser['powerlevel'] < 1) {
+	echo <<<HTML
 <body style="background-color:#B02020;max-width:500px;color:#ffffff;margin:40px auto;">
 	<p>The board is currently in maintenance mode.</p>
 	<p>Please forgive any inconvenience caused and stand by until the underlying issues have been resolved.</p>
 </body>
 HTML;
-		die();
-	}
+	die();
 }
 
 if (!$log || !$loguser['timezone'])
@@ -68,15 +66,12 @@ if (str_replace($botlist, "x", strtolower($useragent)) != strtolower($useragent)
 	$bot = 1;
 
 if (!isset($rss)) {
-	$sql->query("DELETE FROM guests WHERE ip = ? OR date < ?", [$userip, (time() - 300)]);
+	$sql->query("DELETE FROM guests WHERE date < ?", [(time() - 900)]);
 	if ($log)
 		$sql->query("UPDATE users SET lastview = ?, ip = ?, url = ? WHERE id = ?",
 			[time(), $userip, $url, $loguser['id']]);
 	else
-		$sql->query("INSERT INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
-
-	if (!$bot)
-		$sql->query("UPDATE misc SET views = views + 1");
+		$sql->query("REPLACE INTO guests (date, ip, bot) VALUES (?,?,?)", [time(),$userip,$bot]);
 }
 
 $sql->query("DELETE FROM ipbans WHERE expires < ? AND expires > 0", [time()]);
@@ -90,12 +85,12 @@ if ($r) {
 }
 
 function pageheader($pagetitle = '', int $fid = null) {
-	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc;
+	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc, $userip;
 
 	if ($log)
 		$sql->query("UPDATE users SET lastforum = ? WHERE id = ?", [($fid == null ? 0 : $fid), $loguser['id']]);
 	else
-		$sql->query("UPDATE guests SET lastforum = ? WHERE ip = ?", [($fid == null ? 0 : $fid), $_SERVER['REMOTE_ADDR']]);
+		$sql->query("UPDATE guests SET lastforum = ? WHERE ip = ?", [($fid == null ? 0 : $fid), $userip]);
 
 	if ($pagetitle) $pagetitle .= " - ";
 
