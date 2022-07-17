@@ -157,7 +157,7 @@ function threadpost($post, $pthread = '') {
 		return <<<HTML
 <table class="c1"><tr>
 	<td class="b n1 topbar_1">$ulink</td>
-	<td class="b n1 topbar_2">(post deleted) <span class="f-right">$postlinks</span></td>
+	<td class="b n1 sfont topbar_2">(post deleted) <span class="f-right">$postlinks</span></td>
 </tr></table>
 HTML;
 	}
