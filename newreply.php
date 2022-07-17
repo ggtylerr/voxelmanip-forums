@@ -117,6 +117,20 @@ if ($action == 'Preview') {
 </form><br>
 <?php
 
+$fieldlist = userfields('u', 'u') . ', u.posts uposts, ';
+$newestposts = $sql->query("SELECT $fieldlist p.*, pt.text
+			FROM posts p
+			LEFT JOIN poststext pt ON p.id = pt.id AND p.revision = pt.revision
+			LEFT JOIN users u ON p.user = u.id
+			WHERE p.thread = ? AND p.deleted = 0
+			ORDER BY p.id DESC LIMIT 5", [$tid]);
+
+echo '<table class="c1"><tr class="h"><td class="b h" colspan="2">Thread preview</td></tr>';
+while ($post = $newestposts->fetch()) {
+	echo minipost($post);
+}
+echo '</table><br>';
+
 RenderPageBar($topbot);
 
 pagefooter();

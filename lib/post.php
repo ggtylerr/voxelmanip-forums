@@ -141,6 +141,29 @@ function LoadBlocklayouts() {
 		$blocklayouts[$block['user']] = 1;
 }
 
+function minipost($post) {
+	if (isset($post['deleted']) && $post['deleted']) return;
+
+	$ulink = userlink($post, 'u');
+	$pdate = dateformat($post['date']);
+
+	$posttext = postfilter($post['text']);
+
+	return <<<HTML
+	<tr>
+		<td class="b n1 topbar_1 nom">$ulink</td>
+		<td class="b n1 topbar_1 blkm nod clearfix">$ulink</td>
+		<td class="b n1 topbar_2 sfont blkm">Posted on $pdate
+			<span class="f-right"><a href="thread.php?pid={$post['id']}#{$post['id']}">Link</a> | ID: {$post['id']}</span></td>
+	</tr><tr valign="top">
+		<td class="b n1 sfont sidebar nom">
+			Posts: {$post['uposts']}
+		</td>
+		<td class="b n2 mainbar">$posttext</td>
+	</tr>
+HTML;
+}
+
 function threadpost($post, $pthread = '') {
 	global $loguser, $blocklayouts, $log;
 
