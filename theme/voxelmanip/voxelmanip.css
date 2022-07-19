@@ -107,7 +107,3 @@ input[type="text"]:focus, input[type="password"]:focus, input[type="file"]:focus
 	background: linear-gradient(hsl(210, 20%, 19%), hsl(210, 20%, 16%));
 	border-color: hsl(210, 50%, 45%);
 }
-
-.microlight {
-	color: #50fc5e;
-}

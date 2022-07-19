@@ -156,10 +156,10 @@ HTML;
 		<table class="c1">
 			<tr class="nt n2 center"><td class="b n1 center" colspan="2"><?=$boardlogo?></td></tr>
 			<tr class="n2">
-				<td class="nb headermenu">
+				<td class="n2 nb headermenu">
 					<?php foreach ($links as $url => $title) echo "<a class=\"menulink\" href=\"$url\">$title</a>"; ?>
 				</td>
-				<td class="nb headermenu_right">
+				<td class="n2 nb headermenu_right">
 					<?php echo $userlink??''; foreach ($userlinks as $url => $title) echo "<a class=\"menulink\" href=\"$url\">$title</a>"; ?>
 				</td>
 			</tr>
@@ -259,7 +259,7 @@ function pagefooter() {
 	$commitmsg = ($commit !== false ? '(commit '.substr($commit, 0, 7).')' : '(unknown commit)');
 	?><br>
 	<table class="c1">
-		<tr><td class="b n2 sfont footer">
+		<tr><td class="b n2 footer">
 			<span class="stats nom">
 				<?=sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024); ?>
 			</span>
