@@ -18,8 +18,8 @@ $message = $_POST['message'] ?? '';
 $error = '';
 
 if ($action == 'Submit') {
-	if (strlen(trim($title)) < 15)
-	$error = "You need to enter a longer title.";
+	if (strlen(trim($title)) < 7)
+		$error = "You need to enter a longer title.";
 	if (strlen(trim($message)) == 0)
 		$error = "You need to enter a message to your thread.";
 	if ($loguser['lastpost'] > time() - 30 && $loguser['powerlevel'] < 4)

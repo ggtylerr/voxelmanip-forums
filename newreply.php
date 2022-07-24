@@ -22,8 +22,8 @@ $message = $_POST['message'] ?? '';
 $error = '';
 if ($action == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
-	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 86400) && $loguser['powerlevel'] < 4)
-		$error = "You can't double post until it's been at least one day!";
+	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 43200) && $loguser['powerlevel'] < 4)
+		$error = "You can't double post until it's been at least 12 hours!";
 	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && $loguser['powerlevel'] > 3)
 		$error = "You must wait 2 seconds before posting consecutively.";
 	if (strlen(trim($message)) < 20)
