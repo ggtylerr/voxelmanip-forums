@@ -37,8 +37,6 @@ $samplepost = <<<HTML
 } else {\r
 	print "Something is very wrong.";\r
 }[/code]
-[irc]This is like code tags but without formatting.
-<Anonymous> I said something![/irc]
 [url=]Test Link. Ooh![/url]
 HTML;
 
@@ -73,8 +71,7 @@ $smilies = [
 	['text' => '>_<', 'url' => 'img/smilies/yuck.png'],
 	['text' => ':box:', 'url' => 'img/smilies/box.png'],
 	['text' => ':yes:', 'url' => 'img/smilies/yes.png'],
-	['text' => ':no:', 'url' => 'img/smilies/no.png'],
-	['text' => 'OwO', 'url' => 'img/smilies/owo.png']
+	['text' => ':no:', 'url' => 'img/smilies/no.png']
 ];
 
 // Define this function to send a welcome PM to all newly registered users.
