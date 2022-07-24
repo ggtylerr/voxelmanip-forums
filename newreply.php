@@ -38,7 +38,7 @@ if ($action == 'Submit') {
 
 		$pid = $sql->insertid();
 		$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
-			[$pid,$message]);
+			[$pid,trim($message)]);
 
 		$sql->query("UPDATE threads SET posts = posts + 1,lastdate = ?, lastuser = ?, lastid = ? WHERE id = ?",
 			[time(), $loguser['id'], $pid, $tid]);
@@ -79,7 +79,7 @@ if ($pid) {
 	}
 
 	if ($pid != $post['lastid'])
-		$message = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", $post['text']));
+		$message = sprintf('[quote="%s" id="%s"]%s[/quote]', $post['name'], $pid, str_replace("&", "&amp;", trim($post['text'])));
 }
 
 if ($action == 'Preview') {

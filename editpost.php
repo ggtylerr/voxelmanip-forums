@@ -32,7 +32,7 @@ $post = $sql->fetch("SELECT u.id, p.user, pt.text FROM posts p
 if (!$post) error("Post doesn't exist.");
 
 $error = '';
-$message = $_POST['message'] ?? $post['text'];
+$message = $_POST['message'] ?? trim($post['text']);
 
 if ($action == 'Submit') {
 	if ($post['text'] == $message)

@@ -38,7 +38,7 @@ if ($action == 'Submit') {
 
 		$pid = $sql->insertid();
 		$sql->query("INSERT INTO poststext (id,text) VALUES (?,?)",
-			[$pid,$message]);
+			[$pid,trim($message)]);
 
 		$sql->query("UPDATE forums SET threads = threads + 1, posts = posts + 1, lastdate = ?,lastuser = ?,lastid = ? WHERE id = ?",
 			[time(), $loguser['id'], $pid, $fid]);

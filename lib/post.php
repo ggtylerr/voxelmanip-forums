@@ -58,6 +58,8 @@ function postfilter($msg) {
 	global $smilies;
 
 	if (empty($msg)) return;
+	
+	$msg = trim($msg);
 
 	//[code] tag
 	$msg = preg_replace_callback("'\[code\](.*?)\[/code\]'si", 'makecode', $msg);
