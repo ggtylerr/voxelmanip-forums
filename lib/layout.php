@@ -130,15 +130,17 @@ function themelist() {
 	$themes = glob('theme/*', GLOB_ONLYDIR);
 	sort($themes);
 	foreach ($themes as $f) {
-		$themename = explode("/",$f)[1];
-		if (file_exists("theme/$themename/$themename.css")) {
-			if (preg_match("~/* META\n(.*?)\n~s", file_get_contents("theme/$themename/$themename.css"), $matches)) {
-				$themelist[$themename] = $matches[1];
-			}
-		}
+		$id = explode("/",$f)[1];
+		$themelist[$id] = themename($id);
 	}
 
 	return $themelist;
+}
+
+function themename($id) {
+	if (file_exists("theme/$id/$id.css") && preg_match("~/* META\n(.*?)\n~s", file_get_contents("theme/$id/$id.css"), $matches)) {
+		return $matches[1];
+	}
 }
 
 function ranklist() {

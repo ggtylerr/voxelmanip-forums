@@ -25,8 +25,7 @@ if ($thread) {
 	$lastpostlink = "<br>in <i>a private forum</i>";
 }
 
-$themes = themelist();
-$themename = $themes[(string)$user['theme'] ?: $defaulttheme];
+$themename = themename((string)$user['theme'] ?: $defaulttheme);
 
 $birthday = '';
 if ($user['birth']) {
