@@ -253,11 +253,11 @@ if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$
 <table class="c1">
 	<tr class="h"><td class="b h" colspan=2>Warp Whistle Reply</a></td>
 	<tr>
-		<td class="b n1 center" width=120>Format:</td>
+		<td class="b n1 center" width="120">Format:</td>
 		<td class="b n2"><?=posttoolbar() ?></td>
 	</tr><tr>
-		<td class="b n1 center" width=120>Reply:</td>
-		<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows=8 cols=80></textarea></td>
+		<td class="b n1 center">Reply:</td>
+		<td class="b n2"><textarea wrap="virtual" name="message" id="message" rows="8" cols="80"></textarea></td>
 	</tr><tr class="n1">
 		<td class="b"></td>
 		<td class="b">

@@ -134,13 +134,13 @@ if ($fid) announcement_row();
 ?><br>
 <table class="c1">
 	<tr class="h">
-		<td class="b h" width=32>&nbsp;</td>
+		<td class="b h" width="32">&nbsp;</td>
 		<?=($showforum ? '<td class="b h">Forum</td>' : '') ?>
 		<td class="b h">Title</td>
-		<td class="b h nom" width=130>Started by</td>
-		<td class="b h nom" width=50>Replies</td>
-		<td class="b h nom" width=50>Views</td>
-		<td class="b h" width=130>Last post</td>
+		<td class="b h nom" width="130">Started by</td>
+		<td class="b h nom" width="60">Replies</td>
+		<td class="b h nom" width="60">Views</td>
+		<td class="b h" width="190">Last post</td>
 	</tr><?php
 $lsticky = 0;
 

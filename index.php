@@ -51,9 +51,9 @@ while ($forum = $forums->fetch()) {
 		<tr class="h">
 			<td class="b h" width="32">&nbsp;</td>
 			<td class="b h"><?=$categ[$cat] ?></td>
-			<td class="b h nom" width="50">Threads</td>
-			<td class="b h nom" width="50">Posts</td>
-			<td class="b h" width="150">Last post</td>
+			<td class="b h nom" width="60">Threads</td>
+			<td class="b h nom" width="60">Posts</td>
+			<td class="b h" width="190">Last post</td>
 		</tr><?php
 	}
 
