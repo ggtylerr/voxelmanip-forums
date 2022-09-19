@@ -82,7 +82,7 @@ if ($viewmode == "thread") {
 	//check for having to mark the forum as read too
 	if ($log) {
 		$readstate = $sql->fetch("SELECT ((NOT ISNULL(r.time)) OR t.lastdate < ?) n FROM threads t LEFT JOIN threadsread r ON (r.tid = t.id AND r.uid = ?) "
-			. "WHERE t.forum = ? GROUP BY ((NOT ISNULL(r.time)) OR t.lastdate < ?) ORDER BY n ASC",
+			. "WHERE t.forum = ? OR t.lastdate < ? ORDER BY n ASC",
 			[$thread['frtime'], $loguser['id'], $thread['fid'], $thread['frtime']]);
 		//if $readstate[n] is 1, MySQL did not create a group for threads where ((NOT ISNULL(r.time)) OR t.lastdate<'$thread[frtime]') is 0;
 		//thus, all threads in the forum are read. Mark it as such.
@@ -251,7 +251,7 @@ echo "$pagelist".(!isset($time) ? '<br>' : '');
 if (isset($thread['id']) && $loguser['powerlevel'] >= $faccess['minreply'] && !$thread['closed']) {
 	?><form action="newreply.php?id=<?=$tid?>" method="post">
 <table class="c1">
-	<tr class="h"><td class="b h" colspan=2>Warp Whistle Reply</a></td>
+	<tr class="h"><td class="b h" colspan=2>Quick-E-Post&trade;</a></td>
 	<tr>
 		<td class="b n1 center" width="120">Format:</td>
 		<td class="b n2"><?=posttoolbar() ?></td>

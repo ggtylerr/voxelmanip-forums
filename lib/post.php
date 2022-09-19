@@ -264,7 +264,7 @@ HTML;
 	$posttext = postfilter($post['uhead'].$post['text'].$post['usign']);
 
 	return <<<HTML
-<table class="c1" id="{$post['id']}">
+<table class="c1 post" id="{$post['id']}">
 	$headerbar
 	<tr>
 		<td class="b n1 topbar_1 topbar{$uid}_1 nom">$ulink</td>

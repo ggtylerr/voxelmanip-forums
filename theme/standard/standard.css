@@ -1,0 +1,143 @@
+/* META
+Standard (Acmlm, Kawa)
+*/
+body,th,tr,td
+{
+	color:white;
+	font-family:sans-serif;
+}
+
+body
+{
+	background: #040420 url(back2c.png);
+}
+
+th
+{
+	background: #336;
+	border: 1px solid #000;
+}
+
+table.c1,td.b
+{
+	border: 1px solid #669;
+}
+
+table.c1>tbody:first-child>tr:first-child>td {
+	border-top-width:1px;
+}
+table.c1>tbody>tr>td:first-child {
+	border-left-width:1px;
+}
+
+table.c1>tbody>tr>th
+{
+	border-width: 0px 0px 1px 0px;
+	border-style:solid;
+}
+
+table.c1>tbody>tr>th:last-child {
+	border-right-width: 1px;
+}
+table.c1>tbody>tr>th:first-child {
+	border-left-width: 1px;
+}
+table.c1>tbody:first-child>tr:first-child>th {
+	border-top-width: 1px;
+}
+
+table.post>tbody>tr>td {
+	border-style:solid;
+}
+table.post>tbody>tr>td.sidebar {
+	border-width: 0px 0px 1px 1px;
+}
+table.post>tbody>tr>td.mainbar {
+	border-width: 1px 1px 1px 1px;
+}
+table.post>tbody>tr>td.topbar_2 {
+	border-width: 1px 1px 0px 0px;
+}
+table.post>tbody>tr>td.topbar_1 {
+	border-width: 1px 0px 0px 1px;
+}
+
+table.post
+{
+	background: url(back2t1.png) #303678;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 8px;
+	border: 1px solid #669;
+	box-shadow: 2px 2px 4px #000;
+}
+
+input[type="submit"]
+{
+	border: 1px solid #669;
+	background: #24285C;
+	color: #FFF;
+}
+
+.n1
+{
+	background: #24285C url(back2t2.png);
+}
+
+.n2
+{
+	background: #1F224F url(back2t3.png);
+}
+
+.n3
+{
+	background: #303678 url(back2t1.png);
+}
+
+tr.c
+{
+	background: #373E89 url(backc2.png) repeat-x;
+	color: #EEE;
+}
+
+tr.h
+{
+	background: #4E5174 url(backh.png) repeat-x;
+	color: #DDD;
+}
+
+div.codeblock,.sidebar
+{
+	background: #24285C url(back2t2.png);
+}
+
+.topbar_1,.topbar_2
+{
+	background: url(back2t2.png);
+}
+
+.mainbar
+{
+	background: url(back2g.png);
+}
+
+h3
+{
+	border-top: 1px solid #669;
+	border-bottom: 1px solid #669;
+}
+
+input[type="text"], input[type="password"], input[type="file"], input[type="email"], select, textarea
+{
+	background: #24285C;
+	border: 1px solid #669;
+	color: white;
+}
+
+input[type="checkbox"], input[type="radio"]
+{
+	background: #24285C;
+	border: 2px ridge #669;
+	color: white;
+}
+
