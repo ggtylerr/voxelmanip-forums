@@ -172,9 +172,10 @@ if ($viewmode == "thread") {
 }
 
 $modlinks = '';
-if (isset($tid) && ($loguser['powerlevel'] > 2 || ($loguser['id'] == $thread['user'] && !$thread['closed'] && $loguser['powerlevel'] > 0))) {
+// TODO: move this to its own page because I don't like JavaScript unless it's absolutely necessary. -- NeppySH2
+if (isset($tid) && ($loguser['powerlevel'] > 1 || ($loguser['id'] == $thread['user'] && !$thread['closed'] && $loguser['powerlevel'] > 0))) {
 	$link = "<a href=javascript:submitmod";
-	if ($loguser['powerlevel'] > 2) {
+	if ($loguser['powerlevel'] > 1) {
 		$stick = '<li>'.$link.($thread['sticky'] ? "('unstick')>Unstick" : "('stick')>Stick").'</a></li>';
 		$close = '<li>'.$link.($thread['closed'] ? "('open')>Open" : "('close')>Close").'</a></li>';
 		$trash = ($thread['forum'] != $trashid ? '<li><a href=javascript:submitmod(\'trash\') onclick="trashConfirm(event)">Trash</a></li>' : '');
