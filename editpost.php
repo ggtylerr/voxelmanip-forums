@@ -19,7 +19,7 @@ if (!$thread) $pid = 0;
 
 if ($thread['closed'] && $loguser['powerlevel'] <= 1)
 	error("You can't edit a post in closed threads!");
-if ($loguser['powerlevel'] < 3 && $loguser['id'] != $thread['puser'])
+if ($loguser['powerlevel'] <= 1 && $loguser['id'] != $thread['puser'])
 	error("You do not have permission to edit this post.");
 if ($pid == -1)
 	error("Invalid post ID.");
