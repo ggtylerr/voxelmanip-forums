@@ -38,8 +38,8 @@ else
 $action = '';
 $act = $_POST['action'] ?? '';
 
-if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 2 ||
-		($loguser['id'] == $threadcreator && $act == "rename" && $loguser['powerlevel'] > 0))) {
+if (isset($tid) && $log && $act && ($loguser['powerlevel'] > 1 ||
+		($loguser['id'] == $threadcreator && $act == "rename" && $loguser['powerlevel'] > 1))) {
 
 	if ($act == 'stick')	$action = ',sticky=1';
 	if ($act == 'unstick')	$action = ',sticky=0';
