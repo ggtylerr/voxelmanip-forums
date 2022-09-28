@@ -84,3 +84,5 @@ $randdesc = [
 	"Value1",
 	"Value2"
 ];
+
+$maxavatarsize = 512000; // Avatar max upload size.

@@ -39,7 +39,7 @@ if ($act == 'Edit profile') {
 			$error .= "- Invalid file type.<br>";
 		elseif ($res[0] > 180 || $res[1] > 180)
 			$error .= "- The image is too big.<br>";
-		elseif ($fname['size'] > 81920)
+		elseif ($fname['size'] > $maxavatarsize)
 			$error .= "- The image filesize too big.<br>";
 		else {
 			if (!move_uploaded_file($fname['tmp_name'], "userpic/$user[id]")) {
@@ -183,7 +183,7 @@ echo '<form action="editprofile.php?id='.$targetuserid.'" method="post" enctype=
 .(count($rankset_names) > 1 ? fieldrow('Rankset', fieldselect('rankset', $user['rankset'], ranklist())) : '')
 .((checkctitle()) ? fieldrow('Title', fieldinput(40, 255, 'title')) : '')
 .fieldrow('Avatar', '<input type="file" name="picture" size="40">'.$erasepfp
-		.'<br><span class="sfont">Must be PNG, JPG or GIF, within 80KB and 180x180.</span>')
+		.'<br><span class="sfont">Must be PNG, JPG or GIF, within 500KB and 180x180.</span>')
 .(checkcusercolor() ? fieldrow('Custom colour', sprintf('<input type="color" name="nick_color" value="#%s">', $user['nick_color'])) : '')
 .	catheader('User information')
 .fieldrow('Location', fieldinput(40, 60, 'location'))
