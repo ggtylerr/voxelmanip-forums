@@ -23,45 +23,6 @@ table.c1,td.b
 	border: 1px solid #669;
 }
 
-table.c1>tbody:first-child>tr:first-child>td {
-	border-top-width:1px;
-}
-table.c1>tbody>tr>td:first-child {
-	border-left-width:1px;
-}
-
-table.c1>tbody>tr>th
-{
-	border-width: 0px 0px 1px 0px;
-	border-style:solid;
-}
-
-table.c1>tbody>tr>th:last-child {
-	border-right-width: 1px;
-}
-table.c1>tbody>tr>th:first-child {
-	border-left-width: 1px;
-}
-table.c1>tbody:first-child>tr:first-child>th {
-	border-top-width: 1px;
-}
-
-table.post>tbody>tr>td {
-	border-style:solid;
-}
-table.post>tbody>tr>td.sidebar {
-	border-width: 0px 0px 1px 1px;
-}
-table.post>tbody>tr>td.mainbar {
-	border-width: 1px 1px 1px 1px;
-}
-table.post>tbody>tr>td.topbar_2 {
-	border-width: 1px 1px 0px 0px;
-}
-table.post>tbody>tr>td.topbar_1 {
-	border-width: 1px 0px 0px 1px;
-}
-
 table.post
 {
 	background: url(back2t1.png) #303678;
