@@ -1,4 +1,5 @@
 <?php
+
 if (!file_exists('conf/config.php'))
 	die('Great job getting the files onto a web server. Now install it.');
 
@@ -83,6 +84,20 @@ if ($r) {
 	pagefooter();
 	die();
 }
+
+// from https://stackoverflow.com/questions/6284553/using-an-array-as-needles-in-strpos
+function strpos_arr($haystack, $needle) {
+    if(!is_array($needle)) $needle = array($needle);
+    foreach($needle as $what) {
+        if(($pos = strpos($haystack, $what))!==false) return $pos;
+    }
+    return false;
+}
+
+$gtfo = array('kuribo64', 'rustedlogic', 'kafuka', 'nsmbhd', 'tcrf', 'gbatemp', 't.co', 'twitter', 'varis', 'nitter', 'vidlii', 'soyjak', 'heyuri', 'booru.soy');
+
+if (strpos_arr($_SERVER['HTTP_REFERER'], $gtfo))
+	die('gtfo');
 
 function pageheader($pagetitle = '', int $fid = null) {
 	global $sql, $log, $loguser, $boardtitle, $boardlogo, $theme, $boarddesc, $userip;
