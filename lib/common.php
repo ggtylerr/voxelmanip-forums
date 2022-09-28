@@ -101,9 +101,9 @@ function pageheader($pagetitle = '', int $fid = null) {
 		$boardlogo = <<<HTML
 <table width="100%"><tr>
 	<td>$boardlogo</td>
-	<td width="300">
+	<td width="300" class="nom">
 		<table class="c1 center">
-			<tr class="h"><td class="b h">News</td></tr>
+			<tr class="h"><td class="b h">Message Of The Day</td></tr>
 			<tr class="n1 center"><td class="b sfont">$attn</td></tr>
 		</table>
 	</td>
@@ -267,8 +267,8 @@ function pagefooter() {
 			<img src="img/poweredbyvoxelmanip.png" class="poweredby"
 				title="like a warm hug from someone you love">
 
-			Voxelmanip Forums <?=$commitmsg?><br>
-			&copy; 2022 ROllerozxa, <a href="credits.php">et al</a>.
+			ROllerBoard 2.2+ネプネプ <?=$commitmsg?><br>
+			&copy; 2022 ROllerozxa, NeppySH2 <a href="credits.php">et al</a>.
 		</td></tr>
 	</table><?php
 }
