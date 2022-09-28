@@ -94,7 +94,7 @@ function strpos_arr($haystack, $needle) {
     return false;
 }
 
-$gtfo = array('kuribo64', 'rustedlogic', 'kafuka', 'nsmbhd', 'tcrf', 'gbatemp', 't.co', 'twitter', 'varis', 'nitter', 'vidlii', 'soyjak', 'heyuri', 'booru.soy');
+$gtfo = array('kuribo64', 'rustedlogic', 'kafuka', 'nsmbhd', 'tcrf', 'gbatemp', 't.co', 'twitter', 'varis', 'nitter', 'vidlii', 'soyjak', 'heyuri', 'booru.soy', 'eclectic4un', 'msfn');
 
 if (strpos_arr($_SERVER['HTTP_REFERER'], $gtfo))
 	die('gtfo');
