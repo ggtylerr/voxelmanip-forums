@@ -18,11 +18,9 @@ $message = $_POST['message'] ?? '';
 $error = '';
 
 if ($action == 'Submit') {
-	if (strlen(trim($title)) < 7)
-		$error = "You need to enter a longer title.";
 	if (strlen(trim($message)) == 0)
 		$error = "You need to enter a message to your thread.";
-	if ($loguser['lastpost'] > time() - 30 && $loguser['powerlevel'] < 4)
+	if ($loguser['lastpost'] > time() - 30)
 		$error = "Don't post threads so fast, wait a little longer.";
 	//if ($loguser['lastpost'] > time() - 2 && has_perm('ignore-thread-time-limit'))
 	//	$error = "You must wait 2 seconds before posting a thread.";

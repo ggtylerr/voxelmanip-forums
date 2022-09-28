@@ -22,12 +22,10 @@ $message = $_POST['message'] ?? '';
 $error = '';
 if ($action == 'Submit') {
 	$lastpost = $sql->fetch("SELECT id,user,date FROM posts WHERE thread = ? ORDER BY id DESC LIMIT 1", [$thread['id']]);
-	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 43200) && $loguser['powerlevel'] < 4)
+	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 43200) && $loguser['powerlevel'] < 2)
 		$error = "You can't double post until it's been at least 12 hours!";
-	if ($lastpost['user'] == $loguser['id'] && $lastpost['date'] >= (time() - 2) && $loguser['powerlevel'] > 3)
-		$error = "You must wait 2 seconds before posting consecutively.";
-	if (strlen(trim($message)) < 20)
-		$error = "Your post is too short to be meaningful. Please try to write something longer or refrain from posting.";
+	if ($loguser['lastpost'] > time() - 30)
+		$error = "You must wait 30 seconds before posting consecutively.";
 	if (strlen(trim($message)) == 0)
 		$error = "Your post is empty! Enter a message and try again.";
 
