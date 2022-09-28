@@ -109,7 +109,7 @@ function pageheader($pagetitle = '', int $fid = null) {
 
 	if ($pagetitle) $pagetitle .= " - ";
 
-	$boardlogo = '<a href="./"><img class="boardlogo" src="'.$boardlogo.'" style="max-width:100%"></a>';
+	$boardlogo = '<a href="./"><img class="boardlogo" title=$boardlogo src="'.$boardlogo.'" style="max-width:100%"></a>';
 
 	$attn = $sql->result("SELECT attention FROM misc");
 	if ($attn)
@@ -159,7 +159,7 @@ HTML;
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+		<meta name="viewport" content="width=device-width">
 		<title><?=$pagetitle.$boardtitle?></title>
 		<?php if (isset($boarddesc)) { ?><meta name="description" content="<?=$boarddesc?>"><?php } ?>
 		<link rel="stylesheet" href="theme/common.css">

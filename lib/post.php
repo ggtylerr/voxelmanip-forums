@@ -84,7 +84,7 @@ function postfilter($msg) {
 	$msg = preg_replace("'\[spoiler\](.*?)\[/spoiler\]'si", '<span class="spoiler1" onclick=""><span class="spoiler2">\\1</span></span>', $msg);
 	$msg = preg_replace("'\[url\](.*?)\[/url\]'si", '<a href=\\1>\\1</a>', $msg);
 	$msg = preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si", '<a href=\\1>\\2</a>', $msg);
-	$msg = preg_replace("'\[img\](.*?)\[/img\]'si", '<img src=\\1>', $msg);
+	$msg = preg_replace("'\[img\](.*?)\[/img\]'si", '<img title="External Image" src=\\1>', $msg);
 	$msg = preg_replace("'\[quote\](.*?)\[/quote\]'si", '<blockquote><hr>\\1<hr></blockquote>', $msg);
 	$msg = preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si", '<span style="color: #\\1">\\2</span>', $msg);
 
@@ -250,7 +250,7 @@ HTML;
 	$lastpost = ($post['ulastpost'] ? timeunits(time() - $post['ulastpost']) : 'none');
 	$lastview = timeunits(time() - $post['ulastview']);
 
-	$picture = ($post['uusepic'] ? "<img src=\"userpic/{$post['uid']}\">" : '');
+	$picture = ($post['uusepic'] ? "<img title=".$post['uname']." src=\"userpic/{$post['uid']}\">" : '');
 
 	if ($post['usign']) {
 		$signsep = $post['usignsep'] ? '<hr>' : '';
