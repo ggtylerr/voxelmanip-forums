@@ -37,6 +37,8 @@ $message = $_POST['message'] ?? trim($post['text']);
 if ($action == 'Submit') {
 	if ($post['text'] == $message)
 		$error = "No changes detected.";
+	if ($post['text'] == "")
+		$error = "You can't make your post empty!";
 
 	if (!$error) {
 		$newrev = $sql->result("SELECT revision FROM posts WHERE id = ?", [$pid]) + 1;
